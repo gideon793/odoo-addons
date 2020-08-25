@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>            
+        <report id="ipbillreport" 
+                string="SAN-KER IP Bill"
+                model="sale.order"
+                report_type="qweb-pdf"
+                name="ipbilling.ipbill_template"
+                file="ipbilling.ipbill_template"
+                menu="True"/>
+
+        
+    </data>
+</odoo>

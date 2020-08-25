@@ -1,0 +1,38 @@
+<odoo>
+ <data>
+
+ <record model="ir.ui.view" id="diagnosis_form">
+  <field name="name">Diagnosis</field>
+  <field name="model">diagnosis.diagnosis</field>
+  <field name="arch" type="xml">
+   <form string="Diagnosis">
+    <group>    
+     <field name="name"/> 
+     <field name="code"/> 
+     </group>
+   </form>  
+  </field>
+ </record>
+
+ <record model="ir.ui.view" id="diagnosis_list">
+  <field name="name">Diagnosis</field>
+  <field name="model">diagnosis.diagnosis</field>
+  <field name="arch" type="xml">
+   <tree string="Diagnosis">
+    <field name="name"/>
+    <field name="code"/>
+   </tree>
+  </field>
+ </record>
+
+ <record model="ir.actions.act_window" id="diagnosis.action_window">
+  <field name="name">ICD CODES</field>
+  <field name="res_model">diagnosis.diagnosis</field>
+  <field name="view_mode">tree,form</field>
+ </record>
+  
+<menuitem id="diagnosis_menu_menu" parent="doctors.doctors_menu" name="Diagnosis" action="diagnosis.action_window"/>
+
+
+ </data>
+</odoo>

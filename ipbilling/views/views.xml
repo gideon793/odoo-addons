@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+<data>
+<record model="ir.ui.view" id="IP_Bill_view">
+ <field name="name">IP Bill</field>
+ <field name="model">sale.order</field>
+ <field name="inherit_id" ref="sale.view_order_form" />
+ <field name="mode">primary</field>
+ <field name="arch" type="xml">
+   <header>   <button name="%(ipbillreport)d" string="Print order" type="action"/></header>
+   <field name="partner_id" position="after">
+   <field name="registration"/>
+   <field name="admdate"/>
+   <field name="discdate"/>
+   <field name="isip"/>
+   <field name="medicinebill"/>
+   <field name="ipregno" string="IP Registration Number"/>
+  </field>
+  <field name="payment_term_id" position="after">
+   <field name="accomodation"/>
+   <field name="periodbill"/>
+   <field name="remarks" />
+  </field>
+ </field>
+</record>
+
+<record model="ir.ui.view" id="Ip_Bill_tree_view">
+<field name="name">IP Bill Tree view</field>
+<field name="model">sale.order</field>
+<field name="inherit_id" ref="sale.view_order_tree"/>
+<field name="arch" type="xml">
+<tree>
+<field name="registration"/>
+</tree>
+</field>
+</record>
+
+<record model="ir.ui.view" id="Ip_Bill_tree_view_filter">
+<field name="name">IP Bill Filter</field>
+<field name="model">sale.order</field>
+<field name="inherit_id" ref="sale.view_sales_order_filter"/>
+<field name="arch" type="xml">
+<field name="name" position="after">
+<filter name="IP" string="In Patient medicine bills" domain="[('isip','=',True),('medicinebill','=',True)]"/>
+<filter name="IP bill" string="In Patient bills" domain="[('isip','=',True)]"/>
+<filter name="OP bill" string="Out Patient bills" domain="[('isop','=',True)]"/>
+</field>
+</field>
+</record>
+
+
+<record model="ir.ui.view" id="Invoice_tree_view_filter">
+<field name="name">Invoice Filter for medicine</field>
+<field name="model">account.invoice</field>
+<field name="inherit_id" ref="account.view_account_invoice_filter"/>
+<field name="arch" type="xml">
+<field name="partner_id" position="after">
+<filter name="IP" string="In Patient Invoices" domain="[('isip','=',True)]"/>
+<filter name="has_outstanding"  string="Unapplied Payments" domain="[('partner_id.credit','&lt;',0)]"/>
+
+<filter name="IP medicine" string="In Patient Medicine Invoices" domain="[('isip','=',True),('medicinebill','=',True)]"/>
+</field>
+</field>
+</record>
+
+
+<record id="ipbill_menu_action" model="ir.actions.act_window">
+<field name="name">IP Bill</field>
+<field name="res_model">sale.order</field>
+<field name="view_type">form</field>
+<field name="view_mode">tree,form</field>
+<field name="domain">[]</field>
+</record>
+
+<record id="invoice_menu_action" model="ir.actions.act_window">
+<field name="name">Invoices</field>
+<field name="res_model">account.invoice</field>
+<field name="view_type">form</field>
+<field name="view_mode">tree,form</field>
+<field name="domain">[]</field>
+</record>
+
+
+
+<menuitem id="main_ipbill_menu" parent="sanker.main_menu" name="IP Bill"/>
+<menuitem id="invoice_menu" parent="inpatient.main_inpatient_menu" name="Invoices" action="invoice_menu_action"/>
+<menuitem id="ipbill_menu" parent="inpatient.main_inpatient_menu" name="IP billing" action="ipbill_menu_action"/>
+
+
+
+</data>
+</odoo>
