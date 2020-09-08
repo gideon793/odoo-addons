@@ -1,0 +1,69 @@
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="covid.list">
+      <field name="name">covid list</field>
+      <field name="model">covid.covid</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="date"/>
+          <field name="partner_id"/>
+          <field name="registration"/>
+          <field name="age"/>
+          <field name="gender"/>
+          <field name="diagnosis"/>
+          <field name="type"/>
+          <field name="etiology"/>
+          <field name="refractory"/>
+          <field name="medications"/>
+          <field name="control"/>
+          <field name="lastseizure"/>
+          <field name="seizure"/>
+          <field name="status"/>
+          <field name="default"/>
+        </tree>
+      </field>
+    </record>
+
+   <record model="ir.ui.view" id="covid.form">
+      <field name="name">covid form</field>
+      <field name="model">covid.covid</field>
+      <field name="arch" type="xml">
+        <form>
+         <group colspan="1" col="3">
+          <field name="date"/>
+          <field name="partner_id"/>
+          <field name="registration"/>
+          <field name="age"/>
+          <field name="gender"/>
+          <field name="diagnosis"/>
+          <field name="type"/>
+          <field name="etiology"/>
+          <field name="refractory"/>
+          <field name="medications"/>
+          <field name="control"/>
+          <field name="lastseizure"/>
+          <field name="seizure"/>
+          <field name="status"/>
+          <field name="default"/>        
+
+</group>
+        </form>
+      </field>
+    </record>
+
+
+
+    <record model="ir.actions.act_window" id="covid_action_window">
+      <field name="name">Covid Project</field>
+      <field name="res_model">covid.covid</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+
+
+
+    <menuitem name="Research Project" id="covid_menu_root" parent=""/>
+    <menuitem name="Epilepsy" id="covid_menu_1" parent="covid_menu_root" action="covid_action_window"/>
+  </data>
+</odoo>

@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "dateofbirth",
+    'name': "DDRS",
 
     'summary': """
-        Add date of birth to Contacts""",
+        DDRS Project Management at SAN-KER""",
 
     'description': """
-        Add date of birth to Contacts
+        DDRS Project Management at SAN-KER
     """,
 
-    'author': "My Company",
-    'website': "http://www.yourcompany.com",
+    'author': "Gideon Rynjah",
+    'website': "http://www.san-ker.org",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/12.0/odoo/addons/base/data/ir_module_category_data.xml
@@ -23,6 +23,7 @@
 
     # always loaded
     'data': [
+        'security/user_groups.xml',
         'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
@@ -31,4 +32,6 @@
     'demo': [
         'demo/demo.xml',
     ],
+    'application': True,
+
 }

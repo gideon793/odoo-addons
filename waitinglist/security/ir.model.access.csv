@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_waitinglist_waitinglist,waitinglist.waitinglist,model_waitinglist_waitinglist,base.group_user,1,1,1,1
+access_waitinglist_substance,waitinglist.substance,model_waitinglist_substance,base.group_user,1,1,1,1
+access_waitinglist_otherwait,waitinglist.otherwait,model_waitinglist_otherwait,base.group_user,1,1,1,1
+access_waitinglist_othersub,waitinglist.othersub,model_waitinglist_othersub,base.group_user,1,1,1,1

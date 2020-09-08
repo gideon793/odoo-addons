@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "dateofbirth",
+    'name': "Waiting List for San-Ker Admissions",
 
     'summary': """
-        Add date of birth to Contacts""",
+        Waiting List for San-Ker Admissions""",
 
     'description': """
-        Add date of birth to Contacts
+        Waiting List for San-Ker Admissions
     """,
 
-    'author': "My Company",
-    'website': "http://www.yourcompany.com",
+    'author': "Gideon Rynjah, MD, DM",
+    'website': "http://www.san-ker.org",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/12.0/odoo/addons/base/data/ir_module_category_data.xml

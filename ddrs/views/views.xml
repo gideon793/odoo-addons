@@ -1,0 +1,157 @@
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="ddrs.list">
+      <field name="name">ddrs list</field>
+      <field name="model">ddrs.ddrs</field>
+      <field name="arch" type="xml">
+        <tree editable="bottom">
+          <field name="date"/>
+          <field name="name" string="Transaction Details"/>
+          <field name="account" />
+          <field name="items" />
+          <field name="amount" sum="Running Balance" />
+          <field name="note"/>
+          <field name="attach"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="ddrs.form">
+      <field name="name">ddrs form</field>
+      <field name="model">ddrs.ddrs</field>
+      <field name="arch" type="xml">
+        <form>
+          <group>
+          <field name="name"/>
+          <field name="attach"/>
+          </group>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="ddrs_main_action_window">
+      <field name="name">DDRS Project</field>
+      <field name="res_model">ddrs.ddrs</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+
+
+    <record model="ir.ui.view" id="ddrsemployee_list">
+      <field name="name">ddrs employee list</field>
+      <field name="model">ddrs.ddrsemployee</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="designation"/>
+          <field name="honorarium"/>
+        </tree>
+      </field>
+    </record>
+
+     <record model="ir.ui.view" id="ddrsemployee_form">
+      <field name="name">ddrs employee form</field>
+      <field name="model">ddrs.ddrsemployee</field>
+      <field name="arch" type="xml">
+        <form>
+         <group>
+          <field name="name"/>
+          <field name="designation"/>
+          <field name="honorarium"/>
+       </group>  
+      </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="ddrsemployee_action_window">
+      <field name="name">DDRS Project Employees</field>
+      <field name="res_model">ddrs.ddrsemployee</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+  <record model="ir.ui.view" id="ddrsmonthly_list">
+      <field name="name">ddrs monthly list</field>
+      <field name="model">ddrs.monthly</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="honorariums"/>
+          <field name="month"/>
+        </tree>
+      </field>
+    </record>
+
+     <record model="ir.ui.view" id="ddrsmonthly_form">
+      <field name="name">ddrs employee form</field>
+      <field name="model">ddrs.monthly</field>
+      <field name="arch" type="xml">
+        <form>
+         <group>
+          <field name="name"/>
+          <field name="honorariums"/>
+          <field name="month"/>
+
+       </group>  
+      </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="ddrsmonthly_action_window">
+      <field name="name">DDRS Monthly Records</field>
+      <field name="res_model">ddrs.monthly</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+ <record model="ir.ui.view" id="ddrs_salaries_list">
+            <field name="name">ddrs salaries list</field>
+            <field name="model">ddrs.ddrssalaries</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="month"/>
+                    <field name="entries" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ddrs_salaries_form">
+            <field name="name">ddrs salaries form</field>
+            <field name="model">ddrs.ddrssalaries</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+
+                        <field name="month"/>
+                        <field name="transferdate"/>
+                        <field name="salarydate"/>
+                        <field name="entries">
+                            <tree editable="bottom">
+                                <field name="sequences" widget="handle"/>
+                                <field name="name"/>
+                                <field name="honorariums"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <button name="getsalaries" string="Create Salaries" type="object"/>
+                    <button name="textreport" string="Create Bank Upload File" type="object"/>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="ddrs_entries_action_window">
+            <field name="name">DDRS Monthly Payments</field>
+            <field name="res_model">ddrs.ddrssalaries</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+
+    <menuitem name="DDRS" id="main_menu" parent="sanker.main_menu"/>
+    <menuitem name="DDRS Accounts" id="menu_1" parent="ddrs.main_menu" action="ddrs_main_action_window"/>
+    <menuitem name="DDRS Employees" id="menu_2" parent="ddrs.main_menu" action="ddrsemployee_action_window"/>
+    <menuitem name="DDRS Salary Records" id="menu_3" parent="ddrs.main_menu" action="ddrsmonthly_action_window"/>
+    <menuitem name="DDRS Salary Entries" id="menu_4" parent="ddrs.main_menu" action="ddrs_entries_action_window"/>
+
+
+    </data>
+</odoo>

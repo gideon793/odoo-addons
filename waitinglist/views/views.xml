@@ -1,0 +1,207 @@
+<odoo>
+  <data>
+ 
+    <record model="ir.ui.view" id="waitinglist_megform">
+      <field name="name">waitinglist form</field>
+      <field name="model">waitinglist.waitinglist</field>
+      <field name="arch" type="xml">
+        <form>
+            <group>
+          <field name="name"/>
+           <field name="age"/>
+          <field name="registration"/>
+           <field name="phone"/>
+           <field name="address"/>
+         <field name="dateadded"/>
+          <field name="providerlink"/>
+           <field name="admitted"/>
+
+          </group>
+          </form>
+      </field>
+        </record>
+    
+    
+      <record model="ir.ui.view" id="waitinglist_meglist">
+      <field name="name">waitinglist list</field>
+      <field name="model">waitinglist.waitinglist</field>
+      <field name="arch" type="xml">
+        <tree default_order="dateadded asc">
+          <field name="name"/>
+           <field name="age"/>
+         <field name="registration"/>
+           <field name="phone"/>
+            <field name="address"/>
+         <field name="dateadded"/>
+          <field name="providerlink"/>
+        </tree>
+    </field>
+        </record>
+        
+            
+    <record model="ir.ui.view" id="substance_megform">
+      <field name="name">substance form</field>
+      <field name="model">waitinglist.substance</field>
+      <field name="arch" type="xml">
+        <form>
+            <group>
+          <field name="name"/>
+          <field name="age"/>
+          <field name="registration"/>
+           <field name="phone"/>
+           <field name="address"/>
+          <field name="dateadded"/>
+          <field name="providerlink"/>
+           <field name="admitted"/>
+
+          </group>
+          </form>
+      </field>
+        </record>
+    
+    
+      <record model="ir.ui.view" id="substance_meglist">
+      <field name="name">substance list</field>
+      <field name="model">waitinglist.substance</field>
+      <field name="arch" type="xml">
+        <tree default_order="dateadded asc">
+          <field name="name"/>
+          <field name="age"/>
+          <field name="registration"/>
+           <field name="phone"/>
+           <field name="address"/>
+          <field name="dateadded"/>
+          <field name="providerlink"/>
+        </tree>
+    </field>
+        </record>
+
+  <record model="ir.ui.view" id="waitinglist_otherform">
+      <field name="name">subother form</field>
+      <field name="model">waitinglist.othersub</field>
+      <field name="arch" type="xml">
+        <form>
+            <group>
+          <field name="name"/>
+           <field name="age"/>
+          <field name="registration"/>
+           <field name="phone"/>
+           <field name="address"/>
+         <field name="dateadded"/>
+          <field name="providerlink"/>
+           <field name="admitted"/>
+
+          </group>
+          </form>
+      </field>
+        </record>
+    
+    
+      <record model="ir.ui.view" id="waitinglist_otherlist">
+      <field name="name">subother list</field>
+      <field name="model">waitinglist.othersub</field>
+      <field name="arch" type="xml">
+        <tree default_order="dateadded asc">
+          <field name="name"/>
+         <field name="age"/>
+         <field name="registration"/>
+           <field name="phone"/>
+            <field name="address"/>
+         <field name="dateadded"/>
+          <field name="providerlink"/>
+        </tree>
+    </field>
+        </record>
+        
+            
+    <record model="ir.ui.view" id="substance_otherform">
+      <field name="name">outside substance form</field>
+      <field name="model">waitinglist.otherwait</field>
+      <field name="arch" type="xml">
+        <form>
+            <group>
+          <field name="name"/>
+          <field name="age"/>
+          <field name="registration"/>
+           <field name="phone"/>
+           <field name="address"/>
+          <field name="dateadded"/>
+          <field name="providerlink"/>
+           <field name="admitted"/>
+
+          </group>
+          </form>
+      </field>
+        </record>
+    
+    
+      <record model="ir.ui.view" id="substance_otherlist">
+      <field name="name">other substance list</field>
+      <field name="model">waitinglist.otherwait</field>
+      <field name="arch" type="xml">
+        <tree default_order="dateadded asc">
+          <field name="name"/>
+          <field name="age" />
+          <field name="registration"/>
+           <field name="phone"/>
+           <field name="address"/>
+          <field name="dateadded"/>
+          <field name="providerlink"/>
+        </tree>
+    </field>
+        </record>
+
+        
+        
+        
+  <record model="ir.actions.act_window" id="substance_action_window">
+      <field name="name">Substance Use Waiting List - Meghalaya</field>
+      <field name="res_model">waitinglist.substance</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('admitted', '=', 0)]</field>
+    </record>    
+
+        
+    
+    
+
+    
+    
+    
+    
+  <record model="ir.actions.act_window" id="waitinglist_action_window">
+      <field name="name">ADS Waiting List - Meghalaya</field>
+      <field name="res_model">waitinglist.waitinglist</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('admitted', '=', 0)]</field>
+    </record>
+    
+    
+    
+    
+    
+        
+  <record model="ir.actions.act_window" id="othersubstance_action_window">
+      <field name="name">Substance Use Waiting List - Other States</field>
+      <field name="res_model">waitinglist.othersub</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('admitted', '=', 0)]</field>
+    </record>    
+
+
+    <record model="ir.actions.act_window" id="otherwaitinglist_action_window">
+      <field name="name">ADS Waiting List - Other States</field>
+      <field name="res_model">waitinglist.otherwait</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('admitted', '=', 0)]</field>
+    </record>
+
+    <menuitem name="Waiting List" id="waitinglist.top" parent="sanker.main_menu"/>
+    <menuitem name="ADS - Meghalaya" id="waitinglist.menu" parent="waitinglist.top" action="waitinglist_action_window"/>
+        <menuitem name="Substance Use - Meghalaya" id="substance_menu" parent="waitinglist.top" action="substance_action_window"/>
+            <menuitem name="ADS - Other States" id="otherwaitinglist_menu" parent="waitinglist.top" action="otherwaitinglist_action_window"/>
+        <menuitem name="Substance Use - Other States" id="othersubstance_menu" parent="waitinglist.top" action="othersubstance_action_window"/>
+
+
+  </data>
+</odoo>

@@ -1,0 +1,102 @@
+<odoo>
+    <data>
+        <report id="statistics_report"
+            model="covid.statistics"
+            string="OPD Statistics"
+            report_type="qweb-pdf"
+            name="covid.statistics_view"
+            menu="True"/>
+
+<template id="statistics_view">
+     <t t-call="web.html_container">
+        <t t-call="web.external_layout">
+            <div class="page" style="font-size:16px">
+                <h3  class="text-center">OPD Statistics Report</h3>
+                <div class="text-center">From:<t t-esc="startdate" t-options="{'widget': 'date'}"/></div>
+                <div class="text-center">To:<t t-esc="enddate" t-options="{'widget': 'date'}"/></div>
+                <div class="container">
+                <table style="width: 100%; text-alignment: center">
+                   
+                    <thead style="border-top: 1px solid grey;border-bottom: 1px solid grey">
+                        <th class="text-center" style="width: 5%; background:#d9d9d9">Serial No.</th>
+                        <th class="text-center" style="width: 25%;" >Age</th>
+                        <th class="text-center" style="width: 25%; background:#d9d9d9">Male</th>
+                        <th class="text-center" style="width: 25%; ">Female</th>
+                        <th class="text-center" style="width: 25%; background:#d9d9d9">Total</th>
+                    </thead>
+                    <tbody>
+                         <t t-set="index" t-value="0"/>
+                         <tr class="text-center">
+                          <td> <t t-set="index" t-value="index +1"/><span t-esc="index"/></td>
+                          <td>Less than 18 years old</td>
+                           <td><span t-esc="male_child" /></td>
+                           <td><span t-esc="female_child" /> </td>
+                           <td><span t-esc="child_total" /></td>
+                         </tr>
+<tr class="text-center">
+                          <td> <t t-set="index" t-value="index +1"/><span t-esc="index"/></td>
+                          <td>18 to 60 years old</td>
+                           <td><span t-esc="male_adult" /> </td>
+                           <td><span t-esc="female_adult" /> </td>
+                           <td><span t-esc="adult_total" /></td>
+                         </tr>
+<tr class="text-center">
+                          <td> <t t-set="index" t-value="index +1"/><span t-esc="index"/></td>
+                          <td>Older than 60 years</td>
+                           <td><span t-esc="male_elderly" /> </td>
+                           <td><span t-esc="female_elderly" /></td>
+                           <td><span t-esc="elderly_total" /></td>
+                         </tr>
+<tr class="text-center" style="font-weight: bold">
+                          <td> <t t-set="index" t-value="index +1"/><span t-esc="index"/></td>
+                          <td>Total</td>
+                           <td><span t-esc="male_total" /> </td>
+                           <td><span t-esc="female_total" /></td>
+                           <td><span t-esc="total" /></td>
+                         </tr>
+                    </tbody>
+                </table>
+</div>
+
+</div>
+
+</t>
+        </t>
+    </template>
+
+
+
+<record model="ir.ui.view" id="statistics_form_view">
+<field name="name">statistics form</field>
+<field name="model">covid.statistics</field>
+<field name="arch" type="xml">
+                <form>
+                    <group string="Select dates">
+                        <field name="startdateentry" string="Starting Date for report"/>          
+                        <field name="enddateentry" string="End Date"/>          
+                    </group>
+<footer>
+                    <button name="get_report" string="Get Report" type="object" class="oe_highlight"/>
+                    <button string="Cancel" special="cancel"/>
+</footer>
+                </form>
+            </field>
+        </record>
+
+
+ <act_window id="statistics_menu_action"
+                name="OPD Statistics Report"
+                res_model="covid.statistics"
+                view_mode="form"
+                target="new"/>
+
+<menuitem id="statistics_menu" parent="opregistration.opregistration_menu" name="OPD Statistics report" action="statistics_menu_action"/>
+
+
+
+
+
+
+
+     </data>
+</odoo>

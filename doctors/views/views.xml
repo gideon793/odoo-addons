@@ -1,0 +1,43 @@
+<odoo>
+ <data>
+
+ <record model="ir.ui.view" id="doctors_form">
+  <field name="name">Doctors</field>
+  <field name="model">doctors.doctors</field>
+  <field name="arch" type="xml">
+   <form string="Providers">
+    <group>    
+     <field name="name"/> 
+     <field name="department"/> 
+     <field name="oldfee"/> 
+     <field name="newfee"/> 
+     <field name="qualification"/> 
+     <field name="medreg"/> 
+    </group>
+   </form>  
+  </field>
+ </record>
+
+ <record model="ir.ui.view" id="doctors_list">
+  <field name="name">Doctors List</field>
+  <field name="model">doctors.doctors</field>
+  <field name="arch" type="xml">
+   <tree string="Providers List">
+    <field name="name"/>
+    <field name="department"/>
+   </tree>
+  </field>
+ </record>
+
+ <record model="ir.actions.act_window" id="doctors.action_window">
+  <field name="name">Healthcare Providers</field>
+  <field name="res_model">doctors.doctors</field>
+  <field name="view_mode">tree,form</field>
+ </record>
+  
+<menuitem name="Settings" parent="sanker.main_menu" id="doctors_menu"/>
+<menuitem id="doctors_menu_menu" parent="doctors_menu" name="Healthcare Providers" action="doctors.action_window"/>
+
+
+ </data>
+</odoo>

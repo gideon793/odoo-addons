@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ddrs_ddrs,ddrs.ddrs,model_ddrs_ddrs,ddrs.ddrs_group,1,1,1,1
+access_ddrs_ddrsemployee,ddrs.ddrsemployee,model_ddrs_ddrsemployee,sankeremployee.sankeremployee_group,1,1,1,1
+access_ddrs_monthly,ddrs.monthly,model_ddrs_monthly,sankeremployee.sankeremployee_group,1,1,1,1
+access_ddrs_ddrssalaries,ddrs.ddrssalaries,model_ddrs_ddrssalaries,sankeremployee.sankeremployee_group,1,1,1,1

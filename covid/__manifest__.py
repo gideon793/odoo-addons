@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "dateofbirth",
+    'name': "covid",
 
     'summary': """
-        Add date of birth to Contacts""",
+        Covid-19 Research Project""",
 
     'description': """
-        Add date of birth to Contacts
+        Covid-19 Research Project
     """,
 
-    'author': "My Company",
-    'website': "http://www.yourcompany.com",
+    'author': "Gideon Rynjah",
+    'website': "https://www.san-ker.org",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/12.0/odoo/addons/base/data/ir_module_category_data.xml
@@ -19,13 +19,15 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base','diagnosis','dateofbirth'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
+        'views/ipdtemplates.xml',
+
     ],
     # only loaded in demonstration mode
     'demo': [

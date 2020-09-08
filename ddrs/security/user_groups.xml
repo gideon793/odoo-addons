@@ -1,0 +1,10 @@
+<odoo>
+  <data>
+
+
+<record id="ddrs_group" model="res.groups">
+        <field name="name">DDRS management</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+  </data>
+</odoo>
