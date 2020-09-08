@@ -1,0 +1,59 @@
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="schemes.list">
+      <field name="name">schemes list</field>
+      <field name="model">schemes.schemes</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="designation"/>
+        </tree>
+      </field>
+    </record>
+
+ <record model="ir.ui.view" id="schemes.form">
+      <field name="name">schemes form</field>
+      <field name="model">schemes.schemes</field>
+      <field name="arch" type="xml">
+        <form>
+         <group colspan ="2" col="3">
+          <field name="name"/>
+          <field name="designation"/>
+          <field name="father" />
+          <field name="dob" />
+          <field name="gender" />
+          <field name="designation" />
+          <field name="address" />
+          <field name="education" />
+          <field name="appointdate" />
+          <field name="employment" />
+          <field name="honorarium" />
+          <field name="paid" />
+          <field name="proposed" />
+          <field name="category" />
+          <field name="aadhar" />
+          <field name="mobile" />
+          <field name="email" />
+          <field name="bankacc" />
+          <field name="bankifsc" />
+          <field name="bankbranch" />
+          <field name="aadharseeded" />
+        </group> 
+       </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="schemes.action_window">
+      <field name="name">Schemes Management</field>
+      <field name="res_model">schemes.schemes</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+
+
+    <menuitem name="Schemes" id="schemes.menu_1" parent=""/>
+    <menuitem name="Employees Entry" id="schemes_employee" parent="schemes.menu_1"
+              action="schemes.action_window"/>
+  </data>
+</odoo>

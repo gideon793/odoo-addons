@@ -1,0 +1,200 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="sankeremployee_contract_list">
+            <field name="name">sankeremployee contract list</field>
+            <field name="model">sankeremployee.contractemployee</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="employmentno"/>
+                    <field name="age"/>
+                    <field name="gender"/>
+                    <field name="designation"/>
+                    <field name="acctno"/>
+                    <field name="branch"/>
+                    <field name="grossdue"/>
+                    <field name="annualpay" readonly="1"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="sankeremployee_contractform">
+            <field name="name">sankeremployee contract form</field>
+            <field name="model">sankeremployee.contractemployee</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="name"/>
+                        <field name="employmentno"/>
+                        <field name="age"/>
+                        <field name="gender"/>
+                        <field name="designation"/>
+                        <field name="acctno"/>
+                        <field name="branch"/>
+                        <field name="grossdue"/>
+                        <field name="annualpay" readonly="1"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="sankercontract_action_window">
+            <field name="name">Contractual Employees</field>
+            <field name="res_model">sankeremployee.contractemployee</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        
+        <record model="ir.ui.view" id="contract_monthly_list">
+            <field name="name">monthly contractlist</field>
+            <field name="model">sankeremployee.contractmonthly</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="sequences" widget="handle"/>
+                    <field name="employee"/>
+                    <field name="designation"/>
+                    <field name="days"/>
+                    <field name="leave"/>
+                    <field name="worked"/>
+                    <field name="grossdue"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="contractmonthly_form">
+            <field name="name">monthly contract form</field>
+            <field name="model">sankeremployee.contractmonthly</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        
+                        <field name="employee"/>
+                        <field name="designation"/>
+                        <field name="days"/>
+                        <field name="leave"/>
+                        <field name="worked"/>
+                        <field name="grossdue"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="contractemployee_monthly_action_window">
+            <field name="name">Monthly Payments</field>
+            <field name="res_model">sankeremployee.contractmonthly</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        
+        <record model="ir.ui.view" id="contractsalaries_list">
+            <field name="name">contract salaries list</field>
+            <field name="model">sankeremployee.contractsalaries</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="month"/>
+                    <field name="entries" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="contractsalaries_form">
+            <field name="name">contract salaries form</field>
+            <field name="model">sankeremployee.contractsalaries</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="month"/>
+                        <field name="days"/>
+                        <field name="transferdate"/>
+                        <field name="workingday" />
+                        <field name="salarydate" />
+                        <field name="entries" context="{'default_days': days,'default_worked': days}">
+                            <tree editable="bottom">
+                                <field name="sequences" widget="handle"/>
+                                <field name="employee"/>
+                                <field name="particulars"/>
+                                <field name="days"/>
+                                <field name="leave"/>
+                                <field name="worked"/>
+                                <field name="grossdue" sum="Gross Due"/>
+                                <field name="receipt_no"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <button name="getsalaries" string="Create Salaries" type="object" />
+                    <button name="%(contract_print)d" string="Print Monthly Salary Sheet" type="action"/>
+                    <button name="textreport" string="Create Bank Upload File" type="object" />
+                    
+                </form>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="contractemployee_entries_action_window">
+            <field name="name">Contractual Monthly Payments</field>
+            <field name="res_model">sankeremployee.contractsalaries</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        <record id="seq_student_application1" model="ir.sequence">
+            <field name="name">Receipt Number</field>
+            <field name="code">salary_receipt</field>
+            <field name="prefix"></field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+            <field name="number_next">295</field>
+            <field name="number_increment">1</field>
+            
+            
+        </record>
+        
+        <record model="ir.ui.view" id="contract_monthly_list">
+        <field name="name">contract monthly list</field>
+        <field name="model">sankeremployee.contractmonthly</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="employee"/>
+                <field name="particulars"/>
+                <field name="month"/>
+                <field name="grossdue"/>
+                <field name="receipt_no"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record model="ir.ui.view" id="contract_monthly_form">
+        <field name="name">contract monthly form</field>
+        <field name="model">sankeremployee.contractmonthly</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="month"/>
+                    <field name="employee"/>
+                    <field name="particulars"/>
+                    <field name="days"/>
+                    <field name="leave"/>
+                    <field name="worked"/>
+                    <field name="grossdue"/>
+                    <field name="receipt_no"/>
+                </group>
+            </form>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="sankeremployee_contractmonthly_action_window">
+        <field name="name">Contract Salary Records</field>
+        <field name="res_model">sankeremployee.contractmonthly</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'group_by':'employee'}</field>
+    </record>
+    
+    
+    
+    
+    
+    
+    
+    <menuitem name="Contractual Employee management" id="sankeremployee.menu_4" parent="sankeremployee.menu_1" action="sankercontract_action_window"/>
+    <menuitem name="Contractual Monthly Salary" id="sankeremployee.menu_5" parent="sankeremployee.menu_1" action="contractemployee_entries_action_window"/>
+    <menuitem name="Salary Records - Contractual" id="sankeremployee.menu_7" parent="sankeremployee.menu_1" action="sankeremployee_contractmonthly_action_window"/>
+    
+</data>
+</odoo>

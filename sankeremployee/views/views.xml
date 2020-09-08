@@ -1,0 +1,86 @@
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="sankeremployee.list">
+      <field name="name">sankeremployee list</field>
+      <field name="model">sankeremployee.sankeremployee</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="employee"/>
+          <field name="employmentno"/>
+          <field name="age"/>
+          <field name="gender"/>
+          <field name="designation"/>
+           <field name="joindate"/>
+          <field name="regular"/>
+          <field name="contract"/>
+          <field name="ddrs"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="sankeremployee.form">
+      <field name="name">sankeremployee form</field>
+      <field name="model">sankeremployee.sankeremployee</field>
+      <field name="arch" type="xml">
+        <form>
+      <group>
+          <group string="Demographic Details" colspan="1" col="3">
+           <field name="name"/>
+          <field name="employee"/>
+           <field name="dob"/>
+           <field name="age"/>
+           <field name="gender"/>
+           <field name="marital_status"/>
+           <field name="address"/>
+          </group>
+          <group string="Employment Details" colspan="1" col="3">
+           <field name="designation"/>
+           <field name="employmentno"/>
+           <field name="joindate"/>
+           <field name="regular"/>
+           <field name="contract"/>
+           <field name="ddrs"/>
+          </group>
+          <group string="KYC and Bank Details" colspan="1" col="3">
+           <field name="acctno"/>
+           <field name="branch"/>
+           <field name="pan"/>
+           <field name="epic"/>
+           <field name="aadhar"/>
+           <field name="driving"/>
+           <field name="bloodgroup"/>
+           <field name="basicpay" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_group"/>
+           <field name="allowance" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_group"/>
+           <field name="special" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_user"/>
+          </group>
+          <group string="EPF and ESIC Details" colspan="1" col="3">
+            <field name="isepf"/>
+           <field name="epfno"/>
+           <field name="epfname"/>
+           <field name="epfwage" readonly="1" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_group"/>
+           <field name="isesic"/>
+           <field name="esicname"/>
+           <field name="esicno"/>
+          </group>
+
+          <group string="Additional Information" colspan="2">
+           <field name="remarks" widget="html"/>
+          </group>
+       </group>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="sankeremployee.action_window">
+      <field name="name">Employees</field>
+      <field name="res_model">sankeremployee.sankeremployee</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Employees" id="sankeremployee.menu_1" parent="sanker.main_menu"/>
+    <menuitem name="Regular Employee management" id="sankeremployee.menu_6" parent="sankeremployee.menu_1" action="sankeremployee.action_window"/>
+
+
+  </data>
+</odoo>

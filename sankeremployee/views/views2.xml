@@ -1,0 +1,74 @@
+<odoo>
+    <data>
+
+
+        <record model="ir.ui.view" id="salaries_list">
+            <field name="name">salaries list</field>
+            <field name="model">sankeremployee.salaries</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="month"/>
+                    <field name="entries" invisible="1"/>
+                    <field name="workingday" invisible="1"/>
+
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="salaries_form">
+            <field name="name">salaries form</field>
+            <field name="model">sankeremployee.salaries</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+
+                        <field name="month"/>
+                        <field name="days"/>
+                        <field name="transferdate"/>
+                        <field name="workingday"/>
+                        <field name="salarydate"/>
+                        <field name="entries" context="{'default_days': days,'default_worked': days}">
+                            <tree editable="bottom">
+                                <field name="sequences" widget="handle"/>
+                                <field name="employee"/>
+                                <field name="designation"/>
+                                <field name="days"/>
+                                <field name="leave"/>
+                                <field name="worked"/>
+                                <field name="basic" sum="Basic"/>
+                                <field name="allowance" sum="Allowance"/>
+                                <field name="special" sum="Special Allowance"/>
+                                <field name="grossdue" sum="Gross Due"/>
+                                <field name="epfc" sum="EPF"/>
+                                <field name="professionaltax" sum="Professional Tax"/>
+                                <field name="netpayable" sum="Net Payable"/>
+                                <field name="ddrspaid" sum="Paid from DDRS" />
+                                <field name="actualdue" sum="Acutal Due"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <button name="getsalaries" string="Create Salaries" type="object"/>
+                    <button name="%(monthly_print)d" string="Print Monthly Salary Sheet" type="action"/>
+                    <button name="textreport" string="Create Bank Upload File" type="object"/>
+                    <button name="epfreport" string="Create EPF Upload File" type="object"/>
+                    <button name="esicreport" string="Create ESIC Upload File" type="object"/>
+
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="sankeremployee_entries_action_window">
+            <field name="name">Monthly Payments</field>
+            <field name="res_model">sankeremployee.salaries</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <menuitem name="Monthly Salary" id="sankeremployee.menu_3" parent="sankeremployee.menu_1"
+                  action="sankeremployee_entries_action_window"/>
+        <menuitem name="Salary Records - Regular Employees" id="sankeremployee.menu_2" parent="sankeremployee.menu_1"
+                  action="sankeremployee_monthly_action_window"/>
+
+
+    </data>
+</odoo>

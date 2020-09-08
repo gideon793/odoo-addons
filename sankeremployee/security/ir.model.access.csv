@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sankeremployee,sanker.employee.management,model_sankeremployee_sankeremployee,sankeremployee.sankeremployee_group,1,1,1,1
+access_sankeremployee_user,sanker.employee.management.user,model_sankeremployee_sankeremployee,sankeremployee.employee_group,1,1,1,1
+access_monthly,sanker.employee.monthly,model_sankeremployee_monthly,sankeremployee.sankeremployee_group,1,1,1,1
+access_salaries,sanker.employee.salaries,model_sankeremployee_salaries,sankeremployee.sankeremployee_group,1,1,1,1
+access_contract,sanker.employee.contract,model_sankeremployee_contractemployee,sankeremployee.sankeremployee_group,1,1,1,1
+access_contractmonthly,sanker.employee.contractmonthly,model_sankeremployee_contractmonthly,sankeremployee.sankeremployee_group,1,1,1,1
+access_contractsalaries,sanker.employee.contractsalaries,model_sankeremployee_contractsalaries,sankeremployee.sankeremployee_group,1,1,1,1

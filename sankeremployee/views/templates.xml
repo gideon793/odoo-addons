@@ -1,0 +1,270 @@
+<odoo>
+    <data>
+        
+        <record id="paperformat_employee" model="report.paperformat">
+            <field name="name">SAN-KER Employee Paper</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">360</field>
+            <field name="page_width">220</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">30</field>
+            <field name="margin_bottom">5</field>
+            <field name="margin_left">22</field>
+            <field name="margin_right">3</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">30</field>
+            <field name="dpi">80</field>
+        </record>
+        
+        <record id="paperformat_contractemployee" model="report.paperformat">
+            <field name="name">SAN-KER Contract Employee Paper</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">360</field>
+            <field name="page_width">220</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">18</field>
+            <field name="margin_bottom">5</field>
+            <field name="margin_left">3</field>
+            <field name="margin_right">3</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">13</field>
+            <field name="dpi">80</field>
+        </record>
+        
+        
+        
+        
+        
+        <report id="monthly_print"
+                model="sankeremployee.salaries"
+                string="Monthly Salary"
+                report_type="qweb-pdf"
+                name="sankeremployee.monthlyreport"
+                menu="True"
+                paperformat="paperformat_employee"/>
+        
+        
+        
+        
+        
+        <template id="monthlyreport">
+            <t t-call="web.html_container">
+                <t t-call="web.basic_layout">
+                    <div class = "header">
+                        <h5  class="text-center">SAN-KER</h5>
+                        <div  class="text-center">Mawroh, Shillong</div>
+                        <div class= "text-right" style="padding-right:50px"> Date:<t t-esc="docs.salarydate" t-options="{'widget':'date'}"/></div>
+                        <div class= "text-center">Salary for <t t-esc="docs.month"/></div>
+
+                    </div>
+                    <div class="page">
+                        <t t-set="total_basic" t-value="0"/>
+                        <t t-set="total_allowance" t-value="0"/>
+                        <t t-set="total_grossdue" t-value="0"/>
+                        <t t-set="total_epfc" t-value="0"/>
+                        <t t-set="total_prof" t-value="0"/>
+                        <t t-set="total_deduction" t-value="0"/>
+                        <t t-set="total_net" t-value="0"/>
+                        
+                        
+                        <table style="width:95%">
+                            <thead style="border: 1px solid grey">
+                                <th class="text-center" style="width: 1%; border: 1px solid black">#</th>
+                                <th class="text-center" style="width: 10%; border: 1px solid black" >Name</th>
+                                <th class="text-center" style="width: 9%; border: 1px solid black">Designation</th>
+                                <th class="text-center" style="width: 5%; border: 1px solid black">No. of days worked during the month</th>
+                                <th class="text-center" style="width: 5%; border: 1px solid black">No. of days on leave during the month</th>
+                                <th class="text-center" style="width: 5%; border: 1px solid black" >No. of days for which salary is due</th>
+                                <th class="text-center" style="width: 10%; border: 1px solid black">Basic Pay</th>
+                                <th class="text-center" style="width: 10%; border: 1px solid black">Allowances</th>
+                                <th class="text-center" style="width: 10%; border: 1px solid black">Gross Amount Due</th>
+                                <th class="text-center" style="width: 5%; border: 1px solid black">EPFC for <t t-esc="docs.month" /></th>
+                                <th class="text-center" style="width: 5%; border: 1px solid black">Professional Tax</th>
+                                <th class="text-center" style="width: 5%; border: 1px solid black" >Total Deduction</th>
+                                <th class="text-center" style="width: 10%; border: 1px solid black">Net Amount Payable</th>
+                                <th class="text-center" style="width: 10%; border: 1px solid black">Signature</th>
+                                
+                            </thead>
+                            <tbody>
+                                
+                                <t t-foreach="docs.entries" t-as="entry">
+                                    <tr style="height: 110px;">
+                                        <td style="border: 1px solid black; vertical-align: middle; text-align: center"><span t-esc="entry_index +1"/></td>
+                                        <td style="border: 1px solid black; vertical-align: middle; text-align: center"><span t-esc="entry.employee.name"/></td>
+                                        <td style="border: 1px solid black; vertical-align: middle; text-align: center"><span t-esc="entry.designation"/></td>
+                                        <td style="border: 1px solid black; vertical-align: middle; text-align: center"><span t-esc="entry.days"/></td>
+                                        <td style="border: 1px solid black; vertical-align: middle; text-align: center"><span t-esc="entry.leave"/></td>
+                                        <td style="border: 1px solid black; vertical-align: middle; text-align: center"><span t-esc="entry.worked" /></td>
+                                        <td style="border: 1px solid black; vertical-align: middle; text-align: center"><span t-esc="entry.basic" t-options="{'widget':'monetary','display_currency':entry.currency_id}"/></td>
+                                        <td style="border: 1px solid black; vertical-align: middle; text-align: right">
+                                            <table>
+                                                <tr><td style="width:10%; vertical-align: middle; text-align: center"><span t-esc="entry.allowance" t-options="{'widget':'monetary','display_currency':entry.currency_id}"/></td></tr>
+                                                <tr><td style="vertical-align: middle; text-align: center"><t t-if="entry.special">Special Duty Allowance:<span t-esc="entry.special" t-options="{'widget':'monetary','display_currency':entry.currency_id}"/></t><t t-if="not entry.special"> <br/></t></td></tr>
+                                            </table>
+                                        </td>
+                                        <td style="border: 1px solid black; vertical-align: middle; text-align: center"><span t-esc="entry.grossdue" t-options="{'widget':'monetary','display_currency':entry.currency_id}"/></td>
+                                        <td style="border: 1px solid black; vertical-align: middle; text-align: center"><span t-esc="entry.epfc" t-options="{'widget':'monetary','display_currency':entry.currency_id}"/></td>
+                                        <td style="border: 1px solid black; vertical-align: middle; text-align: center"><span t-esc="entry.professionaltax" t-options="{'widget':'monetary','display_currency':entry.currency_id}"/></td>
+                                        <td style="border: 1px solid black; vertical-align: middle; text-align: center"><span t-esc="entry.deduction" t-options="{'widget':'monetary','display_currency':entry.currency_id}"/></td>
+                                        <td style="border: 1px solid black; vertical-align: middle; text-align: center"><span t-esc="entry.netpayable" t-options="{'widget':'monetary','display_currency':entry.currency_id}"/></td>
+                                        <td style="border: 1px solid black; vertical-align: middle; text-align: center"><span/></td>
+                                        
+                                    </tr>
+                                    
+                                    
+                                    <t t-set="total_basic" t-value="total_basic + entry.basic"/>
+                                    <t t-set="total_allowance" t-value="total_allowance + entry.allowance"/>
+                                    <t t-set="total_grossdue" t-value="total_grossdue + entry.grossdue"/>
+                                    <t t-set="total_epfc" t-value="total_epfc + entry.epfc"/>
+                                    <t t-set="total_prof" t-value="total_prof + entry.professionaltax"/>
+                                    <t t-set="total_deduction" t-value="total_deduction + entry.deduction"/>
+                                    <t t-set="total_net" t-value="total_net + entry.netpayable"/>
+                                </t>         
+                                
+                                <tr style="height: 110px;">
+                                    <td style="border: 1px solid black; vertical-align: middle; text-align: center"><span/></td>
+                                    <td style="border: 1px solid black; vertical-align: middle; text-align: center"><span/></td>
+                                    <td style="border: 1px solid black; vertical-align: middle; text-align: center"><span/></td>
+                                    <td style="border: 1px solid black; vertical-align: middle; text-align: center"><span/></td>
+                                    <td style="border: 1px solid black; vertical-align: middle; text-align: center"><span/></td>
+                                    <td style="border: 1px solid black; vertical-align: middle; text-align: center; font-weight: bold;"><span>Total</span></td>
+                                    <td style="border: 1px solid black; vertical-align: middle; text-align: center; font-weight: bold;"><span t-esc="total_basic" t-options="{'widget':'monetary','display_currency':docs.currency_id}"/></td>
+                                    <td style="border: 1px solid black; vertical-align: middle; text-align: right; font-weight: bold;"><span t-esc="total_allowance" t-options="{'widget':'monetary','display_currency':docs.currency_id}"/></td>
+                                    <td style="border: 1px solid black; vertical-align: middle; text-align: center; font-weight: bold;"><span t-esc="total_grossdue" t-options="{'widget':'monetary','display_currency':docs.currency_id}"/></td>
+                                    <td style="border: 1px solid black; vertical-align: middle; text-align: center; font-weight: bold;"><span t-esc="total_epfc" t-options="{'widget':'monetary','display_currency':docs.currency_id}"/></td>
+                                    <td style="border: 1px solid black; vertical-align: middle; text-align: center; font-weight: bold;"><span t-esc="total_prof" t-options="{'widget':'monetary','display_currency':docs.currency_id}"/></td>
+                                    <td style="border: 1px solid black; vertical-align: middle; text-align: center; font-weight: bold;"><span t-esc="total_deduction" t-options="{'widget':'monetary','display_currency':docs.currency_id}"/></td>
+                                    <td style="border: 1px solid black; vertical-align: middle; text-align: center; font-weight: bold;"><span t-esc="total_net" t-options="{'widget':'monetary','display_currency':docs.currency_id}"/></td>
+                                    <td style="border: 1px solid black; vertical-align: middle; text-align: center; font-weight: bold;"><span/></td>
+                                    
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="footer">
+                        <div class="text-center">
+                            <small>
+                                <span>Page</span>
+                                <span class="page" />
+                                of
+                                <span class="topage" />
+                            </small>
+                        </div>
+                    </div>
+                    
+                </t>
+            </t>
+        </template>
+        
+        
+        <report id="contract_print"
+                model="sankeremployee.contractsalaries"
+                string="Contractual Monthly Salary"
+                report_type="qweb-pdf"
+                name="sankeremployee.contractmonthlyreport"
+                menu="True"
+                paperformat="paperformat_contractemployee"/>
+        
+        <template id="contractmonthlyreport">
+            <t t-call="web.html_container">
+                <t t-call="web.basic_layout">
+                    <div class="page">
+                        <div class="header">
+                            <h5  class="text-center">SAN-KER</h5>
+                            <h5  class="text-center">Mawroh, Shillong - 793008</h5>
+                            
+                        </div>
+                        <div class="body">
+                            
+                            <table style="width: 100%;   border-collapse: collapse;">
+                                <thead style="width:100%">
+                                    <tr>
+					<td style="width:100%">
+                                         	<table style="width:100%">
+							<tr>
+ 								<td style="width:80%"></td>
+								<td class="text-right"><t t-esc="docs.salarydate" t-options="{'widget':'date'}" /></td>
+				  			 </tr>
+						</table>
+					</td>
+				</tr>
+				</thead>
+                                <tbody>
+                                    <t t-foreach="docs.entries" t-as="entry">
+                                        <tr style="width: 100%">
+                                            <td>
+                                                <table style=" width:100%">
+                                                    <tr style="width:100%; border-left:1px solid black; border-right:1px solid black; border-top:1px solid black">
+                                                        <td style="text-align:left; width:50%">Payment Slip No. <![CDATA[&nbsp;]]><![CDATA[&nbsp;]]><span t-esc="entry.receipt_no"/></td>
+                                                        <td style="text-align:right; width:50%"> </td>
+                                                    </tr>
+                                         
+                                                    <tr style ="border-left:1px solid black; border-right:1px solid black">
+                                                        <td>Paid to  <![CDATA[&nbsp;]]><![CDATA[&nbsp;]]><span t-esc="entry.employee.name" style="border-bottom: 1px solid black; "/></td>
+                                                        <td />
+                                                    </tr>
+                                                    <tr style ="border-left:1px solid black; border-right:1px solid black">
+                                                        <td style="text-align:left; width:80%; border:1px solid black;">Particulars</td>
+                                                        <td style="text-align:right; width:20%; border:1px solid black">Amount</td>
+                                                    </tr>
+                                                    <tr style="border-top:1px solid black; border-right:1px solid black; border-left:1px solid black">
+                                                        <td style="border-right:1px solid black"><br /></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr style ="border-left:1px solid black; border-right:1px solid black">
+                                                        <td style="text-align:left; width:80%; border-right:1px solid black"><t t-esc="entry.particulars"/></td>
+                                                        <td style="text-align:right; width:20%"><span t-esc="entry.grossdue" t-options="{'widget':'monetary','display_currency':entry.currency_id}"/></td>
+                                                    </tr>
+                                                    <tr style ="border-left:1px solid black; border-right:1px solid black">
+                                                        <td style="border-right:1px solid black"> <span t-esc="docs.month"/></td>
+                                                        <td></td>
+                                                    </tr>
+
+                                                    <tr style ="border-left:1px solid black; border-right:1px solid black">
+                                                        <td style="text-align:left; width:80%; border:1px solid black;">Total</td>
+                                                        <td style="text-align:right; width:20%; border:1px solid black"><span t-esc="entry.grossdue" t-options="{'widget':'monetary','display_currency':entry.currency_id}"/></td>
+                                                    </tr>
+                                                    <tr style ="border-left:1px solid black; border-right:1px solid black; border-bottom:1px solid black; text-align:center">
+                                                        <td><div class="text-uppercase">RUPEES<![CDATA[&nbsp;]]><span t-esc="entry.text_amount"/><![CDATA[&nbsp;]]><![CDATA[&nbsp;]]>Only</div></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    
+                                                    <tr style ="border-left:1px solid black; border-right:1px solid black">
+                                                        <td></td>
+                                                        <td><br /><br /><br /></td>
+                                                    </tr>
+                                                    <tr style ="border-left:1px solid black; border-right:1px solid black; border-bottom:1px solid black">
+                                                        <td></td>
+                                                        <td>Signature</td>
+                                                    </tr>    
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="footer">
+                        <div class="text-center">
+                            <small>
+                                <span>Page</span>
+                                <span class="page" />
+                                of
+                                <span class="topage" />
+                            </small>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+        
+        
+    </data>
+</odoo>

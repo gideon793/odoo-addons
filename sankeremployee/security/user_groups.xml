@@ -1,0 +1,20 @@
+<odoo>
+  <data>
+
+<record model="ir.module.category" id="sankeremployee_management">
+  <field name="name">SAN-KER employee management access</field>
+  <field name="description">User access level for SAN-KER employees</field>
+  <field name="sequence">10</field>
+</record>
+
+<record id="sankeremployee_group" model="res.groups">
+        <field name="name">SAN-KER Higher management</field>
+        <field name="implied_ids" eval="[(4, ref('sankeremployee.sankeremployee_group'))]"/>
+    </record>
+
+<record id="employee_group" model="res.groups">
+        <field name="name">SAN-KER employee management</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+  </data>
+</odoo>
