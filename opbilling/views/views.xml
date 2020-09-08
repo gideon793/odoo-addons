@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+<data>
+
+<record model="ir.ui.view" id="Op_Bill_tree_view">
+<field name="name">OP Bill Tree view</field>
+<field name="model">sale.order</field>
+<field name="inherit_id" ref="sale.view_order_tree"/>
+<field name="arch" type="xml">
+<tree>
+<field name="registration"/>
+</tree>
+</field>
+</record>
+
+<record model="ir.ui.view" id="0P_Bill_view">
+ <field name="name">OP Bill</field>
+ <field name="model">sale.order</field>
+ <field name="inherit_id" ref="sale.view_order_form" />
+ <field name="mode">primary</field>
+ <field name="arch" type="xml">
+  <field name="partner_id" position="after">
+   <field name="registration"/>
+   <field name="isop"/>
+   <field name="consultfee"/>
+  </field>
+ </field>
+</record>
+
+
+
+
+    
+<record id="opbill_menu_action" model="ir.actions.act_window">
+<field name="name">OP Bill</field>
+<field name="res_model">sale.order</field>
+<field name="view_type">form</field>
+ <field name="view_ids" eval="[(5, 0), 
+        (0, 0, {'view_mode': 'tree'}), 
+        (0, 0, {'view_mode': 'form', 'view_id': ref('0P_Bill_view')})]"/>
+</record>
+
+<record id="opinvoice_menu_action" model="ir.actions.act_window">
+<field name="name">OP Invoice</field>
+<field name="res_model">account.invoice</field>
+<field name="view_type">form</field>
+<field name="view_mode">tree,form</field>
+<field name="domain">[]</field>
+</record>
+
+
+
+
+<menuitem id="opbill_menu" parent="sanker.main_menu" name="OP Pharmacy"/>
+<menuitem id="main_opbill_menu" parent="opbill_menu" name="Pharmacy Billing" action="opbill_menu_action"/>
+<menuitem id="main_opinvoice_menu" parent="opbill_menu" name="Pharmacy Invoices" action="opinvoice_menu_action"/>
+
+
+
+</data>
+</odoo>

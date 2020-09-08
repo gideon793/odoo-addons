@@ -1,0 +1,19 @@
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="sanker_invoice_form">
+ <field name="name">Invoices</field>
+ <field name="model">account.invoice</field>
+ <field name="inherit_id" ref="account.invoice_form"/>
+ <field name="mode">primary</field>
+ <field name="arch" type="xml">
+     <field name="partner_id" position="after">
+       <field name="isip"/>
+       <field name="medicinebill"/>
+     </field>
+</field>
+</record>
+  
+
+
+</data>
+</odoo>

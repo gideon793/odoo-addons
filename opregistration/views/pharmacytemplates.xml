@@ -1,0 +1,135 @@
+<odoo>
+    <data>
+       <report id="pharmacyregister_report"
+            model="opregistration.pharmacydaily"
+            string="Pharmacy Daily Register"
+            report_type="qweb-pdf"
+            name="opregistration.pharmacyregister"
+            menu="True"/>   
+
+ <template id="pharmacyregister">
+     <t t-call="web.html_container">
+        <t t-call="web.external_layout">
+            <div class="page" style="font-size:16px">
+                <h4  class="text-center">Pharmacy Daily Register</h4>
+                <div class="text-center">Date:<t t-esc="dateselect" t-options="{'widget': 'date'}"/></div>
+                  <t t-set="total" t-value="0"/>
+                  <t t-set="patientno" t-value="0"/>
+                <div class="container">
+                <table style="width: 100%">
+                    
+
+                    <thead style="border-top: 1px solid grey;border-bottom: 1px solid grey">
+                       <th class="text-center" style="width: 2%; background:#d9d9d9">#</th>
+                        <th class="text-center" style="width: 15%;" >Name</th>
+                        <th class="text-center" style="width: 5%; background:#d9d9d9">Reg</th>
+                        <th class="text-center" style="width: 73%; ">Order</th>
+                        <th class="text-center" style="width: 5%; background:#d9d9d9">Total</th>
+
+                    </thead>
+                    <tbody>
+                        <t t-foreach="docs" t-as="doc">
+                            <tr style="border-bottom: 1px solid grey;">
+                               <td class="text-center" style="background:#d9d9d9">
+                                    <span t-esc="doc_index +1"/>
+                                       <t t-set="patientno" t-value="patientno + 1"/>
+                                </td>
+
+                                <td class="text-center" style="">
+                                    <span t-esc="doc['name']"/>
+
+                                </td>
+                                <td class="text-center" style="background:#d9d9d9">
+                                    <span t-esc="doc['registration']"/>
+                                </td>
+                                 <td>
+                                  <table>
+                       <thead style="border-top: 1px solid grey;border-bottom: 1px solid grey">
+                       <th class="text-center" style="width: 2%;">#</th>
+                        <th class="text-center" style="width: 70%;background:#d9d9d9" >Product</th>
+                        <th class="text-center" style="width: 10%; ">Quantity</th>
+                        <th class="text-center" style="width: 18%; background:#d9d9d9">Subtotal</th>
+                                   </thead>
+
+                                  <t t-foreach="doc['lines']" t-as="line">
+                                  <tr style="border-bottom: 1px solid grey;">
+                                 <td class="text-center" style="">
+                                    <span t-esc="line_index +1"/>
+                                </td>
+                                  <td class="text-center" style="background:#d9d9d9">
+                                  <span t-esc="line['product_id'].display_name"/>
+                                </td>
+                                  <td class="text-center">
+                                    <span t-esc="line['qty']"/>
+                                </td>
+                                 <td class="text-center" style="background:#d9d9d9">
+                                    <span t-esc="'%.2f'% line['price_subtotal_incl']"/>
+                                </td>
+                                    </tr>
+                                   </t>
+                                 
+                                </table>
+                                </td>
+                                <td class="text-center" style="">
+                                    <span t-esc="'%.2f'% doc['total']"/>
+                                       <t t-set="total" t-value="total+doc['total']"/>
+                                </td>                                   
+
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+     <br /> <br />
+           <div class="container">
+            <div class="row">
+             <div class="col-6"> Total Number of Patients:</div>
+              <div class="col-4"><span t-esc="patientno" /></div>
+            </div> 
+
+   <div class="row">
+             <div class="col-6"> Total Billed for <span t-esc="dateselect" t-options="{'widget': 'date'}"/>:</div>
+              <div class="col-4">Rs. <span t-esc="'%.2f'% total" /></div>
+            </div> 
+
+             </div>
+            </div>
+           
+</t>
+        </t>
+    </template>
+
+
+<record model="ir.ui.view" id="pharmacyregister_form_view">
+<field name="name">pharmacyregister_form</field>
+<field name="model">opregistration.pharmacyregister</field>
+<field name="arch" type="xml">
+                <form string="Select date">
+                    <group>
+                        <field name="datetest" string="Date for report"/>          
+                        <field name="dateselect" string="Date from" invisible="1"/>
+                        <field name="dateend" string="Date to" invisible="1"/>                                  
+                    </group>
+<footer>
+                    <button name="get_report" string="Get Report" type="object" class="oe_highlight"/>
+                    <button string="Cancel" special="cancel"/>
+</footer>
+                </form>
+            </field>
+        </record>
+
+
+ <act_window id="pharmacyregister_menu_action"
+                name="Pharmacy Daily Register"
+                res_model="opregistration.pharmacyregister"
+                view_mode="form"
+                target="new"/>
+
+<menuitem id="pharmacyregister_opregistration_menu" parent="reports_menu" name="Pharmacy Daily Register" action="pharmacyregister_menu_action"/>
+
+
+
+
+
+ </data>
+</odoo>

@@ -1,0 +1,42 @@
+<odoo>
+    <data>
+       <report id="pharmacyexcel"
+            model="opregistration.pharmacyexcel"
+            string="Pharmacy Daily Report excel"
+            report_type="xlsx"
+            name="opregistration.pharmacyexcel"
+            attachment_use="False"
+/>
+
+
+<record model="ir.ui.view" id="pharmacyexcel_form_view">
+<field name="name">pharmacyexcel_form</field>
+<field name="model">opregistration.pharmacyexcel</field>
+<field name="arch" type="xml">
+                <form string="Select date">
+                    <group>
+                        <field name="datetest" string="Date for report"/>
+                        <field name="dateselect" string="Date from" invisible="1"/>
+                        <field name="dateend" string="Date to" invisible="1"/>
+                    </group>
+                    <footer>
+                    <button name="get_excel_report" string="Get Report" type="object" class="oe_highlight"/>
+                    <button string="Cancel" special="cancel"/>
+</footer>
+                </form>
+            </field>
+        </record>
+
+
+ <act_window id="pharmacyexcel_menu_action"
+                name="Pharmacy Daily report - excel"
+                res_model="opregistration.pharmacyexcel"
+                view_mode="form"
+                target="new"/>
+
+<menuitem id="pharmacyexcel_opregistration_menu" parent="reports_menu" name="Pharmacy Daily report - excel" action="pharmacyexcel_menu_action"/>
+<menuitem id="reports_menu" parent="sanker.main_menu" name="Pharmacy Reports"/>
+
+
+ </data>
+</odoo>

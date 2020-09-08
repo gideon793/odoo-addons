@@ -1,0 +1,6 @@
+ @api.onchange('newrecord')
+    def create(self):
+        for record in self:
+            r=[]
+            r.append((0,0,{'partner_id':self.partner_id}))
+            self.admlink = r

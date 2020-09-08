@@ -1,0 +1,13 @@
+<odoo>
+<data>
+<report
+    id="op_bill"
+    model="sale.order"
+    string="OP Bill"
+    report_type="qweb-pdf"
+    name="op.bill"
+    file="op.bill"
+    attachment_use="False"
+/>
+</data>
+</odoo>

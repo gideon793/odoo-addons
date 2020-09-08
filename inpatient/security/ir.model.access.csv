@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_inpatient_inpatient,inpatient.inpatient,model_inpatient,base.group_user,1,1,1,1
+access_inpatient_admission,inpatient.admission,model_admission,base.group_user,1,1,1,1
+access_inpatient_ipdiag,inpatient.ipdiag,model_ipdiag,base.group_user,1,1,1,1

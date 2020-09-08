@@ -1,0 +1,26 @@
+# -*- coding: utf-8 -*-
+{
+	'name': 'OP Registration',
+	'version': '0.2',
+	'summary': 'Module to register patients for OP sessions',
+	'category': 'Healthcare',
+	'author': 'Gideon Rynjah',
+	'maintainer': 'SAN-KER',
+	'company': 'SAN-KER',
+	'website': 'http://www.san-ker.org',
+	'depends': ['base','doctors','diagnosis', 'report_xlsx'],
+	'data': [
+        'views/views.xml',
+        'views/templates.xml',
+        'views/pharmacytemplates.xml',
+        'views/pharmacytemplates1.xml',
+        'views/pharmacyexcel.xml',
+        'views/project.xml',
+        'security/ir.model.access.csv',
+       ],
+	'images': [],
+	'license': 'AGPL-3',
+	'installable': True,
+	'application': True,
+	'auto_install': False,
+}

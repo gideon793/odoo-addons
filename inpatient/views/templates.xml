@@ -1,0 +1,85 @@
+<odoo>
+ <data>
+
+ <report id="inpatientreport" string="SAN-KER Discharge Summary" model="admission" report_type="qweb-pdf" name="inpatient.inpatient_template" file="inpatient.inpatient_template" menu="True"/>
+
+  <template id="inpatient_template">
+   <t t-call="web.html_container">
+    <t t-foreach="docs" t-as="o">
+     <t t-call="web.external_layout">
+      <div class="page">
+       <div class="text-center" style="font-size:20px; padding-bottom:40px"><strong>Discharge Summary</strong></div>
+        <div style="border-bottom: 1px solid black">
+         <table class="Dicharge details" >
+         <thead></thead>
+        <tr>
+           <td>
+           <name>Patient name:</name>
+           </td>
+           <td style="width:600px">
+           <span t-field="docs.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;name&quot;], &quot;no_marker&quot;: True}" style="font-size:30px"/>
+           </td>
+            <td style="width:500px">
+            <name>Registration number:</name></td>
+            <td><span t-field="docs.registration"/></td>
+           </tr>
+            <tr>
+<td>
+           <name>Address:</name>
+          </td>
+          <td style="width:600px">
+           <span t-field="docs.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;], &quot;no_marker&quot;: True}"/>
+          </td>
+            <td><name>IP Registration:</name></td>
+            <td><span t-field="docs.ipregno"/></td>
+           </tr>
+
+            <tr >
+        <td style="width:400px"><name>Age:</name>  </td>
+       <td ><span t-field="docs.partner_id.agecal"/>
+       </td>
+<td><name>Sex:</name>  </td>
+<td><span t-field="docs.partner_id.gender"/>
+       </td>
+     </tr>
+
+<tr>
+<td><name>Date of Admission:</name></td>
+<td> <span t-field="docs.admdate"/></td>
+<td><name>Date of Discharge:</name>  </td>
+<td><span t-field="docs.discdate"/>
+       </td>
+</tr>
+  <tr> <td><br /></td><td /></tr>
+
+<tr>
+<table style="border-top: 1px solid black;width:100%">
+<thead>
+<td style="width:90%; font-size:20px"><strong>Diagnosis</strong></td>
+<td style="width:10%"> </td>
+</thead>
+<tr t-foreach='o.diagip' t-as='line'>
+<td ><span t-field="line.diagnosis"/></td>
+<td ><span t-field="line.code"/></td>
+</tr>
+ </table>
+ </tr>
+ <tr> <td><br /></td><td /></tr>
+  </table>
+</div>
+<div style="padding-top:20px; font-size:20px"><strong>Advice on Discharge</strong></div>
+
+<div style="padding-top:20px"><span t-field="docs.advice"/></div>
+
+<div style="padding-top:50px; font-size:20px; text-align:right; font-weight: bold"><span t-field="docs.doctor"/></div>
+
+
+</div>
+</t>
+ </t>
+   </t>
+
+  </template>   
+ </data>
+</odoo>
+

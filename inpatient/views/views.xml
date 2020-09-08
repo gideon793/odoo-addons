@@ -1,0 +1,92 @@
+<odoo>
+  <data>
+
+   
+
+    <record model="ir.ui.view" id="inpatient.list">
+      <field name="name">inpatient list</field>
+      <field name="model">inpatient</field>
+      <field name="arch" type="xml">
+        <tree default_order="create_date desc">
+          <field name="partner_id"/>
+          <field name="registration"/>
+          <field name="ipregno"/>
+          <field name="admlink" string="Admissions" invisible="1"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="inpatient.form">
+      <field name="name">inpatient form</field>
+      <field name="model">inpatient</field>
+      <field name="arch" type="xml">
+        <form>
+         <group>
+          <field name="partner_id"/>
+          <field name="registration"/>
+          <field name="ipregno"/>
+         </group> 
+        
+      <group name="admission lines"> 
+       <field name="admlink" string="Admissions" context="{'default_partner_id':partner_id}">
+        <tree>
+          <field name="partner_id" invisible="1"/>
+          <field name="admdate"/>
+          <field name="discdate"/>
+           </tree>
+        <form>
+         <group>
+          <field name = "partner_id"/>
+          <field name = "registration"/>
+          <field name = "ipregno"/>
+          <field name = "admdate"/>
+          <field name = "discdate"/>
+          <field name = "diagip" string="Diagnosis">
+           <tree> 
+            <field name = "diagnosis" string="Diagnosis"/>
+            <field name = "code" string="ICD Code"/>
+           </tree>
+           <form> 
+            <field name = "diagnosis" string="Diagnosis"/>
+            <field name = "code" string="ICD Code"/>
+           </form>
+         </field>          
+          <field name = "advice"/>
+          <field name = "doctor"/>
+          <button name="%(inpatientreport)d" string="Discharge Summary" type="action"/>
+          <field name = "ipsaleline" string="IPD Bills" context="{'default_partner_id':partner_id, 'default_admdate':admdate, 'default_discdate':discdate,  'default_isip':True}"/>
+         </group>
+        </form>
+
+       </field>
+      </group>
+      </form>
+      </field>
+    </record>
+
+
+
+
+<record id="inpatient_menu_action" model="ir.actions.act_window">
+<field name="name">Inpatient Management</field>
+<field name="res_model">inpatient</field>
+<field name="view_mode">tree,form</field>
+</record>
+
+<record id="admission_menu_action" model="ir.actions.act_window">
+<field name="name">Inpatient Management</field>
+<field name="res_model">admission</field>
+<field name="view_mode">tree,form</field>
+</record>
+
+<menuitem id="main_inpatient_menu" parent="sanker.main_menu" name="In Patient Department"/>
+<menuitem id="inpatient_menu" parent="main_inpatient_menu" name="Inpatients" action="inpatient_menu_action"/>
+
+
+
+
+
+
+
+  </data>
+</odoo>

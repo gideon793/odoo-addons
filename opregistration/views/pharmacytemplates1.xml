@@ -1,0 +1,145 @@
+<odoo>
+    <data>
+       <report id="pharmacydaily_report"
+            model="opregistration.pharmacydaily"
+            string="Pharmacy Daily Report"
+            report_type="qweb-pdf"
+            name="opregistration.pharmacydaily"
+            menu="True"/>   
+
+<template id="pharmacydaily">
+     <t t-call="web.html_container">
+        <t t-call="web.external_layout">
+            <div class="page" style="font-size:16px">
+                <h4  class="text-center">Pharmacy Daily Report</h4>
+                <div class="text-center">Date:<t t-esc="dateselect" t-options="{'widget': 'date'}"/></div>
+                  <t t-set="total" t-value="0"/>
+                  <t t-set="patientno" t-value="0"/>
+                  <t t-set="freetotal" t-value="0" />
+                <div class="container">
+                <table style="width: 100%">
+                    
+
+                    <thead style="border-top: 1px solid grey;border-bottom: 1px solid grey">
+                       <th class="text-center" style="width: 5%; background:#d9d9d9">#</th>
+                        <th class="text-center" style="width: 20%;" >Name</th>
+                        <th class="text-center" style="width: 10%; background:#d9d9d9">Reg</th>
+                        <th class="text-center" style="width: 15%; ">Consultation</th>
+                        <th class="text-center" style="width: 20%; background:#d9d9d9">Medicines</th>
+                        <th class="text-center" style="width: 20%; ">Total</th>
+<th class="text-center" style="width: 10%; background:#d9d9d9 ">Balance</th>
+
+
+                    </thead>
+                    <tbody>
+                        <t t-foreach="docs" t-as="doc">
+                            <t t-set="subtotal" t-value="0" />
+                            <t t-set="pending" t-value="0" />
+                            <tr style="border-bottom: 1px solid grey;">
+                               <td class="text-center" style="background:#d9d9d9">
+                                    <span t-esc="doc_index +1"/>
+                                       <t t-set="patientno" t-value="patientno + 1"/>
+                                </td>
+
+                                <td class="text-center" style="">
+                                    <span t-esc="doc['name']"/>
+
+                                </td>
+                                <td class="text-center" style="background:#d9d9d9">
+                                    <span t-esc="doc['registration']"/>
+                                </td>
+                                 <td class="text-center">
+                                  <t t-foreach="doc['lines']" t-as="line">
+                                  <t t-if="line['product_id'].display_name == 'Consultation Fee'">
+                                  <t t-set="subtotal" t-value="line['price_subtotal_incl']" />                                   <span t-esc="'%.2f'% subtotal" /></t>
+
+                                     </t>
+                                   </td>
+                                 
+                                   <td class="text-center" style="background:#d9d9d9">
+                                    <t t-set="consultation" t-value="doc['total']-subtotal" />
+                                       <t t-if="consultation"><span t-esc="'%.2f'% consultation"/></t>
+                                </td>     
+<td class="text-center" style="">
+                                    <span t-esc="'%.2f'% doc['total']"/>
+                                       <t t-set="total" t-value="total+doc['total']"/>
+                                </td>                              
+<td class="text-center" style="background:#d9d9d9">
+                                    <t t-foreach="doc['statement_ids']" t-as="statement_id">
+<t t-if="statement_id['journal_id'].name == 'Credits'">
+<span t-esc="'%.2f'% statement_id['amount']" />
+<t t-set="freetotal" t-value="freetotal+statement_id['amount']" />
+</t>
+                                       </t>
+                                </td> 
+
+
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+     <br /> <br />
+           <div class="container">
+            <div class="row">
+             <div class="col-6"> Total Number of Patients:</div>
+              <div class="col-4"><span t-esc="patientno" /></div>
+            </div> 
+
+   <div class="row">
+             <div class="col-6"> Total Billed for <span t-esc="dateselect" t-options="{'widget': 'date'}"/>:</div>
+              <div class="col-4">Rs. <span t-esc="'%.2f'% total" /></div>
+            </div> 
+
+   <div class="row">
+             <div class="col-6"> Total Balance</div>
+              <div class="col-4">Rs. <span t-esc="'%.2f'% freetotal" /></div>
+            </div> 
+
+   <div class="row">
+             <div class="col-6"> Total Collection</div>
+              <t t-set="collection" t-value="total - freetotal" />
+              <div class="col-4">Rs. <span t-esc="'%.2f'% collection" /></div>
+            </div>  
+
+             </div>
+            </div>
+           
+</t>
+        </t>
+    </template>
+
+
+<record model="ir.ui.view" id="pharmacydaily_form_view">
+<field name="name">pharmacydaily.form</field>
+<field name="model">opregistration.pharmacydaily</field>
+<field name="arch" type="xml">
+                <form string="Select date">
+                    <group>
+                        <field name="datetest" string="Date for report"/>          
+                        <field name="dateselect" string="Date from" invisible="1"/>
+                        <field name="dateend" string="Date to" invisible="1"/>                                  
+                    </group>
+<footer>
+                    <button name="get_report" string="Get Report" type="object" class="oe_highlight"/>
+                    <button string="Cancel" special="cancel"/>
+</footer>
+                </form>
+            </field>
+        </record>
+
+
+ <act_window id="pharmacydaily_menu_action"
+                name="Pharmacy Daily report"
+                res_model="opregistration.pharmacydaily"
+                view_mode="form"
+                target="new"/>
+
+<menuitem id="pharmacydaily_opregistration_menu" parent="reports_menu" name="Pharmacy Daily report" action="pharmacydaily_menu_action"/>
+
+
+
+
+
+ </data>
+</odoo>

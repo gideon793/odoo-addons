@@ -1,0 +1,261 @@
+<odoo>
+    <data>
+       <report id="opddaily_report"
+            model="opregistration.wizard"
+            string="OPD Daily Report"
+            report_type="qweb-pdf"
+            name="opregistration.daily_report"
+            menu="True"/>   
+
+ <report id="medicinedaily_report"
+            model="opregistration.meddaily"
+            string="Medicines Daily Report"
+            report_type="qweb-pdf"
+            name="opregistration.meddaily_report"
+            menu="True"/> 
+
+ <template id="daily_report">
+     <t t-call="web.html_container">
+        <t t-call="web.external_layout">
+            <div class="page" style="font-size:16px">
+                <h3  class="text-center">OPD Daily Report</h3>
+                <div class="text-center">Date:<t t-esc="dateselect" t-options="{'widget': 'date'}"/></div>
+                
+                <div class="container">
+                   <t t-set="maleapt" t-value="0"/>
+                   <t t-set="femaleapt" t-value="0"/>
+                   <t t-set="old" t-value="0"/>
+                   <t t-set="new" t-value="0"/> 
+                <table style="width: 100%">
+                    
+
+                    <thead style="border-top: 1px solid grey;border-bottom: 1px solid grey">
+                        <th class="text-center" style="width: 2%; background:#d9d9d9">#</th>
+                        <th class="text-center" style="width: 40%;" >Name</th>
+                        <th class="text-center" style="width: 10%; background:#d9d9d9">Registration Number</th>
+                        <th class="text-center" style="width: 5%; ">Age</th>
+                        <th class="text-center" style="width: 5%; background:#d9d9d9">Sex</th>
+                        <th class="text-center" style="width: 25%;">Doctor</th>
+                        <th class="text-center" style="width: 10%; background:#d9d9d9">Type</th>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="docs" t-as="doc">
+                            <tr style="border-bottom: 1px solid grey;">
+                               <td class="text-center" style="background:#d9d9d9">
+                                    <span t-esc="doc_index +1"/>
+                                </td>
+
+                                <td class="text-center" style="">
+                                    <span t-esc="doc['name']"/>
+
+                                </td>
+                                <td class="text-center" style="background:#d9d9d9">
+                                    <span t-esc="doc['registration']"/>
+                                </td>
+                                <td class="text-center" style="">
+                                    <span t-esc="doc['age']"/>
+                                </td>
+                                <td class="text-center" style="background:#d9d9d9">
+                                    <t t-if="doc['gender']=='male'"><span>M</span><t t-set="maleapt" t-value="maleapt + 1"/></t> 
+                                    <t t-if="doc['gender']=='female'"><span>F</span><t t-set="femaleapt" t-value="femaleapt + 1"/></t>
+                                </td>
+                                <td class="text-center" >
+                                    <span t-esc="doc['doctor']"/>
+                                </td>
+                                <td class="text-center" style="background:#d9d9d9">
+                                    <t t-if="doc['type']=='old'"><span>Old</span><t t-set="old" t-value="old + 1"/></t> 
+                                    <t t-if="doc['type']=='new'"><span>New</span><t t-set="new" t-value="new + 1"/></t>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+</div>
+<br /><br />
+<div class="container">
+             <div class="row">
+             <div class="col-3"> Male Patients:</div>
+              <div class="col-4"><span t-esc="maleapt" /></div>
+            </div>
+           
+
+             <div class="row">
+             <div class="col-3"> Female Patients:</div>
+              <div class="col-4"><span t-esc="femaleapt" /></div>
+            </div>
+          <div class="row">
+             <div class="col-3"> New Appointments:</div>
+              <div class="col-4"><span t-esc="new" /></div>
+            </div>
+
+          <div class="row">
+             <div class="col-3"> Repeat Appointments:</div>
+              <div class="col-4"><span t-esc="old" /></div>
+            </div>
+
+
+
+
+           </div>
+
+
+
+            </div>
+           
+
+       
+
+
+
+
+</t>
+        </t>
+    </template>
+
+<template id="meddaily_report">
+     <t t-call="web.html_container">
+        <t t-call="web.external_layout">
+            <div class="page" style="font-size:16px">
+                <h3  class="text-center">Medicine Refill Daily Report</h3>
+                <div class="text-center">Date:<t t-esc="dateselect" t-options="{'widget': 'date'}"/></div>
+                
+                  <t t-set="male" t-value="0"/>
+                   <t t-set="female" t-value="0"/>
+                 <div class="container">  
+                 <table style="width: 100%">
+                    
+
+                    <thead style="border-top: 1px solid grey;border-bottom: 1px solid grey">
+                        <th class="text-center" style="width: 2%; background:#d9d9d9">#</th>
+                        <th class="text-center" style="width: 40%;" >Name</th>
+                        <th class="text-center" style="width: 10%; background:#d9d9d9">Registration Number</th>
+                        <th class="text-center" style="width: 5%; ">Age</th>
+                        <th class="text-center" style="width: 5%; background:#d9d9d9">Sex</th>
+                        <th class="text-center" style="width: 25%;">Doctor</th>
+                        <th class="text-center" style="width: 10%; background:#d9d9d9">Type</th>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="docs" t-as="doc">
+                            <tr style="border-bottom: 1px solid grey;">
+                               <td class="text-center" style="background:#d9d9d9">
+                                    <span t-esc="doc_index +1"/>
+                                </td>
+
+                                <td class="text-center" style="">
+                                    <span t-esc="doc['name']"/>
+
+                                </td>
+                                <td class="text-center" style="background:#d9d9d9">
+                                    <span t-esc="doc['registration']"/>
+                                </td>
+                                <td class="text-center" style="">
+                                    <span t-esc="doc['age']"/>
+                                </td>
+                                <td class="text-center" style="background:#d9d9d9">
+                                    <t t-if="doc['gender']=='male'"><span>M</span><t t-set="male" t-value="male + 1"/></t> 
+                                    <t t-if="doc['gender']=='female'"><span>F</span><t t-set="female" t-value="female + 1"/></t>
+                                </td>
+                                <td class="text-center" >
+                                    <span t-esc="doc['doctor']"/>
+                                </td>
+                                <td class="text-center" style="background:#d9d9d9">
+                                    Refill
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+           </div>
+<br /><br />
+           <div class="container">
+             <div class="row">
+             <div class="col-3"> Male Patients:</div>
+              <div class="col-4"><span t-esc="male" /></div>
+            </div>
+           
+
+             <div class="row">
+             <div class="col-3"> Female Patients:</div>
+              <div class="col-4"><span t-esc="female" /></div>
+            </div>
+         
+
+
+
+           </div> 
+ </div>
+           
+
+       
+
+
+
+
+</t>
+        </t>
+    </template>
+
+<record id="paperformat_sankerop" model="report.paperformat">
+    <field name="name">SanKer OP Sheet</field>
+    <field name="default" eval="True"/>
+    <field name="format">custom</field>
+    <field name="page_height">210</field>
+    <field name="page_width">140</field>
+    <field name="orientation">Portrait</field>
+    <field name="margin_top">3</field>
+    <field name="margin_bottom">3</field>
+    <field name="margin_left">3</field>
+    <field name="margin_right">3</field>
+    <field name="header_line" eval="False"/>
+    <field name="header_spacing">3</field>
+    <field name="dpi">80</field>
+</record>
+
+    
+
+<report id="opregistration_print"
+            model="opregistration"
+            string="OPD Card"
+            report_type="qweb-pdf"
+            name="opregistration.opcard"
+            menu="True"
+            paperformat="paperformat_sankerop"/>   
+
+ <template id="opcard">
+     <t t-call="web.html_container">
+     <t t-call="web.basic_layout">
+                        <t t-foreach="docs" t-as="doc"> 
+
+  <div class="page">
+
+                          <div  style="text-align: right; padding-right:20px; padding-top: 50px"><span t-esc="doc['providerlink'].name"/> &#160; <span t-esc="doc['providerlink'].qualification"/></div>
+ <div  style="text-align: right; font-size:10px; padding-right:20px;">
+(Registration no: <span t-esc="doc['providerlink'].medreg"/>)
+</div>
+
+<div style="padding-top:50px">          
+<img t-att-src="'/report/barcode/EAN13/%s' % doc['registration']" style="width:250px;height:50px;float:right"/>
+<span t-esc="doc['partner_id'].name"/>
+(                                    <span t-esc="doc['partner_id'].agecal"/>
+                                    <span t-if="doc['partner_id'].gender=='male'">M</span> 
+                                    <span t-else="">F</span>)
+<br/>
+<span t-esc="doc['registration']" style="text-align:right"/>
+
+</div>
+
+
+
+         
+</div>
+      </t>        
+</t>
+        </t>
+    </template>
+
+
+
+
+
+ </data>
+</odoo>
