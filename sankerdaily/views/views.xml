@@ -1,0 +1,196 @@
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="sankerdaily.list">
+      <field name="name">sankerdaily list</field>
+      <field name="model">sankerdaily.currentaccount</field>
+      <field name="arch" type="xml">
+        <tree editable="bottom">
+          <field name="date"/>
+          <field name="type"/>
+          <field name="acct"/>
+          <field name="description"/>
+          <field name="debit"/>
+          <field name="credit"/>
+          <field name="detail"/>
+          <field name="balance" sum="Running Balance"/>
+          <field name="action"/>
+          <field name="note"/>
+        </tree>
+      </field>
+    </record>
+
+       <record model="ir.ui.view" id="sankerdaily.form">
+      <field name="name">sankerdaily form</field>
+      <field name="model">sankerdaily.currentaccount</field>
+      <field name="arch" type="xml">
+        <form>
+          <group>
+          <field name="date"/>
+          <field name="type"/>
+          <field name="acct"/>
+          <field name="description"/>
+          <field name="debit"/>
+          <field name="credit"/>
+          <field name="detail"/>
+          <field name="balance"/>
+          </group>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="sankerdaily.action_window">
+      <field name="name">Current Account</field>
+      <field name="res_model">sankerdaily.currentaccount</field>
+      <field name="view_mode">tree,form</field>
+	<field name="limit">1000</field>
+
+    </record>
+
+
+  <record model="ir.ui.view" id="sankerdailytakings_list">
+      <field name="name">sankerdailytakings list</field>
+      <field name="model">sankerdaily.dailytakings</field>
+      <field name="arch" type="xml">
+        <tree default_order="date desc">
+          <field name="date"/>
+          <field name="opdconsult" sum="OPD Consult"/>
+          <field name="opdmed" sum="OPD Medications"/>
+          <field name="total" sum="Total"/>
+          <field name="eddiedue" sum="Dr. EM due"/>
+          <field name="slahiridue" sum="Dr. SL due"/>
+          <field name="didakdue" sum="Dr. DK due"/>
+          <field name="vraneedue" sum="Dr. VR due"/>
+          <field name="gideondue" sum="Dr. GR due"/>
+          <field name="mhc" sum="MHC"/>
+        </tree>
+      </field>
+    </record>
+
+<record model="ir.ui.view" id="sankerdailytakings_form">
+      <field name="name">sankerdailytakings form</field>
+      <field name="model">sankerdaily.dailytakings</field>
+      <field name="arch" type="xml">
+        <form>
+       <group>  
+       <group string="Daily Takings" colspan="1" col="3">
+          <field name="date"/>
+          <field name="opdconsult"/>
+          <field name="opdmed"/>
+          <field name="opdtotal"/>
+          <field name="ipd"/>
+          <field name="daycare"/>
+          <field name="academic"/>
+          <field name="certificates"/>
+          <field name="canteen"/>
+          <field name="handicraft"/>
+          <field name="refund"/>
+          <field name="misc"/>
+          <field name="total" />
+         </group>
+         <group string="Consultations" colspan="1" col="3">        
+          <field name="eddie" string="Dr. Eddie OP Consultation"/>
+          <field name="eddiedue" />
+          <field name="slahiri"/>
+          <field name="slahiridue" />
+          <field name="didak"/>
+          <field name="didakdue" />
+          <field name="vranee"/>
+          <field name="vraneedue" />
+          <field name="gideon"/>
+          <field name="eeg"/>
+          <field name="gideondue" />
+          <field name="mhc"/>
+        </group> 
+<group />
+<group>
+                  <button name="get_consult" string="Fill Consultations" type="object" class="oe_highlight"/>
+</group>
+<group string="Reports" colspan="1" col="2">
+    <group string="Consultations">        
+          <field name="consulttotal"/>
+          <field name="consultfree" />
+          <field name="consultbalance" />
+          <field name="consultreal"/>
+          <field name="consultnet" />
+   </group>
+   <group string = "Medications">
+          <field name="medtotal"/>
+          <field name="medfree" />
+          <field name="medbalance" />
+          <field name="medreal"/>
+          <field name="mednet" />
+
+    </group>
+        </group> 
+
+</group>
+       </form>
+      </field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="sankerdaily_takings_action_window">
+      <field name="name">Daily Takings</field>
+      <field name="res_model">sankerdaily.dailytakings</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+
+
+
+ <record model="ir.ui.view" id="sankerdailyinfo_list">
+      <field name="name">sankerdailyinfo list</field>
+      <field name="model">sankerdaily.dailyinfo</field>
+      <field name="arch" type="xml">
+        <tree editable="bottom">
+          <field name="date"/>
+          <field name="detail"/>
+          <field name="credit" />
+          <field name="debit"/>
+          <field name="total" sum="Total"/>
+          <field name="action"/>
+          <field name="note"/>
+        </tree>
+      </field>
+    </record>
+
+<record model="ir.ui.view" id="sankerdailyinfo_form">
+      <field name="name">sankerdailyinfo form</field>
+      <field name="model">sankerdaily.dailyinfo</field>
+      <field name="arch" type="xml">
+        <form>
+       <group string="Daily Info">
+          <field name="date"/>
+          <field name="detail"/>
+          <field name="credit" />
+          <field name="debit"/>
+          <field name="total"/>
+          <field name="action"/>
+          <field name="note"/>
+
+       </group>
+       </form>
+      </field>
+    </record>
+
+
+   <record model="ir.actions.act_window" id="sankerdaily_info_action_window">
+      <field name="name">Daily Info</field>
+      <field name="res_model">sankerdaily.dailyinfo</field>
+      <field name="view_mode">tree,form</field>
+      <field name="limit">5000</field>
+
+    </record>
+
+
+
+    <menuitem name="Journal Records" id="sankerdaily.menu_root" parent=""/>
+    <menuitem name="Current Account" id="sankerdaily.menu_1" parent="sankerdaily.menu_root" action="sankerdaily.action_window"/>
+    <menuitem name="Daily Takings" id="sankerdaily.menu_2" parent="sankerdaily.menu_root" action="sankerdaily_takings_action_window"/>
+    <menuitem name="Daily Info" id="sankerdaily.menu_3" parent="sankerdaily.menu_root" action="sankerdaily_info_action_window"/>
+
+
+
+  </data>
+</odoo>

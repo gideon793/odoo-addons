@@ -12,9 +12,9 @@
         <t t-call="web.external_layout">
             <div class="page">
                 <h5  class="text-center">Medication Bill for Follow up Patients </h5>
-                <h5  class="text-center">Organization: Mawkyrwat</h5>
-                <div class="text-center">Date:<t t-esc="dateselect" t-options="{'widget': 'date'}"/></div>
-                  <t t-set="total" t-value="0"/>
+                <h5  class="text-center">Organization: <t t-raw="point" /> </h5>
+                 <div class="text-center">Date:<t t-esc="dateselect" t-options="{'widget': 'date'}"/></div>
+                  <t t-set="total" t-value="0.00"  t-options="{'widget': 'float', 'precision': 2}"/>
                   <t t-set="patientno" t-value="0"/>
                 <table style="width: 100%; font-size:14px;">
 
@@ -96,6 +96,10 @@
 
                     </tbody>
                 </table>
+		<br />
+		<br />
+                <h5  class="text-right">Total Due: Rs.<t t-esc="total"/> </h5>
+
             </div>
 
 </t>
@@ -110,8 +114,10 @@
                 <form string="Select date">
                     <group>
                         <field name="datetest" string="Date for report"/>
+                        <field name="point" string="Point of Sale"/>
                         <field name="dateselect" string="Date from" invisible="1"/>
                         <field name="dateend" string="Date to" invisible="1"/>
+
                     </group>
 <footer>
                     <button name="get_report" string="Get Report" type="object" class="oe_highlight"/>
@@ -128,7 +134,7 @@
                 view_mode="form"
                 target="new"/>
 
-<menuitem id="projectreport_opregistration_menu" parent="reports_menu" name="Mawkyrwat Project" action="projectreport_menu_action"/>
+<menuitem id="projectreport_opregistration_menu" parent="reports_menu" name="Project Reports" action="projectreport_menu_action"/>
 
 
 

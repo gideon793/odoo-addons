@@ -16,6 +16,16 @@
               <field name="gender"/>
               <field name="registration"/>
               <field name="ipregno"/>
+           <field name="pat_diag"> 
+              <tree> 
+            <field name = "diagnosis" string="Diagnosis"/>
+            <field name = "code" string="ICD Code"/>
+           </tree>
+   <form> 
+            <field name = "diagnosis" string="Diagnosis"/>
+            <field name = "code" string="ICD Code"/>
+           </form>
+           </field>
           </field>
 <field name="title" position="replace"><field name="relative"/></field>
           <field name="lang" position="before">
@@ -25,6 +35,8 @@
            <field name="occupation"/> 
 
          </field>
+<field name="country_id" position="before"><field name="district" placeholder="District"/></field>
+
       </field>
     </record>
 
@@ -55,10 +67,24 @@
 
 <field name="view_mode">tree,form</field>
     <field name="context">{"search_default_type_person":1}</field>
-
 </record>
 
-        <menuitem id="main_menu" parent=""	name="San-Ker"/>
+ <record id="patients_search" model="ir.ui.view">
+            <field name="name">Patient Search</field>
+            <field name="model">res.partner</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+               <search>
+                 <field name="name" string="Name" filter_domain="[('name','ilike',self)]"/>
+                 <field name="registration" string="Registration Number" filter_domain="[('registration','ilike',self)]"/>     
+                 <filter string="Patients" name="type_person" domain="[('is_company', '=', False)]" />
+                 <field name="pat_diag" string="Diagnosis" filter_domain="[('pat_diag.diagnosis','ilike',self)]"/>
+             </search>
+            </field>
+        </record>
+
+
+        <menuitem id="main_menu" parent=""	name="SAN-KER"/>
     	<menuitem id="main_patients_menu" parent="main_menu" name="Patients" action="patients_menu_action"/>
 
     </data>

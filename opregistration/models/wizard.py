@@ -28,7 +28,7 @@ class opdailyreport(models.AbstractModel):
         dateselect=data['form']['dateselect']
         datetest=str(datetime.strptime(dateselect, DATE_FORMAT))
         docs = []
-        appts  = self.env['opregistration'].search([['date','=',dateselect],'|',['type','=','old'],['type','=','new']])
+        appts  = self.env['opregistration'].search([['date','=',dateselect],'|',['type','=','old'],['type','=','new']], order='providerlink, type')
         for appt in appts:
             docs.append({
                 'name': appt.partner_id.name,

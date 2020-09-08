@@ -18,6 +18,7 @@
                         <field name="datetest" string="Date for report"/>
                         <field name="dateselect" string="Date from" invisible="1"/>
                         <field name="dateend" string="Date to" invisible="1"/>
+                        <field name="point" />
                     </group>
                     <footer>
                     <button name="get_excel_report" string="Get Report" type="object" class="oe_highlight"/>

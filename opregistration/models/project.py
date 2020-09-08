@@ -12,18 +12,25 @@ class wizard(models.TransientModel):
     dateselect = fields.Datetime()
     dateend = fields.Datetime()
     datetest = fields.Date('Select date')
+    point = fields.Selection([('Pharmacy', 'SAN-KER Pharmacy'), ('Outreach', 'Outreach'), ('Project', 'Mawkyrwat Project'), ('Nongstoin','Nongstoin Project'), ('Mairang','Mairang Project'),('Fatima','Fatima Project')], string='Location', default='Pharmacy')
+    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.user.company_id.currency_id)
+
 
     @api.onchange('datetest')
     def datecalc(self):
         for record in self:
             if record.datetest:
-                date_touse = record.datetest - timedelta(days=1)
-                date_str = date_touse.strftime('%d/%m/%Y')
-                date_to = record.datetest.strftime('%d/%m/%Y')
-                date_str += "18,30"
-                date_to += "18,30"
-                record.dateselect = datetime.strptime(date_str, '%d/%m/%Y%H,%M')
-                record.dateend = datetime.strptime(date_to, '%d/%m/%Y%H,%M')
+                date_touse = record.datetest
+                _logger.info(record.datetest)
+                date_str = date_touse.strftime(DATE_FORMAT)
+                date_to = record.datetest.strftime(DATE_FORMAT)
+                date_str += " 00:00:01"
+                date_to += " 23:59:59"
+                _logger.info(date_touse)
+                _logger.info(date_str)
+                _logger.info(date_to)
+                record.dateselect = datetime.strptime(date_str, DATETIME_FORMAT)
+                record.dateend = datetime.strptime(date_to, DATETIME_FORMAT)
 
     @api.multi
     def get_report(self):
@@ -33,6 +40,9 @@ class wizard(models.TransientModel):
             'form': {
                 'dateselect': self.dateselect,
                 'dateend': self.dateend,
+                'point': self.point,
+                'currency_id': self.currency_id
+
             },
         }
         return self.env.ref('opregistration.projectreport_report').report_action(self, data=data)
@@ -45,13 +55,19 @@ class opdailyreport(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         dateselect = data['form']['dateselect']
         dateend = data['form']['dateend']
+        point= data['form']['point']
+        currency_id = data['form']['currency_id']
         docs = []
-        appts = self.env['pos.order'].search([['date_order', '>=', dateselect], ['date_order', '<=', dateend], ['config_id.name', '=', 'Project']],
-                                             order='create_date')
+        appts = self.env['pos.order'].search([['date_order', '>=', dateselect], ['date_order', '<=', dateend], ['config_id.name', '=', point]], order='create_date')
         for appt in appts:
             _logger.info(appt.partner_id.name)
-            lots = self.env['stock.move.line'].search([['picking_id', '=', appt.picking_id.id]])
+            _logger.info(appt.name)
+            if appt.picking_id:
+                lots = self.env['stock.move.line'].search([['picking_id', '=', appt.picking_id.id]])
+            else:
+                lots = ''
             for lot in lots:
+                _logger.info(lot.lot_id)
                 _logger.info(lot.lot_id.life_date)
             docs.append({
                 'name': appt.partner_id.name,
@@ -67,5 +83,8 @@ class opdailyreport(models.AbstractModel):
             'doc_model': data['model'],
             'dateselect': dateselect,
             'dateend': dateend,
+            'point': point,
             'docs': docs,
+            'currency_id': currency_id,
+
         }

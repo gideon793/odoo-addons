@@ -1,0 +1,138 @@
+<odoo>
+    <data>
+       <report id="nongstoinreport_report"
+            model="opregistration.nongstoinreport"
+            string="nongstoin Report"
+            report_type="qweb-pdf"
+            name="opregistration.nongstoinreport"
+            menu="True"/>
+
+ <template id="nongstoinreport">
+     <t t-call="web.html_container">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h5  class="text-center">Medication Bill for Follow up Patients </h5>
+                <h5  class="text-center">Organization: Nongstoin</h5>
+                <div class="text-center">Date:<t t-esc="dateselect" t-options="{'widget': 'date'}"/></div>
+                  <t t-set="total" t-value="0"/>
+                  <t t-set="patientno" t-value="0"/>
+                <table style="width: 100%; font-size:14px;">
+
+
+                    <thead style="border-top: 1px solid grey;border-bottom: 1px solid grey">
+                       <th class="text-center" style="width: 2%; background:#d9d9d9">#</th>
+                        <th class="text-center" style="width: 10%;" >Name</th>
+                        <th class="text-center" style="width: 3%; background:#d9d9d9">Reg</th>
+                        <th class="text-center" style="width: 80%; ">Order</th>
+                        <th class="text-center" style="width: 5%; background:#d9d9d9">Total</th>
+
+                    </thead>
+                    <tbody>
+                        <t t-foreach="docs" t-as="doc">
+                              <tr style="border-bottom: 1px solid grey;">
+                               <td class="text-center" style="background:#d9d9d9">
+                                    <span t-esc="doc_index +1"/>
+                                       <t t-set="patientno" t-value="patientno + 1"/>
+                                </td>
+
+                                <td class="text-center" style="">
+                                    <span t-esc="doc['name']"/>
+
+                                </td>
+                                <td class="text-center" style="background:#d9d9d9">
+                                    <span t-esc="doc['registration']"/>
+                                </td>
+                                 <td>
+                                  <table>
+                       <thead style="border-top: 1px solid grey;border-bottom: 1px solid grey">
+                       <th class="text-center" style="width: 1%;">#</th>
+                        <th class="text-center" style="width: 40%;background:#d9d9d9" >Product</th>
+                         <th class="text-center" style="width: 10%" >Batch Number</th>
+                       <th class="text-center" style="width: 20%;background:#d9d9d9" >Expiry Date</th>
+                       <th class="text-center" style="width: 9%; ">Quantity</th>
+                        <th class="text-center" style="width: 10%; background:#d9d9d9">Unit Price</th>
+                           <th class="text-center" style="width: 10%">Subtotal</th>
+                                   </thead>
+
+                                   <t t-foreach="doc['lots']" t-as="lot">
+                                  <t t-set="subtotal" t-value="0" />
+
+                                  <tr style="border-bottom: 1px solid grey;">
+                                 <td class="text-center" style="">
+                                    <span t-esc="lot_index +1"/>
+                                </td>
+                                  <td class="text-center" style="background:#d9d9d9">
+                                    <span t-esc="lot['product_id'].display_name"/>
+                                </td>
+                                      <td class="text-center" >
+                                          <span t-esc="lot['lot_id'].name"/>
+                                      </td>
+                                      <td class="text-center" style="background:#d9d9d9">
+                                          <span t-esc="lot['lot_id'].life_date" t-options="{'widget':'date','format': 'MM/yyyy'}"/>
+                                      </td>
+
+                                      <td class="text-center">
+                                    <span t-esc="lot['qty_done']"/>
+                                </td>
+                                 <td class="text-center" style="background:#d9d9d9">
+                                    <span t-esc="'%.2f'% lot['product_id'].list_price"/>
+                                     </td>
+                                       <td class="text-center">
+                                           <t t-set="subtotal" t-value="lot['product_id'].list_price * lot['qty_done']" />
+                                    <span t-esc="'%.2f'% subtotal"/>
+                                </td>
+                                    </tr>
+                                  </t>
+
+                                  </table>
+                                </td>
+                                <td class="text-center" style="background:#d9d9d9">
+                                    <span t-esc="'%.2f'% doc['total']"/>
+                                       <t t-set="total" t-value="total+doc['total']"/>
+                                </td>
+
+                            </tr>
+                        </t>
+
+                    </tbody>
+                </table>
+            </div>
+
+</t>
+        </t>
+    </template>
+
+
+<record model="ir.ui.view" id="nongstoinreport_form_view">
+<field name="name">nongstoinreport.form</field>
+<field name="model">opregistration.nongstoinreport</field>
+<field name="arch" type="xml">
+                <form string="Select date">
+                    <group>
+                        <field name="datetest" string="Date for report"/>
+                        <field name="dateselect" string="Date from" invisible="1"/>
+                        <field name="dateend" string="Date to" invisible="1"/>
+                    </group>
+<footer>
+                    <button name="get_report" string="Get Report" type="object" class="oe_highlight"/>
+                    <button string="Cancel" special="cancel"/>
+</footer>
+                </form>
+            </field>
+        </record>
+
+
+ <act_window id="nongstoinreport_menu_action"
+                name="Nongstoin report"
+                res_model="opregistration.nongstoinreport"
+                view_mode="form"
+                target="new"/>
+
+<menuitem id="nongstoinreport_opregistration_menu" parent="reports_menu" name="Nongstoin Project" action="nongstoinreport_menu_action"/>
+
+
+
+
+
+ </data>
+</odoo>

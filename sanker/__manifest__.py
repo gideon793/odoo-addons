@@ -13,6 +13,7 @@
         'views/views.xml',
         'views/templates.xml',
         'views/patient.xml',
+        'security/ir.model.access.csv',
     ],
 	'images': [],
 	'license': 'AGPL-3',

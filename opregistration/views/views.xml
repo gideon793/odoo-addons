@@ -8,25 +8,35 @@
     <field name="arch" type="xml">
      <form string="OPD Registration">
       <group>
-       <field name = "partner_id" string = "Patient Name"/>
+       <group string ="Patient Details">
+       <field name = "partner_id" widget="res_partner_many2one" context="{'show_address':1}"/>
        <field name = "registration"/>
+       <field name = "agecal" string="Age"/>
+       <field name = "gender" string = "Gender" /> 
+      <field name = "address" string="Address" />
+       </group>
+       <group string ="Appointment details">
        <field name = "providerlink"/>
        <field name = "date"/>
        <field name = "type"/>
        <field name = "fee"/>
        <field name = "freecare" invisible="1"/>
-      </group>
-      <group name="diagnosislines"> 
-       <field name="diagl" string="Diagnosis">
-        <tree editable="bottom">
-          <field name = "diagnosis" string="Diagnosis"/>
-          <field name="code" string ="ICD Code"/>
-        </tree>
-       </field>
-      </group>
+    </group> 
+     </group>
      </form> 
     </field>
    </record>
+
+<record model="ir.ui.view" id="opregistration.popup">
+    <field name="name">OPD Registration</field>
+    <field name="model">opregistration</field>
+    <field name="arch" type="xml">
+     <form string="OPD Registration">
+<p>Warning</p>
+     </form> 
+    </field>
+   </record>
+
 
   <record model="ir.ui.view" id="opregistration_tree">
     <field name="name">OPD Registration</field>
@@ -35,13 +45,12 @@
      <tree default_order="create_date asc">
        <field name = "partner_id" string = "Patient Name"/>
        <field name = "registration"/>
+       <field name = "agecal" string="Age"/>
        <field name = "providerlink"/>
        <field name = "date"/>
        <field name = "type"/>
        <field name = "fee" invisible="1"/>
        <field name = "freecare" string="Free Care" invisible="1"/>
-       <field name="diagl" string="Diagnosis"/>
-
      </tree> 
     </field>
    </record>
@@ -53,7 +62,6 @@
     <field name="view_mode">tree,form</field>
     <field name="context">{"search_default_today_filter":1}</field>
    </record>
-
 
 
   <act_window id="wizard_menu_action"
@@ -71,18 +79,21 @@
 
 
 
- <record id="opregistration_search" model="ir.ui.view">
+ <record id="
+" model="ir.ui.view">
             <field name="name">OPD Registration Search</field>
             <field name="model">opregistration</field>
             <field name="mode">primary</field>
             <field name="arch" type="xml">
                <search>
                 <filter string="Today's Appointments" name="today_filter" domain="[('date', '=', datetime.datetime.now().strftime('%Y-%m-%d'))]" context="{'group_by':'providerlink'}" />
-          </search>
+                 <field name="partner_id" string="Name" filter_domain="[('partner_id','ilike',self)]"/>
+                 <field name="date" string="Date of Appointment" filter_domain="[('date','ilike',self)]"/>
+                 <field name="registration" string="Registration Number" filter_domain="[('registration','ilike',self)]"/>
+
+            </search>
             </field>
         </record>
-
-
 
 
 
@@ -132,6 +143,25 @@
 </form>
             </field>
 </record>
+
+
+
+<record id="view_opregistration_warning" model="ir.ui.view">
+           <field name="name">opregistration_warning_form</field>
+           <field name="model">opregistration.warning</field>
+           <field name="arch" type="xml">
+           <form>
+              <group>
+                 <span>Warning</span>
+                  <field name="message" />
+               </group>
+               <footer>
+                <button string="OK" special="cancel" class="oe_highlight"/>
+                </footer>
+           </form>
+           </field>
+   </record>
+
 
    </data>
 </odoo>

@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sankerdaily_current,sanker_daily_workbook,model_sankerdaily_currentaccount,sankeremployee.sankeremployee_group,1,1,1,1
+access_sankerdaily_takings,sanker_daily_takings,model_sankerdaily_dailytakings,sankeremployee.sankeremployee_group,1,1,1,1
+access_sankerdaily_info,sanker_daily_info,model_sankerdaily_dailyinfo,sankeremployee.sankeremployee_group,1,1,1,1
+access_sankerdaily_printdaily,sanker_printdaily,model_sankerdaily_printdaily,sankeremployee.sankeremployee_group,1,1,1,1
+access_sankerdaily_printdaily_report,sanker_printdaily_report,model_report_sankerdaily_sankerprintdailytakings,sankeremployee.sankeremployee_group,1,1,1,1
+
+
