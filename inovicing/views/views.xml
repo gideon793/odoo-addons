@@ -1,19 +1,143 @@
 <odoo>
-  <data>
-    <record model="ir.ui.view" id="sanker_invoice_form">
- <field name="name">Invoices</field>
- <field name="model">account.invoice</field>
- <field name="inherit_id" ref="account.invoice_form"/>
- <field name="mode">primary</field>
- <field name="arch" type="xml">
-     <field name="partner_id" position="after">
-       <field name="isip"/>
-       <field name="medicinebill"/>
-     </field>
-</field>
-</record>
-  
+    <data>
+
+          <report id="rfqprint"
+                string="SAN-KER Purchase Order"
+                model="sankerinvoicing.rfq"
+                report_type="qweb-pdf"
+                name="inovicing.rfqtemplate"
+                menu="True"/>
+
+        <record model="ir.ui.view" id="sanker_invoice_form">
+            <field name="name">Invoices</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="isip"/>
+                    <field name="medicinebill"/>
+                </field>
+            </field>
+        </record>
 
 
-</data>
+        <record model="ir.ui.view" id="sankerinvoicing_list">
+            <field name="name">PurchaseOrder</field>
+            <field name="model">sankerinvoicing.rfq</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="rfqnumber"/>
+                    <field name="orderdate"/>
+                    <field name="vendor"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="sankerinvoicing_form">
+            <field name="name">PurchaseOrder</field>
+            <field name="model">sankerinvoicing.rfq</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="rfqnumber"/>
+                        <field name="orderdate"/>
+                        <field name="vendor" widget="res_partner_many2one" domain="[('supplier','=',True)]"/>
+                    </group>
+                    <notebook name="Orders">
+                        <page name="Orders">
+                            <field name="orderlines" context="{'default_orderdate':'orderdate','default_vendor':'vendor'}">
+                            <tree editable="bottom" string="orders">
+                                <field name="product" />
+                                <field name="notes"/>
+                                <field name="qty"/>
+                            </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                    <group>
+                        <button name="%(rfqprint)d" string="Print order" type="action"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="sankerinvoicing_action">
+            <field name="name">SAN-KER Purchase Order</field>
+            <field name="res_model">sankerinvoicing.rfq</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="seq_purchase_order" model="ir.sequence">
+            <field name="name">Purchase Order</field>
+            <field name="code">sanker_rfq_order</field>
+            <field name="prefix">SAN/%(year)s/</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+
+
+        <menuitem name="SAN-KER Purchase Order" id="sankerinvoicing_purchase_1" parent="purchase.menu_purchase_root"
+                  action="sankerinvoicing_action"/>
+
+
+        <template id="rfqtemplate">
+                <t t-call="web.html_container">
+                    <t t-foreach="docs" t-as="o">
+                        <t t-call="web.external_layout">
+                            <div class="page">
+                            <div class="text-right">
+                                <span><t t-esc="docs.orderdate" t-options="{'widget':'date'}" /></span>
+                            </div>
+                                <div class="text-left">
+                                    <span>To:<br /></span>
+                                    <span><t t-esc="docs.vendor" t-options="{'widget':'contact','fields':['name','address'], 'no_marker': True}"/> </span>
+                                <span t-if="docs.vendor.vat"><span>GSTIN: </span><t t-esc="docs.vendor.vat"/></span><br />
+                                </div>
+                                <div style="padding-top:50px">
+                                    <span>Purchase Order No.:<t t-esc="docs.rfqnumber" /></span>
+                                </div>
+                                <div style="padding-top:50px">
+                                    <span>Dear Sir/Madam, <br /></span>
+                                </div>
+                                <div style="padding-top:50px">
+                                    <span> Please supply the following items as detailed below: <br /><br /></span>
+                                </div>
+                                <div style="padding-top:50px">
+                                    <table style="width:100%" class="text-center">
+                                        <thead>
+                                            <tr style="width:100%">
+                                                <th style="witdth:5%">#</th>
+                                                <th style="width:60%">Product</th>
+                                                <th style="width:20%">Notes</th>
+                                                <th style="width:15%">Quantity</th>
+                                            </tr>
+                                        </thead>
+                                            <tbody style="width:100%">
+                                                <tr t-foreach="docs.orderlines" t-as="line">
+                                                    <td><span t-esc="line_index +1" /></td>
+                                                    <td><span t-field="line.product" /></td>
+                                                    <td><span t-field="line.notes" /></td>
+                                                    <td><span t-field="line.qty" /></td>
+                                                </tr>
+                                            </tbody>
+                                    </table>
+                                </div>
+                                <div style="padding-top:50px" class="text-right">
+                                    <span>Thanking you, <br /></span>
+                                </div>
+                                <div class="text-right" style="padding-top:100px">
+                                    <span> For San-Ker</span>
+                                </div>
+                            </div>
+                        </t>
+                    </t>
+                </t>
+
+        </template>
+
+
+    </data>
 </odoo>

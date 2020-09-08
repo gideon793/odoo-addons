@@ -9,7 +9,7 @@
 	'company': 'SAN-KER',
 	'website': 'http://www.san-ker.org',
 	'depends': ['base','sale'],
-	'data': ['views/views.xml','views/ipbillreport.xml','views/ipbill_template.xml'],
+	'data': ['views/views.xml','views/ipbillreport.xml','views/ipbill_template.xml', 'views/pos_template.xml'],
 	'license': 'AGPL-3',
 	'installable': True,
 	'application': True,

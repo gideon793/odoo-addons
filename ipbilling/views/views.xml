@@ -19,6 +19,7 @@
   <field name="payment_term_id" position="after">
    <field name="accomodation"/>
    <field name="periodbill"/>
+   <field name="billingdate"/>
    <field name="remarks" />
   </field>
  </field>

@@ -19,6 +19,7 @@ class ipbill(models.Model):
     amount_round = fields.Monetary(compute='_amountround', string='Rounded off')
     amount_diff=fields.Monetary(compute='_amountdiff',string='Amount rounded off')    
     remarks = fields.Char(string='Remarks', size =100)
+    billingdate=fields.Date(string='Billing Date')
     
     def _amountwords(self):
         for record in self:
@@ -31,4 +32,23 @@ class ipbill(models.Model):
     def _amountdiff(self):
         for record in self:
             record.amount_diff = record.amount_total - record.amount_round
+
+
+
+class posbill(models.Model):
+    _inherit = 'pos.order'
+    _name = 'pos.order'
+    text_amount = fields.Char(compute='_amountwords',string='Amount in words')
+    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.user.company_id.currency_id)
+
+
+    def _amountwords(self):
+        for record in self:
+            record.text_amount= num2words(record.amount_total, lang='en_IN', to='currency', currency='INR')
+
+
+
+
+    
+
 

@@ -36,7 +36,7 @@
 
             <tr >
         <td style="width:400px"><name>Age:</name>  </td>
-       <td ><span t-field="docs.partner_id.agecal"/>
+       <td ><span t-field="docs.agecal"/>
        </td>
 <td><name>Sex:</name>  </td>
 <td><span t-field="docs.partner_id.gender"/>
@@ -69,7 +69,7 @@
 </div>
 <div style="padding-top:20px; font-size:20px"><strong>Advice on Discharge</strong></div>
 
-<div style="padding-top:20px"><span t-field="docs.advice"/></div>
+<div style="padding-top:20px"><span t-raw="docs.advice"/></div>
 
 <div style="padding-top:50px; font-size:20px; text-align:right; font-weight: bold"><span t-field="docs.doctor"/></div>
 

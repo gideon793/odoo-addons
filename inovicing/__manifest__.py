@@ -11,6 +11,7 @@
 	'depends': ['base','account','sale','purchase'],
 	'data': [
         'views/views.xml',
+		'security/ir.model.access.csv'
     ],
 	'images': [],
 	'license': 'AGPL-3',

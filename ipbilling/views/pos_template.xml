@@ -1,0 +1,138 @@
+<odoo>
+   <data>
+      <template id="pos_template">
+         <t t-name="ipbilling.pos_template">
+            <t t-call="web.html_container">
+               <t t-foreach="docs" t-as="o">
+                  <t t-call="web.external_layout">
+                     <div class="page">
+                        <div class="text-center"><strong>Pharmacy Bill</strong></div>
+                        <table class="patient and bill details">
+                           <thead></thead>
+                           <tr>
+                              <td style="width:200px">
+                                 <name>Patient details:</name>
+                              </td>
+                              <td style="width:1000px">
+                                 <span t-field="docs.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
+                              </td>
+                              <td style="width:500px">
+                                 <table>
+                                    <tr>
+                                       <td>
+                                          <name>Registration number:</name>
+                                       </td>
+                                    </tr>
+                                   </table>
+                              </td>
+                              <td style="width:500px">
+                                 <table>
+                                    <tr>
+                                       <td>
+                                          <span t-field="docs.partner_id.registration"/>
+                                       </td>
+                                    </tr>
+                                 </table>
+                              </td>
+                           </tr>
+                           <tr>
+                              <td style="width:200px">
+                                 <name>Bill Number:</name>
+                              </td>
+                              <td style="width:1000px">
+                                 <span t-field="docs.name"/>
+                              </td>
+                              
+                           </tr>
+                           
+                           <tr>                            
+                              <td style="width:500px">
+                                 <name>Billing date:</name>
+                              </td>
+                              <td style="width:500px">
+                                 <span t-field="docs.date_order"/>
+                              </td>
+                           </tr>
+                         
+                        </table>
+                        <table class="table table-sm o_main_table">
+                           <thead>
+                              <tr>
+                                 <t t-set="colspan" t-value="5"/>
+                                 <th class="text-left">Description</th>
+                                 <th class="text-right">Quantity</th>
+                                 <th class="text-right">Unit Price</th>
+                                 <th class="text-right">
+                                    <t groups="account.group_show_line_subtotals_tax_excluded">Amount</t>
+                                    <t groups="account.group_show_line_subtotals_tax_included">Total Price</t>
+                                 </th>
+                              </tr>
+                           </thead>
+                           <tbody class="sale_tbody">
+                              <t t-set="current_subtotal" t-value="0"/>
+                              <t t-foreach="docs.lines" t-as="line">
+                                 <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                                 <t t-set="current_subtotal" t-value="current_subtotal + line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
+                                 <tr>
+                                      <td><span t-field="line.product_id"/></td>
+                                       <td class="text-right">
+                                          <span t-esc="'%.0f'% line.qty"/>
+                                       </td>
+                                       <td class="text-right">
+                                          <span t-esc="'%.2f'% line.price_unit"/>
+                                       </td>
+                                       <td t-if="display_discount" class="text-right" groups="sale.group_discount_per_so_line">
+                                          <span t-field="line.discount"/>
+                                       </td>
+                                       <td class="text-right o_price_total">
+                                          <span t-esc="'%.2f'% line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                                          <span t-esc="'%.2f'% line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
+                                       </td>
+                                   </tr>
+                                 <t t-if="current_section and (line_last or docs.order_line[line_index+1].display_type == 'line_section')">
+                                    <tr class="is-subtotal text-right">
+                                       <td colspan="99">
+                                          <strong class="mr16">Subtotal</strong>
+                                          <span t-esc="current_subtotal" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: docs.pricelist_id.currency_id}"/>
+                                       </td>
+                                    </tr>
+                                 </t>
+                              </t>
+                           </tbody>
+                        </table>
+                        <div class="clearfix">
+                           <div id="total" class="row" name="total">
+                              <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
+                                 <table class="table table-sm">
+                                    <tr class="border-black o_subtotal">
+                                       <td><strong>Total</strong></td>
+                                       <td class="text-right">
+                                          <span t-field="docs.amount_total" t-options="{'widget':'monetary','display_currency': currency_id}"/>
+                                       </td>
+                                    </tr>
+                                 </table>
+                              </div>
+
+                           </div>
+                        </div>
+                                          <div class="text-uppercase"><strong>Total Amount:</strong><span t-field="docs.text_amount"/> </div>
+
+                        <div style="padding-top:100px; text-align:right">For San-Ker</div>
+                     </div>
+                  </t>
+               </t>
+            </t>
+         </t>
+      </template>
+
+        <report id="pos_bill" 
+                string="SAN-KER Pharmacy Bill"
+                model="pos.order"
+                report_type="qweb-pdf"
+                name="ipbilling.pos_template"
+                file="ipbilling.pos_template"
+                menu="True"/>
+
+
+   </data>
+</odoo>

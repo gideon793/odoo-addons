@@ -9,9 +9,11 @@
       <field name="arch" type="xml">
         <tree default_order="create_date desc">
           <field name="partner_id"/>
+          <field name="agecal"/>
           <field name="registration"/>
           <field name="ipregno"/>
-          <field name="admlink" string="Admissions" invisible="1"/>
+          <field name="credit" string="Total Credit"/>
+          <field name="admlink" string="Admissions" invisible="1"/>          
         </tree>
       </field>
     </record>
@@ -23,8 +25,12 @@
         <form>
          <group>
           <field name="partner_id"/>
+          <field name="agecal"/>
           <field name="registration"/>
           <field name="ipregno"/>
+          <field name="ward"/>
+          <field name="admitted"/>
+
          </group> 
         
       <group name="admission lines"> 
@@ -33,10 +39,11 @@
           <field name="partner_id" invisible="1"/>
           <field name="admdate"/>
           <field name="discdate"/>
-           </tree>
+        </tree>
         <form>
          <group>
           <field name = "partner_id"/>
+          <field name= "agecal" string="Age"/>
           <field name = "registration"/>
           <field name = "ipregno"/>
           <field name = "admdate"/>
@@ -51,7 +58,7 @@
             <field name = "code" string="ICD Code"/>
            </form>
          </field>          
-          <field name = "advice"/>
+          <field name = "advice" widget="html"/>
           <field name = "doctor"/>
           <button name="%(inpatientreport)d" string="Discharge Summary" type="action"/>
           <field name = "ipsaleline" string="IPD Bills" context="{'default_partner_id':partner_id, 'default_admdate':admdate, 'default_discdate':discdate,  'default_isip':True}"/>
@@ -64,13 +71,28 @@
       </field>
     </record>
 
+<record id="inpatient_search" model="ir.ui.view">
+<field name="name">IP Search</field>
+<field name="model">inpatient</field>
+<field name="mode">primary</field>
+<field name="arch" type="xml">
+<search>
+<filter string="Current Admissions" name="current_admission" domain="[('admitted', '=', True)]" context="{'group_by':'ward'}"/>
+                 <field name="partner_id" string="Patient Name" filter_domain="[('partner_id','ilike',self)]"/>
+                 <field name="registration" string="Registration Number" filter_domain="[('registration','ilike',self)]"/>
+                 <field name="ipregno" string="IP Registration " filter_domain="[('ipregno','ilike',self)]"/>
 
+
+</search>
+</field>
+</record>
 
 
 <record id="inpatient_menu_action" model="ir.actions.act_window">
 <field name="name">Inpatient Management</field>
 <field name="res_model">inpatient</field>
 <field name="view_mode">tree,form</field>
+<field name="context">{"search_default_current_admission":1}</field>
 </record>
 
 <record id="admission_menu_action" model="ir.actions.act_window">
@@ -85,7 +107,7 @@
 
 
 
-
+         
 
 
   </data>

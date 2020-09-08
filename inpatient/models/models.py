@@ -1,15 +1,26 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
+from datetime import datetime, date
+from dateutil.relativedelta import relativedelta
+
 
 class inpatient(models.Model):
     partner_id= fields.Many2one('res.partner', string='Patient name')
     _rec_name = 'partner_id'
     registration = fields.Char(related='partner_id.registration')
     ipregno = fields.Char(related='partner_id.ipregno')
-    age = fields.Integer(related='partner_id.age')
     gender = fields.Selection(related='partner_id.gender')
     admlink = fields.One2many('admission','link')
+    credit = fields.Monetary(related='partner_id.credit')
+    ward = fields.Selection([('male','Male Ward'),('female','Female Ward'), ('halfway','Halfway Home')])
+    admitted = fields.Boolean('Admitted')
+    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.user.company_id.currency_id)
+    agecal = fields.Integer(related='partner_id.agecal', string='Age')
+
+
+
+
 
 
 class admission(models.Model): 
@@ -23,6 +34,19 @@ class admission(models.Model):
     advice = fields.Text(string='Advice on Discharge')
     diagip=fields.One2many('ipdiag','link')
     doctor=fields.Many2one('doctors.doctors', string='Discharging Doctor')
+    dob = fields.Date(related='partner_id.dob')
+    agecal = fields.Integer(compute='_age',store=True, group_operator=False, string='Age')
+
+    @api.depends('dob','admdate')
+    def _age(self):
+        for record in self:
+            if record.dob:
+                dt=str(record.dob)
+                d1=datetime.strptime(dt, "%Y-%m-%d").date()
+                d2=record.admdate
+                record.agecal = relativedelta(d2, d1).years
+
+
 
 
 
