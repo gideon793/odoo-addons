@@ -2,3 +2,9 @@ For Error:
 DETAIL: Key (id)=(91) already exists.
 
 SELECT setval('public.*table_name*_id_seq', (SELECT MAX(id) FROM public.*table_name*)+1);
+
+For error:
+File not found
+
+DELETE from public.ir_attachment WHERE store_fname LIKE '%fe3dd0440d039043439f8b17a4a512255c85dfd7%';
+
