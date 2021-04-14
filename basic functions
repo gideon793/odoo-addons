@@ -1,0 +1,4 @@
+For Error:
+DETAIL: Key (id)=(91) already exists.
+
+SELECT setval('public.*table_name*_id_seq', (SELECT MAX(id) FROM public.*table_name*)+1);
