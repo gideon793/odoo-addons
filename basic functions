@@ -8,3 +8,5 @@ File not found
 
 DELETE from public.ir_attachment WHERE store_fname LIKE '%fe3dd0440d039043439f8b17a4a512255c85dfd7%';
 
+SELECT generate_series FROM GENERATE_SERIES((select min(id) from public.account_move_line), (select max(id) from account_move_line) ) 
+WHERE NOT EXISTS(SELECT id FROM public.account_move_line WHERE id = generate_series);
