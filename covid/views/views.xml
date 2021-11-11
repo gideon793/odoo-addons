@@ -1,69 +1,300 @@
 <odoo>
-  <data>
-    <record model="ir.ui.view" id="covid.list">
-      <field name="name">covid list</field>
-      <field name="model">covid.covid</field>
-      <field name="arch" type="xml">
-        <tree>
-          <field name="date"/>
-          <field name="partner_id"/>
-          <field name="registration"/>
-          <field name="age"/>
-          <field name="gender"/>
-          <field name="diagnosis"/>
-          <field name="type"/>
-          <field name="etiology"/>
-          <field name="refractory"/>
-          <field name="medications"/>
-          <field name="control"/>
-          <field name="lastseizure"/>
-          <field name="seizure"/>
-          <field name="status"/>
-          <field name="default"/>
-        </tree>
-      </field>
-    </record>
+    <data>
+        <record model="ir.ui.view" id="covid_epilepsy_list">
+            <field name="name">epilepsy list</field>
+            <field name="model">covid.epilepsy</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="partner_id"/>
+                    <field name="registration"/>
+                    <field name="gender"/>
+                    <field name="dob"/>
+                    <field name="diagnosis"/>
+                    <field name="type"/>
+                    <field name="etiology"/>
+                    <field name="onset"/>
+                    <field name="refractory"/>
+                    <field name="imaging"/>
+                    <field name="imaging_details"/>
+                    <field name="eeg"/>
+                    <field name="medications"/>
+                    <field name="medication_list" widget="html"/>
+                    <field name="control"/>
+                    <field name="last_attack"/>
+                </tree>
+            </field>
+        </record>
 
-   <record model="ir.ui.view" id="covid.form">
-      <field name="name">covid form</field>
-      <field name="model">covid.covid</field>
-      <field name="arch" type="xml">
-        <form>
-         <group colspan="1" col="3">
-          <field name="date"/>
-          <field name="partner_id"/>
-          <field name="registration"/>
-          <field name="age"/>
-          <field name="gender"/>
-          <field name="diagnosis"/>
-          <field name="type"/>
-          <field name="etiology"/>
-          <field name="refractory"/>
-          <field name="medications"/>
-          <field name="control"/>
-          <field name="lastseizure"/>
-          <field name="seizure"/>
-          <field name="status"/>
-          <field name="default"/>        
+        <record model="ir.ui.view" id="covid_epilepsy_form">
+            <field name="name">epilepsy form</field>
+            <field name="model">covid.epilepsy</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="registration"/>
+                            <field name="gender"/>
+                            <field name="dob"/>
+                            <field name="diagnosis">
+                                <tree>
+                                    <field name="diagnosis"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group>
 
-</group>
-        </form>
-      </field>
-    </record>
+                            <field name="type"/>
+                            <field name="etiology"/>
+                            <field name="onset"/>
+                            <field name="refractory"/>
+                            <field name="control"/>
+                            <field name="last_attack"/>
+                            <field name="imaging"/>
+                            <field name="imaging_details"/>
+                            <field name="eeg"/>
+                            <field name="medications"/>
+                            <field name="medication_list" widget="html"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="covid.list">
+            <field name="name">covid list</field>
+            <field name="model">covid.covid</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="date"/>
+                    <field name="partner_id"/>
+                    <field name="registration"/>
+                    <field name="agecal"/>
+                    <field name="gender"/>
+                    <field name="diagnosis"/>
+                    <field name="type"/>
+                    <field name="etiology"/>
+                    <field name="refractory"/>
+                    <field name="medications"/>
+                    <field name="control"/>
+                    <field name="lastseizure"/>
+                    <field name="seizure"/>
+                    <field name="status"/>
+                    <field name="default"/>
+
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="covid.form">
+            <field name="name">covid form</field>
+            <field name="model">covid.covid</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="partner_id"/>
+                            <field name="registration"/>
+                            <field name="agecal"/>
+                            <field name="gender"/>
+                            <field name="diagnosis" style="width:20%%">
+                                <tree>
+                                    <field name="diagnosis" string="Diagnosis"/>
+                                </tree>
+                            </field>
+                            <field name="type"/>
+                            <field name="etiology"/>
+                            <field name="refractory"/>
+                            <field name="onset"/>
+
+                        </group>
+                        <group>
+                            <field name="medications"/>
+                            <field name="medication_list" widget="html"/>
+                            <field name="control"/>
+                            <field name="lastseizure"/>
+                            <field name="seizure"/>
+                            <field name="status"/>
+                            <field name="default"/>
+                            <field name="default_duration"/>
+                        </group>
+                    </group>
+
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="covid_action_window">
+            <field name="name">Covid Project</field>
+            <field name="res_model">covid.covid</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.ui.view" id="dida_list">
+            <field name="name">dida list</field>
+            <field name="model">covid.didaresearch</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="date"/>
+                    <field name="partner_id"/>
+                    <field name="registration"/>
+                    <field name="age"/>
+                    <field name="gender"/>
+                    <field name="diagnosis"/>
+                    <field name="comorbid"/>
+                    <field name="details"/>
+                    <field name="antipsychotic"/>
+                    <field name="antidepressant"/>
+                    <field name="anxiolytic"/>
+                    <field name="antiepileptic"/>
+                    <field name="moodstabilizer"/>
+                    <field name="risk"/>
+                    <field name="ward"/>
+                    <field name="covid"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="dida_form">
+            <field name="name">dida form</field>
+            <field name="model">covid.didaresearch</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group colspan="1" col="3">
+                        <group string="Demographic Details">
+                            <field name="partner_id"/>
+                            <field name="date"/>
+                            <field name="registration"/>
+                            <field name="age"/>
+                            <field name="gender"/>
+                            <field name="occupation"/>
+                            <field name="diagnosis"/>
+                            <field name="comorbid"/>
+                            <field name="details"/>
+                        </group>
+                        <group string="Medications Details">
+
+                            <field name="antipsychotic"/>
+                            <field name="antipsychoticdetails"/>
+                            <field name="antidepressant"/>
+                            <field name="antidepressantdetails"/>
+                            <field name="anxiolytic"/>
+                            <field name="anxiolyticdetails"/>
+                            <field name="antiepileptic"/>
+                            <field name="antiepilepticdetails"/>
+                            <field name="moodstabilizer"/>
+                            <field name="moodstabilizerdetails"/>
+                            <field name="others"/>
+                        </group>
+                        <group string="Covid Details">
+
+                            <field name="risk"/>
+                            <field name="ward"/>
+                            <field name="covid"/>
+                            <field name="quarantine"/>
+
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
 
 
+        <record model="ir.actions.act_window" id="coviddida_action_window">
+            <field name="name">Covid Research</field>
+            <field name="res_model">covid.didaresearch</field>
+            <field name="view_mode">tree,form</field>
+        </record>
 
-    <record model="ir.actions.act_window" id="covid_action_window">
-      <field name="name">Covid Project</field>
-      <field name="res_model">covid.covid</field>
-      <field name="view_mode">tree,form</field>
-    </record>
+        <record model="ir.ui.view" id="covid_rattest">
+            <field name="name">covid rattest list</field>
+            <field name="model">covid.rattest</field>
+            <field name="arch" type="xml">
+                <tree default_order="date desc">
+                    <field name="date"/>
+                    <field name="name"/>
+                    <field name="dob"/>
+                    <field name="gender"/>
+                    <field name="address"/>
+                    <field name="occupation"/>
+                </tree>
+            </field>
+        </record>
 
+        <record model="ir.ui.view" id="covid_rattest_form">
+            <field name="name">covid rattest form</field>
+            <field name="model">covid.rattest</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="date"/>
+                        <field name="name"/>
+                        <field name="dob"/>
+                        <field name="age"/>
+                        <field name="gender"/>
+                        <field name="address"/>
+                        <field name="occupation"/>
+                        <field name="phone"/>
+                        <field name="travel"/>
+                        <field name="arrivaldate"/>
+                        <field name="contact"/>
+                        <field name="case"/>
+                        <field name="symptoms"/>
+                        <field name="comorbidities"/>
+                        <field name="vaccination"/>
+                        <field name="result"/>
+                        <button name="%(covid_report)d" string="Print Result" type="action"/>
+                        <button name="%(covid_patient_report)d" string="Print Patient Details" type="action"/>
+                    </group>
+                </form>
+            </field>
+        </record>
 
+        <record model="ir.ui.view" id="covidrattestexcel_form_view">
+            <field name="name">rattestexcel_form</field>
+            <field name="model">covid.rattestwizard</field>
+            <field name="arch" type="xml">
+                <form string="Select date">
+                    <group>
+                        <field name="date" string="Date for report"/>
+                    </group>
+                    <footer>
+                        <button name="get_report" string="Print Report" type="object" class="oe_highlight"/>
+                        <button name="get_excel_report" string="Excel Sheet" type="object"/>
+                        <button string="Cancel" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
 
+        <record model="ir.actions.act_window" id="covidrattest_action_window">
+            <field name="name">Covid Rat Test Result</field>
+            <field name="res_model">covid.rattest</field>
+            <field name="view_mode">tree,form</field>
+        </record>
 
+        <act_window id="rattestexcel_menu_action"
+                    name="RAT Test - DMHO"
+                    res_model="covid.rattestwizard"
+                    view_mode="form"
+                    target="new"/>
 
-    <menuitem name="Research Project" id="covid_menu_root" parent=""/>
-    <menuitem name="Epilepsy" id="covid_menu_1" parent="covid_menu_root" action="covid_action_window"/>
-  </data>
+        <record model="ir.actions.act_window" id="epilepsy_action_window">
+            <field name="name">Covid Epilepsy Project</field>
+            <field name="res_model">covid.epilepsy</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="COVID Modules" id="covid_menu_root" parent=""/>
+        <menuitem name="Epilepsy" id="covid_menu_1" parent="covid_menu_root"/>
+        <menuitem name="Epilepsy Project" id="covid_menu_5" parent="covid_menu_1" action="covid_action_window"/>
+        <menuitem name="Patient Details" id="covid_menu_4" parent="covid_menu_1" action="epilepsy_action_window"/>
+        <menuitem name="Covid Psychotropics" id="covid_menu_2" parent="covid_menu_root"
+                  action="coviddida_action_window"/>
+        <menuitem name="Covid Rat Test" id="covid_menu_9" parent="covid_menu_root" action="covidrattest_action_window"/>
+        <menuitem id="covid_nemu_4" parent="covid_menu_root" name="RAT Test Report - DMHO"
+                  action="rattestexcel_menu_action"/>
+
+    </data>
 </odoo>

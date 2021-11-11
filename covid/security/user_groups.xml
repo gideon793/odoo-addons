@@ -1,0 +1,22 @@
+<odoo>
+  <data>
+
+<record model="ir.module.category" id="research_management">
+  <field name="name">SAN-KER research management access</field>
+  <field name="description">User access level for SAN-KER research</field>
+  <field name="sequence">11</field>
+</record>
+
+<record id="research_user" model="res.groups">
+        <field name="name">SAN-KER research management</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+
+<record id="sankerresearchhigher_group" model="res.groups">
+        <field name="name">SAN-KER Research Higher Management</field>
+        <field name="implied_ids" eval="[(4, ref('covid.research_user'))]"/>
+    </record>
+
+  </data>
+</odoo>

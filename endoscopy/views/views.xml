@@ -1,0 +1,168 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="endoscopy.list">
+            <field name="name">endoscopy list</field>
+            <field name="model">endoscopy.endoscopy</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="partner_id"/>
+                    <field name="date"/>
+                    <field name="agecal"/>
+                    <field name="gender"/>
+                    <field name="impression"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="endoscopy.form">
+            <field name="name">endoscopy form</field>
+            <field name="model">endoscopy.endoscopy</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="partner_id"/>
+                        <field name="date"/>
+                        <field name="agecal"/>
+                        <field name="gender"/>
+                    </group>
+                    <group>
+                        <field name="study"/>
+                        <field name="findings" widget="html"/>
+                        <field name="impression"/>
+                        <field name="images">
+                            <tree>
+                                <field name="image" widget="image" class="oe_avatar"/>
+                                <field name="caption"/>
+                            </tree>
+                            <form>
+                                <field name="image" widget="image" class="oe_avatar"/>
+                                <field name="caption"/>
+                            </form>
+                        </field>
+                    </group>
+                    <button name="%(endoscopy_report)d" string="Print Report" type="action"/>
+
+
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="allergy_list">
+            <field name="name">allergy list</field>
+            <field name="model">endoscopy.allergytest</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="partner_id"/>
+                    <field name="date"/>
+                    <field name="agecal"/>
+                    <field name="gender"/>
+                    <field name="impression"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="allergy_form">
+            <field name="name">allergy form</field>
+            <field name="model">endoscopy.allergytest</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group colspan="1" col="2" string="Patient Details">
+                    <group >
+                        <field name="partner_id"/>
+                        <field name="date"/>
+                        <field name="agecal"/>
+                        <field name="gender"/>
+                    </group>
+                    <group>
+                        <field name="ordered_by"/>
+                        <field name="complaints"/>
+                        <field name="start_time" widget="float_time"/>
+                        <field name="end_time" widget="float_time"/>
+                    </group>
+                    </group>
+                    <group colspan="1" col="4" string="Test Details">
+                            <field name="saline_wheal" />
+                            <field name="saline_interpretation" string=""/>
+                             <field name="dfarina_wheal"/>
+                            <field name="dfarina_interpretation" string=""/>
+                            <field name="dperonysinus_wheal" />
+                            <field name="dperonysinus_interpretation" string=""/>
+                            <field name="btropicalis_wheal"/>
+                            <field name="btropicalis_interpretation" string=""/>
+                            <field name="aconyzoides_wheal"/>
+                            <field name="aconyzoides_interpretation" string=""/>
+                            <field name="aspinosus_wheal"/>
+                            <field name="aspinosus_interpretation" string=""/>
+                            <field name="amexicana_wheal"/>
+                            <field name="amexicana_interpretation" string=""/>
+                            <field name="aindica_wheal"/>
+                            <field name="aindica_interpretation" string=""/>
+                            <field name="bnigra_wheal"/>
+                            <field name="bnigra_interpretation" string=""/>
+                            <field name="cpapaya_wheal"/>
+                            <field name="cpapaya_interpretation" string=""/>
+                            <field name="cdactylon_wheal"/>
+                            <field name="cdactylon_interpretation" string=""/>
+                            <field name="crotundus_wheal"/>
+                            <field name="crotundus_interpretation" string=""/>
+                            <field name="eucalyptus_wheal"/>
+                            <field name="eucalyptus_interpretation" string=""/>
+                            <field name="hintegrifolia_wheal"/>
+                            <field name="hintegrifolia_interpretation" string=""/>
+                            <field name="xstrumarium_wheal"/>
+                            <field name="strumarium_interpretation" string=""/>
+                            <field name="zmays_wheal"/>
+                            <field name="mays_interpretation" string=""/>
+                            <field name="alternata_wheal"/>
+                            <field name="alternata_interpretation" string=""/>
+                            <field name="afumigatus_wheal"/>
+                            <field name="fumigatus_interpretation" string=""/>
+                            <field name="aniger_wheal"/>
+                            <field name="niger_interpretation" string=""/>
+                            <field name="rnigricans_wheal"/>
+                            <field name="nigricans_interpretation" string=""/>
+                            <field name="cherbarum_wheal"/>
+                            <field name="herbarum_interpretation" string=""/>
+                            <field name="fsolanii_wheal"/>
+                            <field name="solanii_interpretation" string=""/>
+                            <field name="helminthosporium_wheal"/>
+                            <field name="helminthosporium_interpretation" string=""/>
+                            <field name="cockroach_wheal"/>
+                            <field name="cockroach_interpretation" string="" />
+                            <field name="house_wheal"/>
+                            <field name="house_interpretation" string=""/>
+                            <field name="cat_wheal"/>
+                            <field name="cat_interpretation" string=""/>
+                            <field name="dog_wheal"/>
+                            <field name="dog_interpretation" string=""/>
+                            <field name="hdihydrochloride_wheal"/>
+                            <field name="dihydrochloride_interpretation" string=""/>
+                    </group>
+                    <group>
+        <field name="impression"/>
+                    <button name="%(allergy_report)d" string="Print Allergy Report" type="action"/>
+</group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="endoscopy.action_window">
+            <field name="name">SAN-KER Endoscopy</field>
+            <field name="res_model">endoscopy.endoscopy</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{"default_findings":"<![CDATA[<p>Test</p><p>This is another test</p>]]>"}</field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="endoscopy.allergy_action_window">
+            <field name="name">SAN-KER Allergy Testing</field>
+            <field name="res_model">endoscopy.allergytest</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="ENT Investigations" id="endoscopy.menu_root" parent=""/>
+        <menuitem name="Endoscopy" id="endoscopy.menu_1" parent="endoscopy.menu_root"
+                  action="endoscopy.action_window"/>
+        <menuitem name="Allergy Test" id="allergy_menu_1" parent="endoscopy.menu_root"
+                  action="endoscopy.allergy_action_window"/>
+    </data>
+</odoo>

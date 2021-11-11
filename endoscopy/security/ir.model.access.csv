@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_endoscopy_endoscopy,endoscopy.endoscopy,model_endoscopy_endoscopy,base.group_user,1,1,1,1
+access_endoscopy_images,endoscopy.images,model_endoscopy_images,base.group_user,1,1,1,1
+access_endoscopy_allergy,endoscopy.allergy,model_endoscopy_allergytest,base.group_user,1,1,1,1

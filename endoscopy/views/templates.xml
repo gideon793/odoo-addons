@@ -1,0 +1,560 @@
+<odoo>
+    <data>
+        <report id="endoscopy_report"
+                model="endoscopy.endoscopy"
+                string="Endoscopy Report"
+                report_type="qweb-pdf"
+                name="endoscopy.endoscopy_report"
+                menu="True"/>
+
+        <report id="allergy_report"
+                model="endoscopy.allergytest"
+                string="Allergy Test Report"
+                report_type="qweb-pdf"
+                name="endoscopy.allergytest_report"
+                menu="True"/>
+
+        <template id="endoscopy_report">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-size:16px">
+                        <h3 class="text-center">Endoscopy Report</h3>
+                        <hr style="width:100%; height:1px; color: black; background-color: black"></hr>
+
+                        <table style="width:100%; font-size: 18px; ">
+                            <tr>
+                                <td><![CDATA[&nbsp;]]></td>
+                            </tr>
+                            <tr>
+                                <td>Name:</td>
+                                <td>
+                                    <span t-esc="docs['partner_id'].name"/>
+                                </td>
+                                <td>Date:</td>
+                                <td>
+                                    <span t-esc="docs['date']" t-options="{'widget': 'date'}"/>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>Gender:</td>
+                                <td>
+                                    <span t-esc="docs['gender']"/>
+                                </td>
+                                <td>Age:</td>
+                                <td>
+                                    <span t-esc="docs['agecal']"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><![CDATA[&nbsp;]]></td>
+                                <td><![CDATA[&nbsp;]]></td>
+                                <td><![CDATA[&nbsp;]]></td>
+                                <td><![CDATA[&nbsp;]]></td>
+
+                            </tr>
+                        </table>
+                        <hr style="width:100%; height:1px; color: black; background-color: black"></hr>
+
+                        <table>
+                            <tr style="width:100%; height:5px">
+                                <t t-foreach="docs['images']" t-as="image">
+                                    <td style="text-align: center">
+                                        <span t-field="image.image"
+                                              t-options="{'widget': 'image','style': 'width: 200px;height: 200px'}"/>
+                                        <br/>
+                                        <span t-esc="image.caption"/>
+                                    </td>
+                                </t>
+                            </tr>
+                        </table>
+
+                        <hr style="width:100%; height:1px; color: black; background-color: black"></hr>
+
+                        <h4><![CDATA[&nbsp;]]></h4>
+                        <h4>Study:
+                            <t t-set="studydetail"
+                               t-value="dict([('nasal','Nasal Endoscopy'),('laryngoscopy','Laryngoscopy'),(False,False)])"/>
+                            <span t-esc="studydetail[docs['study']]"/>
+                        </h4>
+                        <h4><![CDATA[&nbsp;]]></h4>
+
+                        <h4>Findings:
+                            <span t-raw="docs['findings']"/>
+                        </h4>
+                        <h4><![CDATA[&nbsp;]]></h4>
+                        <hr style="width:100%; height:1px; color: black; background-color: black"></hr>
+                        <h4>Impression:
+                            <span t-esc="docs['impression']"/>
+                        </h4>
+                        <h4><![CDATA[&nbsp;]]></h4>
+                        <h4><![CDATA[&nbsp;]]></h4>
+                        <h5>
+                            Dr. Lashngainlang Sohliya, MS
+                        </h5>
+
+                    </div>
+                </t>
+            </t>
+        </template>
+
+
+        <template id="allergytest_report">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-size:16px">
+                        <h3 class="text-center">Allergy Test Report</h3>
+                        <hr style="width:100%; height:0.5px; color: black; background-color: black"></hr>
+
+                        <table style="width:100%; font-size: 18px; ">
+                            <tr>
+                                <td>Name:</td>
+                                <td>
+                                    <span t-esc="docs['partner_id'].name"/>
+                                </td>
+                                <td>Date:</td>
+                                <td>
+                                    <span t-esc="docs['date']" t-options="{'widget': 'date'}"/>
+                                </td>
+
+                            </tr>
+                            <tr style="border_bottom: solid 1px black">
+                                <td>Gender:</td>
+                                <td><t t-set="sex" t-value="dict([('male','Male'),('female','Female'),('false','False')])"/>
+                                    <span t-esc="sex[docs['gender']]"/>
+                                </td>
+                                <td>Age:</td>
+                                <td>
+                                    <span t-esc="docs['agecal']"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <hr style="width:100%; height:0.5px; color: black; background-color: black"></hr>
+
+                        <table style="width:100%">
+                            <tr>
+                                <td style="width:20%">Presenting complaints:</td>
+                                <td style="text-align:left">
+                                    <span t-esc="docs['complaints']"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <t t-if="docs['ordered_by']">
+                                    <td>Ordered By:</td>
+                                    <td style="text-align:left">
+                                        <span t-esc="docs['ordered_by']"/>
+                                    </td>
+                                </t>
+                            </tr>
+                            <tr>
+                                <td>Start Time:</td>
+                                <td style="text-align:left">
+                                    <span t-esc="docs['start_time']"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>End Time:</td>
+                                <td>
+                                    <span t-esc="docs['end_time']"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <hr style="width:100%; height:0.5px; color: black; background-color: black"></hr>
+
+                        <table style="width:100%; border:1px solid black; text-align:center">
+                            <thead>
+                                <tr style="width:100%; border:1px solid black">
+                                    <td style="width:7%; border:1px solid black; text-align:center">Sl. No.</td>
+                                    <td style="width:40%; border:1px solid black; text-align:center">Allergen</td>
+                                    <td style="width:13%; border:1px solid black; text-align:center">Type</td>
+                                    <td style="width:25%; border:1px solid black; text-align:center">Wheal Diameter</td>
+                                    <td style="width:15%; border:1px solid black; text-align:center">Interpretation</td>
+                                </tr>
+                            </thead>
+                            <tbody style="font-size:10px">
+                                <tr>
+                                    <td style="text-align:center; border:1px solid black;">1.</td>
+                                    <td style="text-align:center; border:1px solid black;">Saline</td>
+                                    <td style="text-align:center; border:1px solid black;">Negative Control</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['saline_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="saline"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="saline[docs['saline_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                 <tr>
+                                    <td style="text-align:center; border:1px solid black;">2.</td>
+                                    <td style="text-align:center; border:1px solid black;">Dermatophagoids farina</td>
+                                    <td style="text-align:center; border:1px solid black;">Mites</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['dfarina_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="dfarina"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="dfarina[docs['dfarina_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; border:1px solid black;">3.</td>
+                                    <td style="text-align:center; border:1px solid black;">Dermatophagoids pteronyssinus</td>
+                                    <td style="text-align:center; border:1px solid black;">Mites</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['dperonysinus_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="dpteronyssinus"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="dpteronyssinus[docs['dperonysinus_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; border:1px solid black;">4.</td>
+                                    <td style="text-align:center; border:1px solid black;">Blomia tropicalis</td>
+                                    <td style="text-align:center; border:1px solid black;">Mites</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['btropicalis_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="btropicalis"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="btropicalis[docs['btropicalis_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; border:1px solid black;">5.</td>
+                                    <td style="text-align:center; border:1px solid black;">Ageratum conyzoides</td>
+                                    <td style="text-align:center; border:1px solid black;">Pollen</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['aconyzoides_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="aconyzoides"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="aconyzoides[docs['aconyzoides_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                 <tr>
+                                    <td style="text-align:center; border:1px solid black;">6.</td>
+                                    <td style="text-align:center; border:1px solid black;">Amaranthus spinosus</td>
+                                    <td style="text-align:center; border:1px solid black;">Pollen</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['aspinosus_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="aspinosus"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="aspinosus[docs['aspinosus_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; border:1px solid black;">7.</td>
+                                    <td style="text-align:center; border:1px solid black;">Argemone mexicana</td>
+                                    <td style="text-align:center; border:1px solid black;">Pollen</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['amexicana_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="amexicana"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="amexicana[docs['amexicana_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; border:1px solid black;">8.</td>
+                                    <td style="text-align:center; border:1px solid black;">Azadirechta indica</td>
+                                    <td style="text-align:center; border:1px solid black;">Pollen</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['aindica_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="aindica"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="aindica[docs['aindica_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; border:1px solid black;">9.</td>
+                                    <td style="text-align:center; border:1px solid black;">Brassica nigra</td>
+                                    <td style="text-align:center; border:1px solid black;">Pollen</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['bnigra_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="bnigra"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="bnigra[docs['bnigra_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; border:1px solid black;">10.</td>
+                                    <td style="text-align:center; border:1px solid black;">Carica papaya</td>
+                                    <td style="text-align:center; border:1px solid black;">Pollen</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['cpapaya_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="cpapaya"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="cpapaya[docs['cpapaya_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; border:1px solid black;">11.</td>
+                                    <td style="text-align:center; border:1px solid black;">Cynodon dactylon</td>
+                                    <td style="text-align:center; border:1px solid black;">Pollen</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['cdactylon_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="cdactylon"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="cdactylon[docs['cdactylon_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; border:1px solid black;">12.</td>
+                                    <td style="text-align:center; border:1px solid black;">Cyperus rotundus</td>
+                                    <td style="text-align:center; border:1px solid black;">Pollen</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['crotundus_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="crotundus"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="crotundus[docs['crotundus_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; border:1px solid black;">13.</td>
+                                    <td style="text-align:center; border:1px solid black;">Eucalyptus sp</td>
+                                    <td style="text-align:center; border:1px solid black;">Pollen</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['eucalyptus_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="eucalyptus"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="eucalyptus[docs['eucalyptus_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; border:1px solid black;">14.</td>
+                                    <td style="text-align:center; border:1px solid black;">Holoptelea integrifolia</td>
+                                    <td style="text-align:center; border:1px solid black;">Pollen</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['hintegrifolia_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="hintegrifolia"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="hintegrifolia[docs['hintegrifolia_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; border:1px solid black;">15.</td>
+                                    <td style="text-align:center; border:1px solid black;">Xanthium strumarium</td>
+                                    <td style="text-align:center; border:1px solid black;">Pollen</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['xstrumarium_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="xstrumarium"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="xstrumarium[docs['strumarium_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; border:1px solid black;">16.</td>
+                                    <td style="text-align:center; border:1px solid black;">Zea mays</td>
+                                    <td style="text-align:center; border:1px solid black;">Pollen</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['zmays_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="zmays"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="zmays[docs['mays_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; border:1px solid black;">17.</td>
+                                    <td style="text-align:center; border:1px solid black;">Alternaria alternata</td>
+                                    <td style="text-align:center; border:1px solid black;">Fungus</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['alternata_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="alternata"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="alternata[docs['alternata_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; border:1px solid black;">18.</td>
+                                    <td style="text-align:center; border:1px solid black;">Aspergillus fumigatus</td>
+                                    <td style="text-align:center; border:1px solid black;">Fungus</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['afumigatus_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="afumigatus"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="afumigatus[docs['fumigatus_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; border:1px solid black;">19.</td>
+                                    <td style="text-align:center; border:1px solid black;">Aspergillus niger</td>
+                                    <td style="text-align:center; border:1px solid black;">Fungus</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['aniger_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="aniger"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="aniger[docs['niger_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                 <tr>
+                                    <td style="text-align:center; border:1px solid black;">20.</td>
+                                    <td style="text-align:center; border:1px solid black;">Rhizopus nigricans</td>
+                                    <td style="text-align:center; border:1px solid black;">Fungus</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['rnigricans_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="rnigricans"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="rnigricans[docs['nigricans_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                 <tr>
+                                    <td style="text-align:center; border:1px solid black;">21.</td>
+                                    <td style="text-align:center; border:1px solid black;">Cladosporium herbarum</td>
+                                    <td style="text-align:center; border:1px solid black;">Fungus</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['cherbarum_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="cherbarum"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="cherbarum[docs['herbarum_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                 <tr>
+                                    <td style="text-align:center; border:1px solid black;">22.</td>
+                                    <td style="text-align:center; border:1px solid black;">Fusarium solanii</td>
+                                    <td style="text-align:center; border:1px solid black;">Fungus</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['fsolanii_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="fsolanii"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="fsolanii[docs['solanii_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                 <tr>
+                                    <td style="text-align:center; border:1px solid black;">23.</td>
+                                    <td style="text-align:center; border:1px solid black;">Helminthosporium sp</td>
+                                    <td style="text-align:center; border:1px solid black;">Fungus</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['helminthosporium_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="helminthosporium"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="helminthosporium[docs['helminthosporium_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                 <tr>
+                                    <td style="text-align:center; border:1px solid black;">24.</td>
+                                    <td style="text-align:center; border:1px solid black;">Cockroach</td>
+                                    <td style="text-align:center; border:1px solid black;">Insect</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['cockroach_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="cockroach"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="cockroach[docs['cockroach_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                 <tr>
+                                    <td style="text-align:center; border:1px solid black;">25.</td>
+                                    <td style="text-align:center; border:1px solid black;">House dust</td>
+                                    <td style="text-align:center; border:1px solid black;">Dust</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['house_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="house"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="house[docs['house_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                 <tr>
+                                    <td style="text-align:center; border:1px solid black;">26.</td>
+                                    <td style="text-align:center; border:1px solid black;">Cat epithelia</td>
+                                    <td style="text-align:center; border:1px solid black;">Epithelia</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['cat_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="cat"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="cat[docs['cat_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; border:1px solid black;">27.</td>
+                                    <td style="text-align:center; border:1px solid black;">Dog epithelia</td>
+                                    <td style="text-align:center; border:1px solid black;">Epithelia</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['dog_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="dog"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="dog[docs['dog_interpretation']]"/>
+                                    </td>
+                                </tr>
+                                 <tr>
+                                    <td style="text-align:center; border:1px solid black;">28.</td>
+                                    <td style="text-align:center; border:1px solid black;">Histamine dihydrochloride</td>
+                                    <td style="text-align:center; border:1px solid black;">Positive control</td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <span t-esc="docs['hdihydrochloride_wheal']"/>
+                                    </td>
+                                    <td style="text-align:center; border:1px solid black;">
+                                        <t t-set="dihydrochloride"
+                                           t-value="dict([('neg','Negative'),('one','+'),('two','++'),('three','+++'),(False,False)])"/>
+                                        <span t-esc="dihydrochloride[docs['dihydrochloride_interpretation']]"/>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                                                <h4><![CDATA[&nbsp;]]></h4>
+                        <h4><![CDATA[&nbsp;]]></h4>
+
+                        <h5>
+                            Interpretation:
+                            <span t-esc="docs['impression']"/>
+                        </h5>
+                                                <h4><![CDATA[&nbsp;]]></h4>
+                        <h4><![CDATA[&nbsp;]]></h4>
+                        <h5>
+                            Dr. Lashngainlang Sohliya
+                        </h5>
+                    </div>
+
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

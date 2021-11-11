@@ -1,102 +1,650 @@
 <odoo>
     <data>
+
+        <record id="paperformat_covidreport" model="report.paperformat">
+            <field name="name">SAN-KER Covid Paper</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">148</field>
+            <field name="page_width">210</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">30</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">2</field>
+            <field name="margin_right">2</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">30</field>
+            <field name="dpi">80</field>
+        </record>
+
+
+        <record id="paperformat_a4landscape" model="report.paperformat">
+            <field name="name">SAN-KER A4 Landscape</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">297</field>
+            <field name="page_width">210</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">40</field>
+            <field name="margin_bottom">20</field>
+            <field name="margin_left">3</field>
+            <field name="margin_right">3</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">40</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <report id="epilepsy_report"
+                model="covid.epilepsy"
+                string="Epilepsy Proforma"
+                report_type="qweb-pdf"
+                name="covid.epilepsy_proforma"
+                menu="True"/>
+
         <report id="statistics_report"
-            model="covid.statistics"
-            string="OPD Statistics"
-            report_type="qweb-pdf"
-            name="covid.statistics_view"
-            menu="True"/>
+                model="covid.statistics"
+                string="OPD Statistics"
+                report_type="qweb-pdf"
+                name="covid.statistics_view"
+                menu="True"/>
 
-<template id="statistics_view">
-     <t t-call="web.html_container">
-        <t t-call="web.external_layout">
-            <div class="page" style="font-size:16px">
-                <h3  class="text-center">OPD Statistics Report</h3>
-                <div class="text-center">From:<t t-esc="startdate" t-options="{'widget': 'date'}"/></div>
-                <div class="text-center">To:<t t-esc="enddate" t-options="{'widget': 'date'}"/></div>
-                <div class="container">
-                <table style="width: 100%; text-alignment: center">
-                   
-                    <thead style="border-top: 1px solid grey;border-bottom: 1px solid grey">
-                        <th class="text-center" style="width: 5%; background:#d9d9d9">Serial No.</th>
-                        <th class="text-center" style="width: 25%;" >Age</th>
-                        <th class="text-center" style="width: 25%; background:#d9d9d9">Male</th>
-                        <th class="text-center" style="width: 25%; ">Female</th>
-                        <th class="text-center" style="width: 25%; background:#d9d9d9">Total</th>
-                    </thead>
-                    <tbody>
-                         <t t-set="index" t-value="0"/>
-                         <tr class="text-center">
-                          <td> <t t-set="index" t-value="index +1"/><span t-esc="index"/></td>
-                          <td>Less than 18 years old</td>
-                           <td><span t-esc="male_child" /></td>
-                           <td><span t-esc="female_child" /> </td>
-                           <td><span t-esc="child_total" /></td>
-                         </tr>
-<tr class="text-center">
-                          <td> <t t-set="index" t-value="index +1"/><span t-esc="index"/></td>
-                          <td>18 to 60 years old</td>
-                           <td><span t-esc="male_adult" /> </td>
-                           <td><span t-esc="female_adult" /> </td>
-                           <td><span t-esc="adult_total" /></td>
-                         </tr>
-<tr class="text-center">
-                          <td> <t t-set="index" t-value="index +1"/><span t-esc="index"/></td>
-                          <td>Older than 60 years</td>
-                           <td><span t-esc="male_elderly" /> </td>
-                           <td><span t-esc="female_elderly" /></td>
-                           <td><span t-esc="elderly_total" /></td>
-                         </tr>
-<tr class="text-center" style="font-weight: bold">
-                          <td> <t t-set="index" t-value="index +1"/><span t-esc="index"/></td>
-                          <td>Total</td>
-                           <td><span t-esc="male_total" /> </td>
-                           <td><span t-esc="female_total" /></td>
-                           <td><span t-esc="total" /></td>
-                         </tr>
-                    </tbody>
-                </table>
-</div>
+        <report id="covid_report"
+                model="covid.rattest"
+                string="Covid-19 RAT Test Report"
+                report_type="qweb-pdf"
+                name="covid.test_report"
+                menu="True"
+                paperformat="paperformat_covidreport"/>
 
-</div>
+        <report id="covid_patient_report"
+                model="covid.rattest"
+                string="Covid-19 RAT Test Patient Details"
+                report_type="qweb-pdf"
+                name="covid.patient_details"
+                menu="True"
+                paperformat="paperformat_covidreport"/>
 
-</t>
-        </t>
-    </template>
+        <report id="dhmo_report"
+                model="covid.dmhoreport"
+                string="SAN-KER RAT Test Reports"
+                report_type="qweb-pdf"
+                name="covid.dmhoreport"
+                menu="True"
+                paperformat="paperformat_a4landscape"/>
+
+        <template id="epilepsy_proforma">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <h5 style="text-align:center">Epilepsy Proforma</h5>
+                        <table style="width:100%">
+                            <tr style="width:100%">
+                                <td>Name:</td>
+                                <td>
+                                    <span t-esc="docs.partner_id.name"/>
+                                </td>
+                                <td>Reg. No:</td>
+                                <td>
+                                    <span t-esc="docs.registration"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Date of Birth:</td>
+                                <td>
+                                    <span t-esc="docs.dob"/>
+                                </td>
+                                <td>Gender:</td>
+                                <td>
+                                    <span t-esc="docs.gender"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Type of Epilepsy:</td>
+                                <td>
+                                    <span t-esc="docs.type"/>
+                                </td>
+                                <td>Etilogy:</td>
+                                <td>
+                                    <span t-esc="docs.etiology"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Onset:</td>
+                                <td>
+                                    <span t-esc="docs.onset"/>
+                                </td>
+                                <td>Frequency:</td>
+                                <td>
+                                    <![CDATA[&nbsp;]]>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Last Seizure:</td>
+                                <td><![CDATA[&nbsp;]]></td>
+                                <td>Compliance:</td>
+                                <td><table>
+                                    <tr>
+                                    <td>Good</td>
+                                    <td>Poor</td>
+                                    </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Imaging:</td>
+                                <td>
+                                    <span t-esc="docs.imaging_details"/>
+                                </td>
+                                <td>EEG:</td>
+                                <td>
+                                    <span t-esc="docs.eeg"/>
+
+                                </td>
+                            </tr>
+
+                        </table>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <template id="dmhoreport">
+            <t t-call="web.html_container">
+                <t t-call="web.basic_layout">
+                    <div class="header">
+                        <table style="width:100% ">
+                            <tr style="width:100% ">
+                                <td style="width:10% ">
+                                    <img src="/covid/static/src/img/idsp.jpg" alt="Logo"/>
+                                </td>
+                                <td style="width:80%; text-align:center ">RAPID ANTIGEN TEST (RAT)<br/>DISTRICT
+                                    SURVEILLANCE UNIT, IDSP<br/>EAST KHASI HILLS DISTRICT
+                                    <br/>
+                                </td>
+                                <td style="width:10% ">
+                                    <img src="/covid/static/src/img/idsp.jpg" alt="Logo"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="width:100% ">
+                            <tr>
+                                <td>
+                                    Name of the Area: SAN-KER, Mawroh
+                                    <br/>
+                                    Date:
+                                    <span t-esc="date" t-options="{'widget': 'date'}"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="page">
+                        <table style="width:100%; border: 1px solid black">
+                            <thead>
+                                <td style="width:0.5%; border: 1px solid black; text-align: center; vertical-align: center">
+                                    Sl. No
+                                </td>
+                                <td style="width:14.5%; border: 1px solid black; text-align: center; vertical-align: center">
+                                    Name
+                                </td>
+                                <td style="width:3%; border: 1px solid black; text-align: center; vertical-align: center">
+                                    Age
+                                </td>
+                                <td style="width:5%; border: 1px solid black; text-align: center; vertical-align: center">
+                                    Gender
+                                </td>
+                                <td style="width:10%; border: 1px solid black; text-align: center; vertical-align: center">
+                                    Address
+                                </td>
+                                <td style="width:10%; border: 1px solid black; text-align: center; vertical-align: center">
+                                    Occupation
+                                </td>
+                                <td style="width:10%; border: 1px solid black; text-align: center; vertical-align: center">
+                                    Mobile No.
+                                </td>
+                                <td style="width:8%; border: 1px solid black; text-align: center; vertical-align: center">
+                                    Any Travel History<br/>(Mention Place Name)
+                                </td>
+                                <td style="width:3%; border: 1px solid black; text-align: center; vertical-align: center">
+                                    Arrival Date
+                                </td>
+                                <td style="width:3%; border: 1px solid black; text-align: center; vertical-align: center">
+                                    Any History of Contact with a lab confirmed case of COVID - 19
+                                </td>
+                                <td style="width:10%; border: 1px solid black; text-align: center; vertical-align: center">
+                                    Name of the Confirmed Case
+                                </td>
+                                <td style="width:10%; border: 1px solid black; text-align: center; vertical-align: center">
+                                    Any Symptoms<br/>(Fever, cough, shortness of breath etc.)
+                                </td>
+                                <td style="width:5%; border: 1px solid black; text-align: center; vertical-align: center">
+                                    Any Comorbodities
+                                </td>
+                                <td style="width:3%; border: 1px solid black; text-align: center; vertical-align: center">
+                                    COVID Vaccination History
+                                </td>
+                                <td style="width:5%; border: 1px solid black; text-align: center; vertical-align: center">
+                                    RAT Result
+                                </td>
+
+                            </thead>
+                            <t t-foreach="details" t-as="detail">
+                                <tr style="width:100%">
+                                    <td style="width:10%; border: 1px solid black; text-align: center; vertical-align: center">
+                                        <span t-esc="detail_index +1"/>
+                                    </td>
+                                    <td style="width:10%; border: 1px solid black; text-align: center; vertical-align: center">
+                                        <span t-esc="detail['name']"/>
+                                    </td>
+                                    <td style="width:10%; border: 1px solid black; text-align: center; vertical-align: center">
+                                        <span t-esc="detail['age']"/>
+                                    </td>
+                                    <td style="width:10%; border: 1px solid black; text-align: center; vertical-align: center">
+                                        <t t-set="sex"
+                                           t-value="dict([('male','Male'),('female','Female'),(False,False)])"/>
+                                        <span t-esc="sex[detail['gender']]"/>
+                                    </td>
+                                    <td style="width:10%; border: 1px solid black; text-align: center; vertical-align: center">
+                                        <span t-esc="detail['address']"/>
+                                    </td>
+                                    <td style="width:10%; border: 1px solid black; text-align: center; vertical-align: center">
+                                        <span t-esc="detail['occupation']"/>
+                                    </td>
+                                    <td style="width:10%; border: 1px solid black; text-align: center; vertical-align: center">
+                                        <span t-esc="detail['phone']"/>
+                                    </td>
+                                    <td style="width:10%; border: 1px solid black; text-align: center; vertical-align: center">
+                                        <t t-set="travell" t-value="dict([('no','No'),('yes','Yes'),(False,False)])"/>
+                                        <span t-esc="travell[detail['travel']]"/>
+                                    </td>
+                                    <td style="width:10%; border: 1px solid black; text-align: center; vertical-align: center">
+                                        <span t-esc="detail['arrivaldate']"/>
+                                    </td>
+                                    <td style="width:10%; border: 1px solid black; text-align: center; vertical-align: center">
+                                        <t t-set="contact"
+                                           t-value="dict([('no','No'),('yes','Yes'),(False,False)])"/>
+                                        <span t-esc="contact[detail['contact']]"/>
+                                    </td>
+                                    <td style="width:10%; border: 1px solid black; text-align: center; vertical-align: center">
+                                        <span t-esc="detail['case']"/>
+                                    </td>
+                                    <td style="width:10%; border: 1px solid black; text-align: center; vertical-align: center">
+                                        <span t-esc="detail['symptoms']"/>
+                                    </td>
+                                    <td style="width:10%; border: 1px solid black; text-align: center; vertical-align: center">
+                                        <span t-esc="detail['comorbidities']"/>
+                                    </td>
+                                    <td style="width:10%; border: 1px solid black; text-align: center; vertical-align: center">
+                                        <t t-set="vacc"
+                                           t-value="dict([('no','No'),('yes','Yes'),(False,False)])"/>
+                                        <span t-esc="vacc[detail['vaccination']]"/>
+                                    </td>
+                                    <td style="width:10%; border: 1px solid black; text-align: center; vertical-align: center">
+                                        <t t-set="result"
+                                           t-value="dict([('negative','Negative'),('positive','Positive'),(False,False)])"/>
+                                        <span t-esc="result[detail['result']]"/>
+                                    </td>
+
+                                </tr>
+                            </t>
+                        </table>
+                        <div style="text-align: right">
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>For SAN-KER
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </template>
 
 
+        <template id="patient_details">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-size:16px">
+                        <h4 class="text-center">COVID-19 Patient Details</h4>
+                        <table style="width:100%; font-size: 12px">
+                            <tr><![CDATA[&nbsp;]]></tr>
+                            <tr><![CDATA[&nbsp;]]></tr>
 
-<record model="ir.ui.view" id="statistics_form_view">
-<field name="name">statistics form</field>
-<field name="model">covid.statistics</field>
-<field name="arch" type="xml">
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>Date:</td>
+                                <td>
+                                    <span t-esc="docs['date']" t-options="{'widget': 'date'}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><![CDATA[&nbsp;]]></td>
+                            </tr>
+                            <tr>
+                                <td><![CDATA[&nbsp;]]></td>
+                            </tr>
+
+                            <tr>
+                                <td>Name:</td>
+                                <td>
+                                    <span t-esc="docs['name'].name"/>
+                                </td>
+                                <td>Age:</td>
+                                <td>
+                                    <span t-esc="docs['age']"/>
+                                </td>
+                                <td>Sex:</td>
+                                <td>
+                                    <t t-set="values"
+                                       t-value="dict([('male','Male'),('female','Female'),(False,False)])"/>
+                                    <span t-esc="values[docs['gender']]"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><![CDATA[&nbsp;]]></td>
+                            </tr>
+
+                            <tr>
+                                <td>Address:</td>
+                                <td>
+                                    <span t-esc="docs['address']"/>
+                                </td>
+                                <td>Mobile No.:</td>
+                                <td>
+                                    <span t-esc="docs['phone']"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Travel History:</td>
+                                <td>
+                                    <t t-set="travell"
+                                       t-value="dict([('no','No'),('yes','Yes'),(False,False)])"/>
+                                    <span t-esc="travell[docs['travel']]"/>
+                                </td>
+                                <t t-if="docs['travel']=='yes'">
+                                    <td>Arrival Date:</td>
+                                    <td>
+                                        <span t-esc="docs['arrivaldate']"/>
+                                    </td>
+                                </t>
+                            </tr>
+                            <tr>
+                                <td>History of Contact:</td>
+                                <td>
+                                    <t t-set="contactt"
+                                       t-value="dict([('no','No'),('yes','Yes'),(False,False)])"/>
+                                    <span t-esc="contactt[docs['contact']]"/>
+                                </td>
+                                <t t-if="docs['contact']=='yes'">
+                                    <td>Name of the Confirmed Case:</td>
+                                    <td>
+                                        <span t-esc="docs['case']"/>
+                                    </td>
+                                </t>
+                            </tr>
+                            <tr>
+                                <td>Symptoms:</td>
+                                <td>
+                                    <span t-esc="docs['symptoms']"/>
+                                </td>
+                                <td>Comorbidities:</td>
+                                <td>
+                                    <span t-esc="docs['comorbidities']"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Vaccinated:</td>
+                                <td>
+                                    <t t-set="vaccine"
+                                       t-value="dict([('no','No'),('yes','Yes'),(False,False)])"/>
+
+                                    <span t-esc="vaccine[docs['vaccination']]"/>
+                                </td>
+                                <td>RAT Test Result:</td>
+                                <td style="font-weight:bold">
+                                    <t t-set="results"
+                                       t-value="dict([('negative','Negative'),('positive','Positive'),(False,False)])"/>
+                                    <span t-esc="results[docs['result']]"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td/>
+                                <td/>
+                                <td/>
+                                <td/>
+                                <td/>
+                                <td>For SAN-KER</td>
+                            </tr>
+
+                        </table>
+                    </div>
+
+                </t>
+            </t>
+        </template>
+
+        <template id="test_report">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-size:16px">
+                        <h4 class="text-center">COVID-19 RAT Test Report</h4>
+                        <table style="width:100%">
+                            <tr><![CDATA[&nbsp;]]></tr>
+                            <tr><![CDATA[&nbsp;]]></tr>
+
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>Date:</td>
+                                <td>
+                                    <span t-esc="docs['date']" t-options="{'widget': 'date'}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><![CDATA[&nbsp;]]></td>
+                            </tr>
+                            <tr>
+                                <td><![CDATA[&nbsp;]]></td>
+                            </tr>
+
+                            <tr>
+                                <td>Name:</td>
+                                <td>
+                                    <span t-esc="docs['name'].name"/>
+                                </td>
+                                <td>Age:</td>
+                                <td>
+                                    <span t-esc="docs['age']"/>
+                                </td>
+                                <td>Sex:</td>
+                                <td>
+                                    <t t-set="values"
+                                       t-value="dict([('male','Male'),('female','Female'),(False,False)])"/>
+                                    <span t-esc="values[docs['gender']]"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <br/>
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td>Result:</td>
+                                <td style="font-weight:bold">
+                                    <t t-set="results"
+                                       t-value="dict([('negative','Negative'),('positive','Positive'),(False,False)])"/>
+                                    <span t-esc="results[docs['result']]"/>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>
+                                    <br/>
+                                    <br/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td/>
+                                <td/>
+                                <td/>
+                                <td/>
+                                <td/>
+                                <td>For SAN-KER</td>
+                            </tr>
+
+                        </table>
+                    </div>
+
+                </t>
+            </t>
+        </template>
+
+        <template id="statistics_view">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-size:16px">
+                        <h3 class="text-center">OPD Statistics Report</h3>
+                        <div class="text-center">From:
+                            <t t-esc="startdate" t-options="{'widget': 'date'}"/>
+                        </div>
+                        <div class="text-center">To:
+                            <t t-esc="enddate" t-options="{'widget': 'date'}"/>
+                        </div>
+                        <div class="container">
+                            <table style="width: 100%; text-alignment: center">
+
+                                <thead style="border-top: 1px solid grey;border-bottom: 1px solid grey">
+                                    <th class="text-center" style="width: 5%; background:#d9d9d9">Serial No.</th>
+                                    <th class="text-center" style="width: 25%;">Age</th>
+                                    <th class="text-center" style="width: 25%; background:#d9d9d9">Male</th>
+                                    <th class="text-center" style="width: 25%; ">Female</th>
+                                    <th class="text-center" style="width: 25%; background:#d9d9d9">Total</th>
+                                </thead>
+                                <tbody>
+                                    <t t-set="index" t-value="0"/>
+                                    <tr class="text-center">
+                                        <td>
+                                            <t t-set="index" t-value="index +1"/>
+                                            <span t-esc="index"/>
+                                        </td>
+                                        <td>Less than 18 years old</td>
+                                        <td>
+                                            <span t-esc="male_child"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="female_child"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="child_total"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="text-center">
+                                        <td>
+                                            <t t-set="index" t-value="index +1"/>
+                                            <span t-esc="index"/>
+                                        </td>
+                                        <td>18 to 60 years old</td>
+                                        <td>
+                                            <span t-esc="male_adult"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="female_adult"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="adult_total"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="text-center">
+                                        <td>
+                                            <t t-set="index" t-value="index +1"/>
+                                            <span t-esc="index"/>
+                                        </td>
+                                        <td>Older than 60 years</td>
+                                        <td>
+                                            <span t-esc="male_elderly"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="female_elderly"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="elderly_total"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="text-center" style="font-weight: bold">
+                                        <td>
+                                            <t t-set="index" t-value="index +1"/>
+                                            <span t-esc="index"/>
+                                        </td>
+                                        <td>Total</td>
+                                        <td>
+                                            <span t-esc="male_total"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="female_total"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="total"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                </t>
+            </t>
+        </template>
+
+
+        <record model="ir.ui.view" id="statistics_form_view">
+            <field name="name">statistics form</field>
+            <field name="model">covid.statistics</field>
+            <field name="arch" type="xml">
                 <form>
                     <group string="Select dates">
-                        <field name="startdateentry" string="Starting Date for report"/>          
-                        <field name="enddateentry" string="End Date"/>          
+                        <field name="startdateentry" string="Starting Date for report"/>
+                        <field name="enddateentry" string="End Date"/>
                     </group>
-<footer>
-                    <button name="get_report" string="Get Report" type="object" class="oe_highlight"/>
-                    <button string="Cancel" special="cancel"/>
-</footer>
+                    <footer>
+                        <button name="get_report" string="Get Report" type="object" class="oe_highlight"/>
+                        <button string="Cancel" special="cancel"/>
+                    </footer>
                 </form>
             </field>
         </record>
 
 
- <act_window id="statistics_menu_action"
-                name="OPD Statistics Report"
-                res_model="covid.statistics"
-                view_mode="form"
-                target="new"/>
+        <act_window id="statistics_menu_action"
+                    name="OPD Statistics Report"
+                    res_model="covid.statistics"
+                    view_mode="form"
+                    target="new"/>
 
-<menuitem id="statistics_menu" parent="opregistration.opregistration_menu" name="OPD Statistics report" action="statistics_menu_action"/>
-
-
-
+        <menuitem id="statistics_menu" parent="opregistration.opregistration_menu" name="OPD Statistics report"
+                  action="statistics_menu_action"/>
 
 
-
-
-     </data>
+    </data>
 </odoo>

@@ -2,3 +2,8 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_covid_covid,covid.covid,model_covid_covid,sankeremployee.sankeremployee_group,1,1,1,1
 access_covid_statistics,covid.statistics,model_covid_statistics,base.group_user,1,1,1,1
 access_covid_ipdstatistics,covid.ipdstatistics,model_covid_ipdstatistics,base.group_user,1,1,1,1
+access_covid_didaresearach,covid.didaresearch,model_covid_didaresearch,covid.research_user,1,1,1,1
+access_covid_epilepsy,covid.epilepsy,model_covid_epilepsy,sankeremployee.sankeremployee_group,1,1,1,1
+access_covid_rattest,covid.rattest,model_covid_rattest,base.group_user,1,1,1,1
+
+
