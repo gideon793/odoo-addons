@@ -1,0 +1,159 @@
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="lab.investigation_list">
+            <field name="name">investigation list</field>
+            <field name="model">lab.investigations</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="range"/>
+                    <field name="group"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="lab.investigation_form">
+            <field name="name">investigation form</field>
+            <field name="model">lab.investigations</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="name"/>
+                        <field name="range"/>
+                        <field name="group"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="lab.investigation_action_window">
+            <field name="name">Laboratory Investigations</field>
+            <field name="res_model">lab.investigations</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.ui.view" id="lab.investigation_group_list">
+            <field name="name">investigation group list</field>
+            <field name="model">lab.investigation_groups</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="lab.investigation_group_form">
+            <field name="name">investigation group form</field>
+            <field name="model">lab.investigation_groups</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="name"/>
+                        <field name="investigations"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="lab.investigation_group_action_window">
+            <field name="name">Laboratory Investigations Groups</field>
+            <field name="res_model">lab.investigation_groups</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.ui.view" id="lab.labvisit_list">
+            <field name="name">labvisit list</field>
+            <field name="model">lab.labvisit</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="partner_id"/>
+                    <field name="date"/>
+                    <field name="registration"/>
+                    <field name="agecal"/>
+                    <field name="address"/>
+                    <field name="gender"/>
+                    <field name="doctor"/>
+                    <field name="group_invs"/>
+                    <field name="investigations"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="lab.labvisit_form">
+            <field name="name">labvisit form</field>
+            <field name="model">lab.labvisit</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="partner_id"/>
+                        <field name ="labno" />
+                        <field name="date"/>
+                        <field name="registration"/>
+                        <field name="agecal"/>
+                        <field name="address"/>
+                        <field name="gender"/>
+                        <field name="doctor"/>
+                    </group>
+                    <group>
+                        <field name="group_invs">
+                            <tree editable="bottom">
+                                <field name="groups"/>
+                            </tree>
+                        </field>
+       <button name="getinvestigations" string="Update" type="object"/>
+
+                        <field name="investigations">
+                            <tree editable="bottom">
+                                <field name="investigations"/>
+                            </tree>
+
+                        </field>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="lab.labvisit_action_window">
+            <field name="name">Laboratory Visit</field>
+            <field name="res_model">lab.labvisit</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <record id="sequence_lab_visit" model="ir.sequence">
+   <field name="name">Lab Number</field>
+   <field name="code">lab.labvisit</field>
+   <field name="active">TRUE</field>
+   <field name="prefix">%(day)s%(month)s%(year)s</field>
+   <field name="padding">4</field>
+   <field name="number_next">1</field>
+   <field name="number_increment">1</field>
+</record>
+
+        <menuitem name="Laboratory Module" id="lab.menu_root"/>
+        <menuitem name="Investigations" id="lab.investigations" parent="lab.menu_root"
+                  action="lab.investigation_action_window"/>
+        <menuitem name="Investigation Groups" id="lab.investigation_groups" parent="lab.menu_root"
+                  action="lab.investigation_group_action_window"/>
+        <menuitem name="Lab Visit" id="lab.labvisit" parent="lab.menu_root"
+                  action="lab.labvisit_action_window"/>
+
+
+        <record id="ir_cron_token_no_sequence_daily_restart_scheduler" model="ir.cron">
+            <field name="name">Labvisit Daily Restart Scheduler</field>
+            <field name="model_id" ref="lab.labvisit"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+            <field name="code">labvisit._reset_token_number_sequences()</field>
+            <field name="state">code</field>
+        </record>
+
+    </data>
+
+
+
+
+</odoo>

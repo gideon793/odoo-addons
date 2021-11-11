@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_lab_investigations,lab.investigations,model_lab_investigations,base.group_user,1,1,1,1
+access_lab_investigation_groups,lab.investigation_groups,model_lab_investigation_groups,base.group_user,1,1,1,1
+access_lab_labvisit,lab.labvisit,model_lab_labvisit,base.group_user,1,1,1,1
+access_lab_visitinvestigations,lab.visitinvestigations,model_lab_visitinvestigations,base.group_user,1,1,1,1
+access_lab_visitgroupinvestigations,lab.visitgroupinvestigations,model_lab_visitgroupinvestigations,base.group_user,1,1,1,1
