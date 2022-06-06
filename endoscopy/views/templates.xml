@@ -17,7 +17,7 @@
         <template id="endoscopy_report">
             <t t-call="web.html_container">
                 <t t-call="web.external_layout">
-                    <div class="page" style="font-size:16px">
+                    <div style="font-size:16px">
                         <h3 class="text-center">Endoscopy Report</h3>
                         <hr style="width:100%; height:1px; color: black; background-color: black"></hr>
 
@@ -37,55 +37,53 @@
 
                             </tr>
                             <tr>
-                                <td>Gender:</td>
-                                <td>
-                                    <span t-esc="docs['gender']"/>
-                                </td>
                                 <td>Age:</td>
                                 <td>
                                     <span t-esc="docs['agecal']"/>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td><![CDATA[&nbsp;]]></td>
-                                <td><![CDATA[&nbsp;]]></td>
-                                <td><![CDATA[&nbsp;]]></td>
-                                <td><![CDATA[&nbsp;]]></td>
+                                <td>Gender:</td>
+                                <td>
+                                    <t t-set="sex"
+                                       t-value="dict([('male','Male'),('female','Female'),('false','False')])"/>
+                                    <span t-esc="sex[docs['gender']]"/>
+                                </td>
 
+                            </tr>
+
+                            <tr>
+                                <td style="font-weight:bold">
+                                    Study:
+                                </td>
+                                <td style="font-weight:bold">
+                                    <t t-set="studydetail"
+                                       t-value="dict([('nasal','Nasal Endoscopy'),('laryngoscopy','Laryngoscopy'),('otoendoscopy','Otoendoscopy'),(False,False)])"/>
+                                    <span t-esc="studydetail[docs['study']]"/>
+                                </td>
                             </tr>
                         </table>
                         <hr style="width:100%; height:1px; color: black; background-color: black"></hr>
-
-                        <table>
-                            <tr style="width:100%; height:5px">
-                                <t t-foreach="docs['images']" t-as="image">
-                                    <td style="text-align: center">
+                        <table style="width:100%">
+                            <t t-foreach="docs['images']" t-as="image">
+                                <tr>
+<td><![CDATA[&nbsp;]]></td>
+                                    <td style="text-align: center; width:240px; height:192px">
                                         <span t-field="image.image"
-                                              t-options="{'widget': 'image','style': 'width: 200px;height: 200px'}"/>
-                                        <br/>
+                                              t-options="{'widget': 'image','style': 'width: 240px;height: 192px'}"/>
+                                    </td>
+                                    <td style="text-align:center">
                                         <span t-esc="image.caption"/>
                                     </td>
-                                </t>
-                            </tr>
+                                </tr>
+                            </t>
                         </table>
-
                         <hr style="width:100%; height:1px; color: black; background-color: black"></hr>
-
-                        <h4><![CDATA[&nbsp;]]></h4>
-                        <h4>Study:
-                            <t t-set="studydetail"
-                               t-value="dict([('nasal','Nasal Endoscopy'),('laryngoscopy','Laryngoscopy'),(False,False)])"/>
-                            <span t-esc="studydetail[docs['study']]"/>
-                        </h4>
-                        <h4><![CDATA[&nbsp;]]></h4>
-
-                        <h4>Findings:
+                        <h4>
+                            Findings:
                             <span t-raw="docs['findings']"/>
-                        </h4>
-                        <h4><![CDATA[&nbsp;]]></h4>
-                        <hr style="width:100%; height:1px; color: black; background-color: black"></hr>
-                        <h4>Impression:
+                            <br/>
+                            Impression:
                             <span t-esc="docs['impression']"/>
+                            <br/>
                         </h4>
                         <h4><![CDATA[&nbsp;]]></h4>
                         <h4><![CDATA[&nbsp;]]></h4>
@@ -120,7 +118,9 @@
                             </tr>
                             <tr style="border_bottom: solid 1px black">
                                 <td>Gender:</td>
-                                <td><t t-set="sex" t-value="dict([('male','Male'),('female','Female'),('false','False')])"/>
+                                <td>
+                                    <t t-set="sex"
+                                       t-value="dict([('male','Male'),('female','Female'),('false','False')])"/>
                                     <span t-esc="sex[docs['gender']]"/>
                                 </td>
                                 <td>Age:</td>
@@ -149,13 +149,13 @@
                             <tr>
                                 <td>Start Time:</td>
                                 <td style="text-align:left">
-                                    <span t-esc="docs['start_time']"/>
+                                    <span t-esc="docs['start_time']" t-options="{'widget': 'float_time'}"/>
                                 </td>
                             </tr>
                             <tr>
                                 <td>End Time:</td>
                                 <td>
-                                    <span t-esc="docs['end_time']"/>
+                                    <span t-esc="docs['end_time']" t-options="{'widget': 'float_time'}"/>
                                 </td>
                             </tr>
                         </table>
@@ -167,7 +167,9 @@
                                     <td style="width:7%; border:1px solid black; text-align:center">Sl. No.</td>
                                     <td style="width:40%; border:1px solid black; text-align:center">Allergen</td>
                                     <td style="width:13%; border:1px solid black; text-align:center">Type</td>
-                                    <td style="width:25%; border:1px solid black; text-align:center">Wheal Diameter</td>
+                                    <td style="width:25%; border:1px solid black; text-align:center">Wheal Diameter
+                                        (mm)
+                                    </td>
                                     <td style="width:15%; border:1px solid black; text-align:center">Interpretation</td>
                                 </tr>
                             </thead>
@@ -185,7 +187,7 @@
                                         <span t-esc="saline[docs['saline_interpretation']]"/>
                                     </td>
                                 </tr>
-                                 <tr>
+                                <tr>
                                     <td style="text-align:center; border:1px solid black;">2.</td>
                                     <td style="text-align:center; border:1px solid black;">Dermatophagoids farina</td>
                                     <td style="text-align:center; border:1px solid black;">Mites</td>
@@ -200,7 +202,9 @@
                                 </tr>
                                 <tr>
                                     <td style="text-align:center; border:1px solid black;">3.</td>
-                                    <td style="text-align:center; border:1px solid black;">Dermatophagoids pteronyssinus</td>
+                                    <td style="text-align:center; border:1px solid black;">Dermatophagoids
+                                        pteronyssinus
+                                    </td>
                                     <td style="text-align:center; border:1px solid black;">Mites</td>
                                     <td style="text-align:center; border:1px solid black;">
                                         <span t-esc="docs['dperonysinus_wheal']"/>
@@ -237,7 +241,7 @@
                                         <span t-esc="aconyzoides[docs['aconyzoides_interpretation']]"/>
                                     </td>
                                 </tr>
-                                 <tr>
+                                <tr>
                                     <td style="text-align:center; border:1px solid black;">6.</td>
                                     <td style="text-align:center; border:1px solid black;">Amaranthus spinosus</td>
                                     <td style="text-align:center; border:1px solid black;">Pollen</td>
@@ -419,7 +423,7 @@
                                         <span t-esc="aniger[docs['niger_interpretation']]"/>
                                     </td>
                                 </tr>
-                                 <tr>
+                                <tr>
                                     <td style="text-align:center; border:1px solid black;">20.</td>
                                     <td style="text-align:center; border:1px solid black;">Rhizopus nigricans</td>
                                     <td style="text-align:center; border:1px solid black;">Fungus</td>
@@ -432,7 +436,7 @@
                                         <span t-esc="rnigricans[docs['nigricans_interpretation']]"/>
                                     </td>
                                 </tr>
-                                 <tr>
+                                <tr>
                                     <td style="text-align:center; border:1px solid black;">21.</td>
                                     <td style="text-align:center; border:1px solid black;">Cladosporium herbarum</td>
                                     <td style="text-align:center; border:1px solid black;">Fungus</td>
@@ -445,7 +449,7 @@
                                         <span t-esc="cherbarum[docs['herbarum_interpretation']]"/>
                                     </td>
                                 </tr>
-                                 <tr>
+                                <tr>
                                     <td style="text-align:center; border:1px solid black;">22.</td>
                                     <td style="text-align:center; border:1px solid black;">Fusarium solanii</td>
                                     <td style="text-align:center; border:1px solid black;">Fungus</td>
@@ -458,7 +462,7 @@
                                         <span t-esc="fsolanii[docs['solanii_interpretation']]"/>
                                     </td>
                                 </tr>
-                                 <tr>
+                                <tr>
                                     <td style="text-align:center; border:1px solid black;">23.</td>
                                     <td style="text-align:center; border:1px solid black;">Helminthosporium sp</td>
                                     <td style="text-align:center; border:1px solid black;">Fungus</td>
@@ -471,7 +475,7 @@
                                         <span t-esc="helminthosporium[docs['helminthosporium_interpretation']]"/>
                                     </td>
                                 </tr>
-                                 <tr>
+                                <tr>
                                     <td style="text-align:center; border:1px solid black;">24.</td>
                                     <td style="text-align:center; border:1px solid black;">Cockroach</td>
                                     <td style="text-align:center; border:1px solid black;">Insect</td>
@@ -484,7 +488,7 @@
                                         <span t-esc="cockroach[docs['cockroach_interpretation']]"/>
                                     </td>
                                 </tr>
-                                 <tr>
+                                <tr>
                                     <td style="text-align:center; border:1px solid black;">25.</td>
                                     <td style="text-align:center; border:1px solid black;">House dust</td>
                                     <td style="text-align:center; border:1px solid black;">Dust</td>
@@ -497,7 +501,7 @@
                                         <span t-esc="house[docs['house_interpretation']]"/>
                                     </td>
                                 </tr>
-                                 <tr>
+                                <tr>
                                     <td style="text-align:center; border:1px solid black;">26.</td>
                                     <td style="text-align:center; border:1px solid black;">Cat epithelia</td>
                                     <td style="text-align:center; border:1px solid black;">Epithelia</td>
@@ -523,9 +527,10 @@
                                         <span t-esc="dog[docs['dog_interpretation']]"/>
                                     </td>
                                 </tr>
-                                 <tr>
+                                <tr>
                                     <td style="text-align:center; border:1px solid black;">28.</td>
-                                    <td style="text-align:center; border:1px solid black;">Histamine dihydrochloride</td>
+                                    <td style="text-align:center; border:1px solid black;">Histamine dihydrochloride
+                                    </td>
                                     <td style="text-align:center; border:1px solid black;">Positive control</td>
                                     <td style="text-align:center; border:1px solid black;">
                                         <span t-esc="docs['hdihydrochloride_wheal']"/>
@@ -539,14 +544,14 @@
 
                             </tbody>
                         </table>
-                                                <h4><![CDATA[&nbsp;]]></h4>
+                        <h4><![CDATA[&nbsp;]]></h4>
                         <h4><![CDATA[&nbsp;]]></h4>
 
                         <h5>
                             Interpretation:
                             <span t-esc="docs['impression']"/>
                         </h5>
-                                                <h4><![CDATA[&nbsp;]]></h4>
+                        <h4><![CDATA[&nbsp;]]></h4>
                         <h4><![CDATA[&nbsp;]]></h4>
                         <h5>
                             Dr. Lashngainlang Sohliya

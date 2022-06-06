@@ -41,6 +41,7 @@
                                 <field name="grossdue" sum="Gross Due"/>
                                 <field name="epfc" sum="EPF"/>
                                 <field name="professionaltax" sum="Professional Tax"/>
+                                <field name="tds" sum="TDS"/>
                                 <field name="netpayable" sum="Net Payable"/>
                                 <field name="ddrspaid" sum="Paid from DDRS" />
                                 <field name="actualdue" sum="Acutal Due"/>

@@ -1,0 +1,156 @@
+<odoo>
+  <data>
+       <report id="opdregistration_certificates"
+            model="opregistration.certificates"
+            string="OPD Certificate"
+            report_type="qweb-pdf"
+            name="opregistration.certificate_report"
+            menu="True"/>   
+
+ <report id="opdregistration_fitness_certificates"
+            model="opregistration.fitness"
+            string="OPD Certificate"
+            report_type="qweb-pdf"
+            name="opregistration.fitness_certificate_report"
+            menu="True"/>  
+
+<template id="certificate_report">
+     <t t-call="web.html_container">
+        <t t-call="web.external_layout">
+          <t t-foreach="docs" t-as="doc">
+            <div class="page" style="font-size:16px">
+                <h3  class="text-center">Medical Certificate</h3>
+		<div class="text-right"> <span t-esc="doc['date']" t-options="{'widget': 'date'}"/><br /><br /><br /><br /></div>
+		<div class = "text-center"> This is to certifiy that <span t-esc="doc['partner_id'].name" /> aged <span t-esc="doc['agecal']" /> years<br /> <br />has been diagnosed with <span t-esc="doc['diagnosis']" /> and is under treatment from this facility. <br /> <br /></div>
+<div class = "text-center"> <t t-if="doc['gender']=='male'"> He</t> <t t-if="doc['gender']=='female'"> She</t> requires a period of <span t-esc="doc['period']" /> <t t-set="values_period" t-value="dict([('days','days'),('weeks','weeks'),('months','months'),(False,False)])" /><span t-esc="values_period[doc['periodunit']]" /> for <t t-if="doc['gender']=='male'"> his</t> <t t-if="doc['gender']=='female'"> her</t>  recovery. <br /> <br /> </div>
+
+
+<div class = "text-center"> <t t-if="doc['gender']=='male'"> He</t> <t t-if="doc['gender']=='female'"> She</t> is advised Medical Leave from <span t-esc="doc['date_from']" t-options="{'widget': 'date'}"/> to <span t-esc="doc['date_to']" t-options="{'widget': 'date'}"/><br /> <br /><br /><br /><br /></div>
+ <t t-set="values" t-value="dict([('ssyiem','Dr. S. Syiem'),('eddie','Dr. E. Mukhim'),('didak','Dr. D. Khonglah'),('gideon','Dr. G. Rynjah'),('rlaloo','Dr. R. Laloo'),('dkynjin','Dr. D. Kynjin'),(False,False)])"/> 
+<div class="text-right"> <span t-esc="values[doc['doctor']]" /></div>	              
+          </div>
+   </t>
+  </t>
+ </t>
+</template>
+
+<template id="fitness_certificate_report">
+     <t t-call="web.html_container">
+        <t t-call="web.external_layout">
+          <t t-foreach="docs" t-as="doc">
+            <div class="page" style="font-size:16px">
+                <h3  class="text-center">Fitness Certificate</h3>
+		<div class="text-right"> <span t-esc="doc['date']" t-options="{'widget': 'date'}"/><br /><br /><br /><br /></div>
+		<div class = "text-center"> This is to certifiy that <span t-esc="doc['partner_id'].name" /> aged <span t-esc="doc['agecal']" /> years<br /> <br />has been diagnosed with <span t-esc="doc['diagnosis']" /> and was under treatment from this facility. <br /> <br /></div>
+<div class = "text-center"> <t t-if="doc['gender']=='male'"> He</t> <t t-if="doc['gender']=='female'"> She</t> has recovered from  <t t-if="doc['gender']=='male'"> his</t> <t t-if="doc['gender']=='female'"> her </t> illness and is now fit to resume duties from <span t-esc="doc['joining']" t-options="{'widget': 'date'}"/>.<br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> </div>
+
+
+<div class="text-right">  <t t-set="values" t-value="dict([('ssyiem','Dr. S. Syiem'),('eddie','Dr. E. Mukhim'),('didak','Dr. D. Khonglah'),('gideon','Dr. G. Rynjah'),('rlaloo','Dr. R. Laloo'),('dkynjin','Dr. D. Kynjin'),(False,False)])"/> 
+<span t-esc="values[doc['doctor']]" /></div>	              
+          </div>
+   </t>
+  </t>
+ </t>
+</template>
+
+
+  
+ <record model="ir.ui.view" id="opregistration_certificates_list">
+    <field name="name">Certificates List</field>
+    <field name="model">opregistration.certificates</field>
+    <field name="arch" type="xml">
+     <tree string="OPD Certificates">
+       <field name = "partner_id"/>
+       <field name = "registration"/>
+       <field name = "diagnosis"/>
+       <field name = "date" /> 
+        </tree>
+    </field>
+   </record>
+
+ <record model="ir.ui.view" id="opregistration_certificates_form">
+    <field name="name">Certificates Form</field>
+    <field name="model">opregistration.certificates</field>
+    <field name="arch" type="xml">
+     <form string="OPD Certificates">
+      <group>
+       <field name = "partner_id"/>
+       <field name = "registration"/>
+       <field name = "gender"/>
+       <field name = "agecal" string="Age" />
+       <field name = "diagnosis"/>
+       <field name = "date" /> 
+       <field name = "date_from" /> 
+       <field name = "date_to" /> 
+       <field name = "doctor" />
+
+	<field name ="period"/>
+       <field name = "periodunit" string ="" />
+
+         <button name="%(opdregistration_certificates)d" string="Print Certificate" type="action"/>
+        </group>
+        </form>
+
+    </field>
+   </record>
+
+
+
+   <record id="opregistration_certificates_action" model="ir.actions.act_window">
+    <field name="name">OPD Certificates</field>
+    <field name="res_model">opregistration.certificates</field>
+    <field name="view_mode">tree,form</field>
+   </record>
+
+ <record model="ir.ui.view" id="opregistration_fitness_list">
+    <field name="name">Fitness Certificates List</field>
+    <field name="model">opregistration.fitness</field>
+    <field name="arch" type="xml">
+     <tree string="OPD Fitness Certificates">
+       <field name = "partner_id"/>
+       <field name = "registration"/>
+       <field name = "diagnosis"/>
+       <field name = "date" /> 
+        </tree>
+    </field>
+   </record>
+
+ <record model="ir.ui.view" id="opregistration_fitness_form">
+    <field name="name">Fitness Certificates Form</field>
+    <field name="model">opregistration.fitness</field>
+    <field name="arch" type="xml">
+     <form string="Fitness Certificates">
+      <group>
+       <field name = "date" /> 
+       <field name = "partner_id"/>
+       <field name = "registration"/>
+       <field name = "gender"/>
+       <field name = "agecal" string="Age" />
+       <field name = "diagnosis"/>
+       <field name = "joining" /> 
+       <field name = "doctor" />
+       <button name="%(opdregistration_fitness_certificates)d" string="Print Certificate" type="action"/>
+        </group>
+        </form>
+
+    </field>
+   </record>
+
+
+
+   <record id="opregistration_fitness_certificates_action" model="ir.actions.act_window">
+    <field name="name">OPD Fitness Certificates</field>
+    <field name="res_model">opregistration.fitness</field>
+    <field name="view_mode">tree,form</field>
+   </record>
+
+
+<menuitem id="certificates_menu" parent="opregistration_menu" name="Medical Certificates" action="opregistration_certificates_action"/>
+<menuitem id="fitness_certificates_menu" parent="opregistration_menu" name="Fitness Certificates" action="opregistration_fitness_certificates_action"/>
+
+
+
+
+
+  </data>
+</odoo>

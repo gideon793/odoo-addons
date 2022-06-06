@@ -1,72 +1,11 @@
 <odoo>
     <data>
 
-        <record model="ir.ui.view" id="lab.investigation_list">
-            <field name="name">investigation list</field>
-            <field name="model">lab.investigations</field>
-            <field name="arch" type="xml">
-                <tree>
-                    <field name="name"/>
-                    <field name="range"/>
-                    <field name="group"/>
-                </tree>
-            </field>
-        </record>
-
-        <record model="ir.ui.view" id="lab.investigation_form">
-            <field name="name">investigation form</field>
-            <field name="model">lab.investigations</field>
-            <field name="arch" type="xml">
-                <form>
-                    <group>
-                        <field name="name"/>
-                        <field name="range"/>
-                        <field name="group"/>
-                    </group>
-                </form>
-            </field>
-        </record>
-
-        <record model="ir.actions.act_window" id="lab.investigation_action_window">
-            <field name="name">Laboratory Investigations</field>
-            <field name="res_model">lab.investigations</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <record model="ir.ui.view" id="lab.investigation_group_list">
-            <field name="name">investigation group list</field>
-            <field name="model">lab.investigation_groups</field>
-            <field name="arch" type="xml">
-                <tree>
-                    <field name="name"/>
-                </tree>
-            </field>
-        </record>
-
-        <record model="ir.ui.view" id="lab.investigation_group_form">
-            <field name="name">investigation group form</field>
-            <field name="model">lab.investigation_groups</field>
-            <field name="arch" type="xml">
-                <form>
-                    <group>
-                        <field name="name"/>
-                        <field name="investigations"/>
-                    </group>
-                </form>
-            </field>
-        </record>
-
-        <record model="ir.actions.act_window" id="lab.investigation_group_action_window">
-            <field name="name">Laboratory Investigations Groups</field>
-            <field name="res_model">lab.investigation_groups</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <record model="ir.ui.view" id="lab.labvisit_list">
+        <record model="ir.ui.view" id="lab_labvisit_list">
             <field name="name">labvisit list</field>
             <field name="model">lab.labvisit</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree default_order="date desc">
                     <field name="partner_id"/>
                     <field name="date"/>
                     <field name="registration"/>
@@ -74,42 +13,172 @@
                     <field name="address"/>
                     <field name="gender"/>
                     <field name="doctor"/>
-                    <field name="group_invs"/>
-                    <field name="investigations"/>
                 </tree>
             </field>
         </record>
 
-        <record model="ir.ui.view" id="lab.labvisit_form">
+        <record model="ir.ui.view" id="lab_labvisit_form">
             <field name="name">labvisit form</field>
             <field name="model">lab.labvisit</field>
             <field name="arch" type="xml">
                 <form>
-                    <group>
-                        <field name="partner_id"/>
-                        <field name ="labno" />
-                        <field name="date"/>
-                        <field name="registration"/>
-                        <field name="agecal"/>
-                        <field name="address"/>
-                        <field name="gender"/>
-                        <field name="doctor"/>
-                    </group>
-                    <group>
-                        <field name="group_invs">
-                            <tree editable="bottom">
-                                <field name="groups"/>
-                            </tree>
-                        </field>
-       <button name="getinvestigations" string="Update" type="object"/>
+                    <sheet>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="date"/>
+                            <field name="registration"/>
+                            <field name="agecal"/>
+                            <field name="address"/>
+                            <field name="gender"/>
+                            <field name="doctor"/>
+                            <field name="labno"/>
+                            <button name="barcode" string="Print Barcode" type="object" class="oe_highlight"/>
+                        </group>
+                        <group>
+                            <notebook>
+                                <group string="Hematology Results" colspan="4">
+                                    <group>
+                                        <field name="hemoglobin"/>
+                                        <field name="tlc"/>
+                                        <field name="neutrophils"/>
+                                        <field name="lymphocytes"/>
+                                        <field name="eosinophils"/>
+                                        <field name="basophils"/>
+                                        <field name="monocytes"/>
+                                        <field name="platelets"/>
+                                        <field name="mcv"/>
+                                        <field name="mch"/>
+                                        <field name="mchc"/>
+                                        <field name="rdw_cv"/>
+                                        <field name="rdw_sd"/>
+                                        <field name="esr"/>
+                                        <field name="pcv"/>
+                                        <field name="rbc"/>
+                                    </group>
+                                </group>
+                                <group string="Biochemistry" colspan="4">
+                                    <group>
+                                        <notebook>
+                                            <group string="LFT">
+                                                <group>
+                                                    <field name="totalbil_result"/>
+                                                    <field name="db_result"/>
+                                                    <field name="sgot_result"/>
+                                                    <field name="sgpt_result"/>
+                                                    <field name="protein_result"/>
+                                                    <field name="albumin_result"/>
+                                                    <field name="alp_result"/>
+                                                </group>
+                                            </group>
+                                            <group string="KFT">
+                                                <group>
+                                                    <field name="urea_result"/>
+                                                    <field name="creat_result"/>
+                                                    <field name="uricacid_result"/>
+                                                </group>
+                                            </group>
+                                            <group string="Blood Sugar">
+                                                <group>
+                                                    <field name="rbs_result"/>
+                                                    <field name="fbs_result"/>
+                                                    <field name="ppbs_result"/>
+                                                    <field name="hba1c_result"/>
 
-                        <field name="investigations">
-                            <tree editable="bottom">
-                                <field name="investigations"/>
-                            </tree>
+                                                </group>
+                                            </group>
+                                            <group string="Lipid Profile">
+                                                <group>
+                                                    <field name="totchol_result"/>
+                                                    <field name="hdl_result"/>
+                                                    <field name="ldl_result"/>
+                                                    <field name="triglyceride_result"/>
+                                                    <field name="vldl_result" />
+                                                </group>
+                                            </group>
+                                            <group string="Miscellaneous">
+                                                <group>
+                                                    <field name="cpk_result"/>
+                                                    <field name="amylase_result"/>
+                                                    <field name="crp_result"/>
+                                                </group>
+                                            </group>
+                                        </notebook>
+                                    </group>
+                                </group>
+                                <group string="Electrolytes" colspan="4">
+                                    <group>
+                                        <field name="sodium"/>
+                                        <field name="potassium"/>
+                                        <field name="calcium"/>
+                                        <field name="lithium"/>
+                                        <field name="phosphorus"/>
+                                    </group>
+                                </group>
+                                <group string="CLIA" colspan="4">
+                                    <group>
+                                        <field name="tsh_result"/>
+                                        <field name="t3_result"/>
+                                        <field name="t4_result"/>
+                                        <field name="vitb12_result"/>
+                                        <field name="vitd_result"/>
+                                    </group>
+                                </group>
+                                <group string="Serology" colspan="4">
+                                    <group>
+                                        <field name="hiv"/>
+                                        <field name="hbsag"/>
+                                        <field name="hcv"/>
+                                        <field name="tpha"/>
+                                        <field name="rf_report" />
+                                    </group>
+                                </group>
+                                <group string="Urine Tests" colspan="3">
+                                    <group>
+                                        <notebook>
+                                            <group string="Urine R/E">
+                                                <group>
+                                                    <field name="ure_urobilinogen"/>
+                                                    <field name="ure_bilirubin"/>
+                                                    <field name="ure_ketone"/>
+                                                    <field name="ure_blood"/>
+                                                    <field name="ure_protein"/>
+                                                    <field name="ure_nitrite"/>
+                                                    <field name="ure_leucocytes"/>
+                                                    <field name="ure_glucose"/>
+                                                    <field name="ure_specificgravity"/>
+                                                    <field name="ure_ph"/>
+                                                </group>
+                                            </group>
+                                            <group string="Urine Microscopy">
+                                                <group>
+                                                    <field name="um_appearance"/>
+                                                    <field name="um_rbc"/>
+                                                    <field name="um_wbc" string="WBC"/>
+                                                    <field name="um_epithelial" string="Epithelial Cells"/>
+                                                    <field name="um_crystals"/>
+                                                    <field name="um_bacteria" string="Bacteria"/>
+                                                    <field name="um_misc" string="Others"/>
+                                                </group>
+                                            </group>
+                                            <group string = "Urine Pregnancy Test" >
+                                                <group>
+                                                    <field name="upt_report" />
+                                                </group>
+                                            </group>
+                                        </notebook>
+                                    </group>
+                                </group>
+                                <group string="Miscellaneous Reports">
+                                  <group>
+                                    <field name = "bleedingTime_results" />
+                                    <field name = "clottingTime_results" />
+                                  </group>
+                                </group>
+                            </notebook>
 
-                        </field>
-                    </group>
+                        </group>
+                        <button name="%(lab_report)d" string="Print Report" type="action" class="oe_highlight"/>
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -120,40 +189,54 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-
-        <record id="sequence_lab_visit" model="ir.sequence">
-   <field name="name">Lab Number</field>
-   <field name="code">lab.labvisit</field>
-   <field name="active">TRUE</field>
-   <field name="prefix">%(day)s%(month)s%(year)s</field>
-   <field name="padding">4</field>
-   <field name="number_next">1</field>
-   <field name="number_increment">1</field>
-</record>
-
-        <menuitem name="Laboratory Module" id="lab.menu_root"/>
-        <menuitem name="Investigations" id="lab.investigations" parent="lab.menu_root"
-                  action="lab.investigation_action_window"/>
-        <menuitem name="Investigation Groups" id="lab.investigation_groups" parent="lab.menu_root"
-                  action="lab.investigation_group_action_window"/>
-        <menuitem name="Lab Visit" id="lab.labvisit" parent="lab.menu_root"
-                  action="lab.labvisit_action_window"/>
-
-
-        <record id="ir_cron_token_no_sequence_daily_restart_scheduler" model="ir.cron">
-            <field name="name">Labvisit Daily Restart Scheduler</field>
-            <field name="model_id" ref="lab.labvisit"/>
-            <field name="interval_number">1</field>
-            <field name="interval_type">days</field>
-            <field name="numbercall">-1</field>
-            <field name="doall" eval="False"/>
-            <field name="code">labvisit._reset_token_number_sequences()</field>
-            <field name="state">code</field>
+        <record id="labinvoice_search" model="ir.ui.view">
+            <field name="name">Lab Invoice Search</field>
+            <field name="model">pos.order</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Laboratory Filter" name="lab_filter"
+                            domain="[('config_id', '=', 'Laboratory')]"/>
+                    <field name="partner_id" string="Name" filter_domain="[('partner_id','ilike',self)]"/>
+                </search>
+            </field>
         </record>
 
+        <record id="labvisit_search" model="ir.ui.view">
+            <field name="name">Lab Visit Search</field>
+            <field name="model">lab.labvisit</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="partner_id" string="Name" filter_domain="[('partner_id','ilike',self)]"/>
+                    <field name="labno" string="Lab Number" filter_domain="[('labno','ilike',self)]"/>
+                    <field name="registration" string="Registration" filter_domain="[('registration','ilike',self)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="lab.lab_invoice">
+            <field name="name">Laboratory Invoices</field>
+            <field name="res_model">pos.order</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{"search_default_lab_filter":1}</field>
+
+        </record>
+
+        <record id="sequence_lab" model="ir.sequence">
+            <field name="name">Lab Module</field>
+            <field name="code">lab.labvisit</field>
+            <field name="active">TRUE</field>
+            <field name="padding">11</field>
+            <field name="prefix">1</field>
+        </record>
+
+        <menuitem name="Laboratory Module" id="lab.menu_root"/>
+        <menuitem name="Lab Visit" id="lab.labvisit" parent="lab.menu_root"
+                  action="lab.labvisit_action_window"/>
+        <menuitem name="Lab Invoices" id="lab.invoice" parent="lab.menu_root"
+                  action="lab.lab_invoice"/>
+
+
     </data>
-
-
-
-
 </odoo>

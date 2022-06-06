@@ -4,12 +4,27 @@ from odoo import models, fields, api
 from datetime import datetime,date
 from dateutil.relativedelta import relativedelta
 
+class sankeremployeeincrement(models.Model):
+    _name = 'sankeremployee.payincrement'
+    employee = fields.Many2one('sankeremployee.sankeremployee')
+    incrementdate = fields.Date('Date of Increment')
+    incrementamount = fields.Float('Increment Amount')
+    salaries = fields.Many2one('sankeremployee.sankeremployee', ondelete='cascade')
+    employmentno = fields.Char('Employment Number', related='employee.employmentno')
+    age = fields.Integer('Age')
+    designation = fields.Char('Designation', related='employee.designation')
+    currentpay = fields.Float('Current Basic Pay')
+    scale = fields.Char('Pay Scale', related='employee.scale')
+
 
 class sankeremployee(models.Model):
     _name = 'sankeremployee.sankeremployee'
+    _rec_name = 'employee'
     name = fields.Char('Employee Name')
     employmentno = fields.Char('Employment Number')
     dob=fields.Date('Date of Birth', related='employee.dob')
+    phone = fields.Char('Phone Number', related='employee.phone')
+    mobile = fields.Char('Mobile Number', related='employee.mobile')
     age = fields.Integer('Age', compute="_age")
     gender = fields.Selection(related='employee.gender', string='Gender')
     address=fields.Char(related='employee.contact_address')      
@@ -42,6 +57,16 @@ class sankeremployee(models.Model):
     driving = fields.Char('Driving License')
     bloodgroup = fields.Char('Blood Group')
     remarks = fields.Text('Additional Remarks')
+    photo = fields.Binary('Photograph')
+    signature = fields.Binary('Signature')
+    joiningpay= fields.Float('Basic Pay at Joining')
+    scale = fields.Char('Pay Scale')
+    increments = fields.One2many('sankeremployee.payincrement','salaries', string='Incerement History')
+    lastincrement = fields.Float('Last Increment')
+    nextincrement = fields.Float('Next Increment')
+    lastincrementdue = fields.Date('Last Increment Received')
+    nextincrementdue = fields.Date('Next Increment Due')
+    identification = fields.Char('Identification Marks')
 
 
 

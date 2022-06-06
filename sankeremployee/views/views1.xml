@@ -15,7 +15,8 @@
           <field name="special" sum="Special allowance"/>
           <field name="grossdue" sum="Gross Due"/>
           <field name="epfc" sum="EPF"/>
-          <field name="professionaltax" sum="Professional Tx"/>
+          <field name="professionaltax" sum="Professional Tax"/>
+          <field name="tds" sum="TDS"/>
           <field name="netpayable" sum="Net Payable"/>
           <field name="workingday" />
           <field name="ddrspaid" />
@@ -42,6 +43,7 @@
           <field name="grossdue"/>
           <field name="epfc"/>
           <field name="professionaltax"/>
+          <field name="tds"/>
           <field name="netpayable"/>
           <field name="workingday"/>
 

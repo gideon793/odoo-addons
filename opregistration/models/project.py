@@ -12,7 +12,7 @@ class wizard(models.TransientModel):
     dateselect = fields.Datetime()
     dateend = fields.Datetime()
     datetest = fields.Date('Select date')
-    point = fields.Selection([('Pharmacy', 'SAN-KER Pharmacy'), ('Outreach', 'Outreach'), ('Project', 'Mawkyrwat Project'), ('Nongstoin','Nongstoin Project'), ('Mairang','Mairang Project'),('Fatima','Fatima Project')], string='Location', default='Pharmacy')
+    point = fields.Selection([('Pharmacy', 'SAN-KER Pharmacy'), ('Jowai', 'Jowai'), ('Mawkyrwat', 'Mawkyrwat Project'), ('Nongstoin','Nongstoin Project'), ('Mairang','Mairang Project'),('Fatima','Fatima Project')], string='Location', default='Pharmacy')
     currency_id = fields.Many2one('res.currency', default=lambda self: self.env.user.company_id.currency_id)
 
 

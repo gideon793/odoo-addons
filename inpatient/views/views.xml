@@ -41,6 +41,8 @@
           <field name="discdate"/>
         </tree>
         <form>
+          <button name="%(ipfacesheet)d" string="Print Face Sheet" type="action"/>
+
          <group>
           <field name = "partner_id"/>
           <field name= "agecal" string="Age"/>

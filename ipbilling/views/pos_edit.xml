@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="POS_edit_form">
+            <field name="name">POS Order</field>
+            <field name="model">pos.order</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_pos_form" />
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+            <field name="fiscal_position_id" options="{'no_create': True}" position="after">
+            <field name="periodofbill" />
+            </field>
+            </field>
+        </record>
+    </data>
+</odoo>

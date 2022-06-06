@@ -1,60 +1,52 @@
 <odoo>
-<data>
+  <data>
 
-<record model="ir.ui.view" id="printdaily_form_view">
-<field name="name">printdaily.form</field>
-<field name="model">sankerdaily.printdaily</field>
-<field name="arch" type="xml">
-<form string="Select Date">
-  <group>
-   <field name="datestart"/>
-   <field name="dateend"/>
+    <record model="ir.ui.view" id="printdaily_form_view">
+      <field name="name">printdaily.form</field>
+      <field name="model">sankerdaily.printdaily</field>
+      <field name="arch" type="xml">
+        <form string="Select Date">
+          <group>
+            <field name="datestart"/>
+            <field name="dateend"/>
 
-   </group>
-<footer>
-                    <button name="get_report" string="Get Report" type="object" class="oe_highlight"/>
-                    <button string="Cancel" special="cancel"/>
-                </footer>
+          </group>
+          <footer>
+            <button name="get_report" string="Get Report" type="object" class="oe_highlight"/>
+            <button string="Cancel" special="cancel"/>
+          </footer>
 
-    </form>
-            </field>
- </record>
+        </form>
+      </field>
+    </record>
 
-<record model="ir.ui.view" id="consultrecord_form_view">
-<field name="name">consultrecord.form</field>
-<field name="model">sankerdaily.consultrecord</field>
-<field name="arch" type="xml">
-<form string="Select Date">
-  <group>
-   <field name="datestart"/>
-   <field name="dateend"/>
+    <record model="ir.ui.view" id="consultrecord_form_view">
+      <field name="name">consultrecord.form</field>
+      <field name="model">sankerdaily.consultrecord</field>
+      <field name="arch" type="xml">
+        <form string="Select Date">
+          <group>
+            <field name="datestart"/>
+            <field name="dateend"/>
 
-   </group>
-<footer>
-                    <button name="get_report" string="Get Report" type="object" class="oe_highlight"/>
-                    <button string="Cancel" special="cancel"/>
-                </footer>
+          </group>
+          <footer>
+            <button name="get_report" string="Get Report" type="object" class="oe_highlight"/>
+            <button string="Cancel" special="cancel"/>
+          </footer>
 
-    </form>
-            </field>
- </record>
+        </form>
+      </field>
+    </record>
 
-  <act_window id="printdaily_menu_action"
-                name="Daily Report"
-                res_model="sankerdaily.printdaily"
-                view_mode="form"
-                target="new"/>
+    <act_window id="printdaily_menu_action" name="Daily Report" res_model="sankerdaily.printdaily" view_mode="form" target="new"/>
 
 
-  <act_window id="consultrecord_menu_action"
-                name="Consultation Record"
-                res_model="sankerdaily.consultrecord"
-                view_mode="form"
-                target="new"/>
+    <act_window id="consultrecord_menu_action" name="Consultation Record" res_model="sankerdaily.consultrecord" view_mode="form" target="new"/>
 
-<menuitem id="wizard_menu" parent="sankerdaily.menu_root" name="Reports" />
-<menuitem id="print_menu" parent="sankerdaily.wizard_menu" name="Daily report" action="printdaily_menu_action"/>
-<menuitem id="consultrecord_menu" parent="sankerdaily.wizard_menu" name="Consult Record" action="consultrecord_menu_action"/>
+    <menuitem id="wizard_menu" parent="sankerdaily.menu_root" name="Reports" />
+    <menuitem id="print_menu" parent="sankerdaily.wizard_menu" name="Daily report" action="printdaily_menu_action"/>
+    <menuitem id="consultrecord_menu" parent="sankerdaily.wizard_menu" name="Consult Record" action="consultrecord_menu_action"/>
 
-</data>
+  </data>
 </odoo>

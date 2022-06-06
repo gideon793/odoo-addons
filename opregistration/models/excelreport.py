@@ -66,7 +66,7 @@ class wizard(models.TransientModel):
         service_total = 0
         registration_total = 0
 
-        appts  = self.env['pos.order'].search([['date_order','>=',self.dateselect],['date_order','<=',self.dateend], ['config_id.name', '=', self.point]], order='create_date')
+        appts  = self.env['sale.order'].search([['date_order','>=',self.dateselect],['date_order','<=',self.dateend], ['user_id', '=', 8]], order='create_date')
 
         for appt in appts:
             consultation = 0
@@ -78,21 +78,19 @@ class wizard(models.TransientModel):
             roundoff = 0
             column = 0
             row +=1
-            for appt.line in appt.lines:
+            for appt.line in appt.order_line:
                 if appt.line.product_id.display_name == 'Consultation Fee':
-                    consultation = appt.line.price_subtotal_incl
+                    consultation = appt.line.price_total
                 if appt.line.product_id.type == 'service':
-                    service += appt.line.price_subtotal_incl
+                    service += appt.line.price_total
                 if appt.line.product_id.display_name == 'Round off':
-                    roundoff += appt.line.price_subtotal_incl
+                    roundoff += appt.line.price_total
                 if appt.line.product_id.display_name == 'Registration Fee':
-                    registration += appt.line.price_subtotal_incl
+                    registration += appt.line.price_total
             service = service - consultation - registration - roundoff
             service = round(service)
             medicines = appt.amount_total - consultation - service - registration
-            for appt.statement_id in appt.statement_ids:
-                if appt.statement_id.journal_id.name == 'Credits':
-                    balance = appt.statement_id.amount
+            balance = self.env['account.invoice'].search([['origin', '=', appt.name]]).residual
             paid = appt.amount_total - balance
             consult_total += consultation
             registration_total += registration
@@ -110,8 +108,8 @@ class wizard(models.TransientModel):
             writer.write(row, column + 6, appt.amount_total, normal)
             writer.write(row, column + 7, balance, normal)
             writer.write(row, column + 8, paid, normal)
-            if appt.note:
-                writer.write(row, column + 9, appt.note, normal)
+            if appt.remarks:
+                writer.write(row, column + 9, appt.remarks, normal)
         writer.write(row+1, column, "Total", bold)
         writer.write(row+1, column+1, "", bold)
         writer.write(row+1, column+2, consult_total, bold)

@@ -1,0 +1,117 @@
+<odoo>
+  <data>
+
+    <record model="ir.ui.view" id="project_list">
+    <field name="name">Project List</field>
+    <field name="model">sankerproject.project</field>
+    <field name="arch" type="xml">
+     <tree>
+       <field name = "name"/>
+      </tree>
+    </field>
+   </record>
+
+  <record model="ir.ui.view" id="project_form">
+    <field name="name">Project form</field>
+    <field name="model">sankerproject.project</field>
+    <field name="arch" type="xml">
+     <form>
+       <group>
+       <field name = "name"/>
+       </group>
+      </form>
+    </field>
+   </record>
+
+
+    <record model="ir.actions.act_window" id="project_action">
+      <field name="name">Projects</field>
+      <field name="res_model">sankerproject.project</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.ui.view" id="project_transactions_list">
+    <field name="name">Project Transactions List</field>
+    <field name="model">sankerproject.transactions</field>
+    <field name="arch" type="xml">
+     <tree>
+       <field name = "link"/>
+       <field name = "date" />
+         <field name = "amount" sum="Total Amount" />
+         <field name = "paid" sum="Total Paid"/>
+      </tree>
+    </field>
+   </record>
+
+  <record model="ir.ui.view" id="project_form">
+    <field name="name">Transactions form</field>
+    <field name="model">sankerproject.transactions</field>
+    <field name="arch" type="xml">
+     <form>
+       <group>
+        <field name = "project"/>
+       <field name = "date" />
+         <field name = "amount" />
+         <field name = "paid" />
+                 <button name="%(sankerproject_bill)d" string="Print Bill" type="action"/>
+                 <button name="%(sankerproject_report)d" string="Print Receipt" type="action"/>
+
+</group>
+      </form>
+    </field>
+   </record>
+
+
+    <record model="ir.actions.act_window" id="project_transactions_action">
+      <field name="name">Transactions</field>
+      <field name="res_model">sankerproject.transactions</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <record model="ir.ui.view" id="project_deallist">
+    <field name="name">Project List</field>
+    <field name="model">sankerproject.projectdeals</field>
+    <field name="arch" type="xml">
+     <tree>
+       <field name = "project"/>
+       <field name = "outstanding"/>
+      </tree>
+    </field>
+   </record>
+
+  <record model="ir.ui.view" id="project_dealform">
+    <field name="name">Project form</field>
+    <field name="model">sankerproject.projectdeals</field>
+    <field name="arch" type="xml">
+     <form>
+       <group>
+       <field name = "project"/>
+       <field name = "outstanding"/>
+       <field name = "transactions" context="{'default_project': project}">
+       <tree>
+           <field name = "date"/>
+           <field name="amount" sum="Total Amount"/>
+           <field name="paid" sum="Total Paid"/>
+       </tree>
+       </field>
+       </group>
+      </form>
+    </field>
+   </record>
+
+
+    <record model="ir.actions.act_window" id="project_dealaction">
+      <field name="name">Projects</field>
+      <field name="res_model">sankerproject.projectdeals</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <menuitem name="Project Transactions" id="project_menu3" parent="opregistration.reports_menu" action="project_dealaction"/>
+    <menuitem name="Projects" id="project_menu1" parent="opregistration.reports_menu" action="project_action"/>
+
+
+
+  </data>
+</odoo>

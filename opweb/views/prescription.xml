@@ -1,0 +1,126 @@
+<odoo>
+    <data>
+
+        <report id="opdPrescription" string="SAN-KER OOPD Prescription" model="opweb.opweb" report_type="qweb-pdf" name="opweb.opdPrescription_template" file="opweb.opdPrescription_template" menu="True"/>
+
+        <template id ="opdPrescription_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+                        <div class="page">
+                            <div class="text-center" style="font-size:20px; padding-bottom:10px">
+                                <strong>OPD Prescription</strong>
+                            </div>
+                            <div style="border-bottom: 1px solid black">
+                                <table class="Prescription_details">
+                                    <tr>
+                                        <td>
+                                            <name>Patient name:</name>
+                                        </td>
+                                        <td style="width:600px">
+                                            <span t-field="docs.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;name&quot;], &quot;no_marker&quot;: True}" style="font-size:20px"/>
+                                        </td>
+                                        <td style="width:500px">
+                                            <name>Registration number:</name>
+                                        </td>
+                                        <td>
+                                            <span t-field="docs.registration"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <name>Address:</name>
+                                        </td>
+                                        <td style="width:600px">
+                                            <span t-field="docs.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;], &quot;no_marker&quot;: True}"/>
+                                        </td>
+                                        <td>
+                                            <name>Date:</name>
+                                        </td>
+                                        <td>
+                                            <span t-field="docs.date"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:400px">
+                                            <name>Age:</name>
+                                        </td>
+                                        <td >
+                                            <span t-field="docs.partner_id.agecal"/>years
+                                        </td>
+                                        <td>
+                                            <name>Sex:</name>
+                                        </td>
+                                        <td>
+                                            <span t-field="docs.partner_id.gender"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table style="border-top: 1px solid black;width:100%">
+                                    <thead>
+                                        <td style="width:90%; font-size:20px">
+                                            <strong>Diagnosis</strong>
+                                        </td>
+                                        <td style="width:10%"> </td>
+                                    </thead>
+                                    <tr t-foreach='docs.partner_id.pat_diag' t-as='line'>
+                                        <td >
+                                            <span t-field="line.diagnosis"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="line.code"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table style="border-top: 1px solid black; width: 100%;">
+                                    <thead>
+                                        <tr style="width:100%">
+                                            <td style ="width:50%">
+                                                <span><i class="fa fa-prescription"></i></span>
+                                            </td>
+                                            <td style="width: 50%"></td>
+                                        </tr>
+                                    </thead>
+
+                                    <tr style="width: 100%" t-foreach='docs.prescription_lines' t-as='med'>
+                                        <td style="width: 50%">
+                                            <span t-field="med.display_name"></span>
+                                        </td>
+                                        <td style="width: 50%">
+                                            <table style="width: 100%">
+                                                <tr t-foreach="med.medicine_lines" t-as="medDetail">
+                                                    <td>
+                                                        <span t-field="medDetail.dose"></span>
+                                                    </td>
+                                                    <td>
+                                                        <span t-field="medDetail.frequency"></span>
+                                                    </td>
+                                                    <td>
+                                                        for<![CDATA[&nbsp;]]><![CDATA[&nbsp;]]><span t-field="medDetail.duration"></span><![CDATA[&nbsp;]]><![CDATA[&nbsp;]]>days
+                                                    </td>
+                                                    <td>
+                                                        <span t-field="medDetail.special"></span>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div style="text-align:right">
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <t t-set="doctor"
+                                t-value="dict([('ssyiem', 'Dr.S. Syiem'),('eddie','Dr. E. Mukhim'),('didak','Dr. D. Khonglah'),('gideon','Dr. G. Rynjah'), ('rlaloo', 'Dr. R. Laloo'), ('lashngain', 'Dr. L. Sohliya'), ('dkynjin','Dr. D. Kynjin')])" />
+                                <span t-esc="doctor[docs.doctor]"></span>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

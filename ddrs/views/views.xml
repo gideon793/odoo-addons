@@ -128,7 +128,7 @@
                             <tree editable="bottom">
                                 <field name="sequences" widget="handle"/>
                                 <field name="name"/>
-                                <field name="honorariums"/>
+                                <field name="honorariums" sum="Total" />
                             </tree>
                         </field>
                     </group>

@@ -1,0 +1,84 @@
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="outreach_list">
+            <field name="name">outreach list</field>
+            <field name="model">outreach.outreach</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="dateclinic"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="outreach_form">
+            <field name="name">outreach form</field>
+            <field name="model">outreach.outreach</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="dateclinic"/>
+                        <field name="appts"/>
+                        <button name="get_data" string="Get data" type="object"/>
+                        <button name="exportcsv" string="Output to CSV" type="object"/>
+
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="outreach.action_window">
+            <field name="name">Outreach Clinics</field>
+            <field name="res_model">outreach.outreach</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+  <record model="ir.ui.view" id="outreach_clinicdetails_list">
+            <field name="name">outreach list</field>
+            <field name="model">outreach.clinicdetails</field>
+            <field name="arch" type="xml">
+
+                <tree>
+                        <field name="patient"/>
+                         <field name="dateclinic"/>
+               </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="outreach_clinicdetails_form">
+            <field name="name">outreach form</field>
+            <field name="model">outreach.clinicdetails</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="patient"/>
+                        <field name="age"/>
+                         <field name="dateclinic"/>
+                         <field name="registration"/>
+
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="outreach2_action_window">
+            <field name="name">Outreach Clinics</field>
+            <field name="res_model">outreach.clinicdetails</field>
+            <field name="view_mode">tree,form</field>
+    <field name="context">{'group_by':'dateclinic'}</field>
+
+
+        </record>
+
+
+
+
+
+
+
+        <menuitem name="Outreach Data Upload" parent="opregistration.reports_menu" id="outreach_2"
+                  action="outreach2_action_window"/>
+        <menuitem name="Outreach Data Download" parent="opregistration.reports_menu" id="outreach_1"
+                  action="outreach.action_window"/>
+    </data>
+</odoo>

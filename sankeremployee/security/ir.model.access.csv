@@ -6,3 +6,4 @@ access_salaries,sanker.employee.salaries,model_sankeremployee_salaries,sankeremp
 access_contract,sanker.employee.contract,model_sankeremployee_contractemployee,sankeremployee.sankeremployee_group,1,1,1,1
 access_contractmonthly,sanker.employee.contractmonthly,model_sankeremployee_contractmonthly,sankeremployee.sankeremployee_group,1,1,1,1
 access_contractsalaries,sanker.employee.contractsalaries,model_sankeremployee_contractsalaries,sankeremployee.sankeremployee_group,1,1,1,1
+access_increments,sanker.employee.increments,model_sankeremployee_payincrement,sankeremployee.employee_group,1,1,1,1

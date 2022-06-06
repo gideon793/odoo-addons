@@ -1,0 +1,114 @@
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="opweb_form">
+            <field name="name">OPD Frontend</field>
+            <field name="model">opweb.opweb</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name ="state" widget="statusbar" statusbar_visible="ordered, delivered" />
+                    </header>
+                    <group>
+                        <field name="partner_id" string="Patient Name"/>
+                        <field name="registration" string="Patient Registration"/>
+                        <field name ="doctor" string="Doctor" />
+                        <field name="date" string ="Date" />
+                        <field name="prescription_lines">
+                            <form>
+                                <group>
+                                <field name = "display_name" />
+                                    <field name = "medicine" />
+                                    <field name ="ordered_no" />
+                                    <field name = "medicine_lines">                              
+                                        <form>
+                                            <group>
+                                                <field name="dose" />
+                                                <field name="frequency"/>
+                                                <field name="duration" />
+                                                <field name="total" />
+                                                <field name="special" />
+                                            </group>
+                                        </form>
+                                    </field>
+                                </group>
+                        </form>
+                    </field>
+                </group>
+                                                <group>
+                                    <field name="registration_charge" />
+                                    <field name="consultation" />
+                                    <field name="roundOff"/>
+                                    <field name="service_lines">
+                                        <tree>
+                                            <field name = "service" />
+                                            <field name = "service_charge" />
+                                        </tree>
+                                    </field>
+                                </group>
+
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="opweb_tree">
+        <field name="name">OPD Frontend</field>
+        <field name="model">opweb.opweb</field>
+        <field name="arch" type="xml">
+            <tree default_order="date desc">
+                <field name="date" string="Date" />
+                <field name="partner_id" string="Patient Name"/>
+                <field name="registration" string="Patient Name"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="opweb_action" model="ir.actions.act_window">
+        <field name="name">OPD Front End</field>
+        <field name="res_model">opweb.opweb</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+         <record model="ir.ui.view" id="sale_confirm_extended_for_warehouse">
+                <field name="name">stock.warehose.extended</field>
+                <field name="model">stock.warehouse</field>
+                <field name="inherit_id" ref = "stock.view_warehouse"/>
+                <field name="priority" eval="20"/>
+                <field name="arch" type="xml">
+                    <field name="code" position="after">
+                        <field name= "is_delivery_set_to_done"/>
+                        <field name= "create_invoice" />
+                        <field name= "validate_invoice" />
+                    </field>
+                </field>
+            </record>
+
+    <menuitem id="opweb_menu" parent="" name="OPD Frontend" />
+    <menuitem id="opweb_menu1" parent="opweb_menu" name="OPD Prescription" action="opweb_action"/>
+
+    <!--        <template id="no_footer" name="website_no_footer" inherit_id="website.layout">
+                            <xpath expr="//footer" position="replace">
+                                <footer>
+                                </footer>
+                            </xpath>
+                            <xpath expr="//header" position="replace">
+                                <header>
+                                </header>
+                            </xpath>
+                        </template>
+
+                        <template id="no_nav_bar" name="no_nav_bar" inherit_id="portal.frontend_layout">
+                            <xpath expr="//nav" position="replace">
+                                <nav id="no_nav">
+                                    <center>
+                                        <h2>SAN-KER</h2>
+                                    </center>
+                                </nav>
+                            </xpath>
+
+                        </template>-->
+
+
+</data>
+</odoo>

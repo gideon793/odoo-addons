@@ -1,0 +1,620 @@
+<odoo>
+    <data>
+        <template id="test_page" name="Test Page">
+            <t t-call="website.layout">
+                <div class="oe_structure">
+                    <div class="container">
+                        <p>Thanks</p>
+                        <p>Params
+                            <span t-esc="params"></span>
+                        </p>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+<template id="sankerweb_layout" inherit_id="web.layout" name="SAN-KER layout">
+    <xpath expr="//head//link" position="after">
+        <link rel="shortcut icon" href="/opweb/static/src/img/icon.ico" type="image/x-icon"/>
+    </xpath>
+</template>
+
+        <template id="opWeb_prescriptions" name="Pharmacy Prescriptions">
+            <t t-call="web.layout">
+                <t t-call-assets="web.assets_common" t-js="false"/>
+                <t t-call-assets="web.assets_frontend" t-js="false"/>
+                <t t-call-assets="web_editor.summernote" t-js="false" groups="website.group_website_publisher"/>
+                <t t-call-assets="web_editor.assets_editor" t-js="false" groups="website.group_website_publisher"/>
+                <t t-call-assets="website.assets_editor" t-js="false" groups="website.group_website_publisher"/>
+                <t t-call-assets="web.assets_common" t-css="false"/>
+                <t t-call-assets="web.assets_frontend" t-css="false"/>
+                <t t-call-assets="web_editor.summernote" t-css="false" groups="website.group_website_publisher"/>
+                <t t-call-assets="web_editor.assets_editor" t-css="false" groups="website.group_website_publisher"/>
+                <t t-call-assets="website.assets_editor" t-css="false" groups="website.group_website_publisher"/>
+                <div class="oe_structure">
+                    <div class="container-flex">
+                        <head>
+                        <script id="modal_html" type="text/html">
+                            <thead>
+                                <tr class="w-100">
+                                    <td>#</td>
+                                    <td>Medicine</td>
+                                    <td>No.</td>
+                                    <td>Frequency</td>
+                                    <td>Duration</td>
+                                    <td>Special Instruction</td>
+                                    <td>Total</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </script>
+
+                            <script type="text/javascript">
+                                var date = '<t t-esc ="date" />';
+                            </script>
+                            <script type="text/javascript">
+                            var med_details = [];
+                            <t t-foreach="medications" t-as="medication">
+                            var med_id = '<t t-esc = "medication.id" />';
+                            var med_name = '<t t-esc="medication.name" />';
+                            var medPrice = '<t t-esc="medication.list_price" />'
+                            var med = {med_id, med_name, medPrice};
+                            med_details.push(med);
+                            </t>
+                            </script>
+                            <script type="text/html" id="servicesEntries">
+                              <div class="serviceDetail" id="serviceDetail">
+                                    <i class="fa fa-minus delService" ></i>
+                                    <input list="services" name="serviceInput" id="serviceInput" class="form-control rounded text-center serviceName" style="width: 70%; margin-left:15px"/>
+                                        <datalist id="services">
+                                            <t t-foreach="services" t-as="service">
+                                                <option t-attf-value="#{service.name}" t-attf-product_id="#{service.id}" />
+                                            </t>                                            
+                                        </datalist>
+                                    <input class="serviceCharge text-center form-control rounded" type="number" step="1" style="width: 20%; margin-left: 25px; margin-right: 5px" />
+                                </div>
+                            </script>
+                            <script type="text/javascript">
+                                var todayPharmacyPrescriptions =[];
+                                var todayOpwebPrescriptions = [];
+                                <t t-foreach="pharmacyAppointments" t-as="appointment">
+                                var appointmentDetails = {};
+                                appointmentDetails['name'] = '<t t-esc="appointment.partner_id.name" />';
+                                appointmentDetails['partner_id'] = '<t t-esc="appointment.partner_id.id" />';
+                                appointmentDetails['doctor'] = '<t t-esc="appointment.doctor" />';
+                                appointmentDetails['opreg_id'] = '<t t-esc="appointment.id" />';
+                                todayPharmacyPrescriptions.push(appointmentDetails)
+                                </t>
+                                <t t-foreach="pharmacyPrescriptions" t-as="prescription">
+                                var todayDetails ={};
+                                todayDetails = {'name': '<t t-esc="prescription.partner_id.name" />', 'state': '<t t-esc="prescription.state" />'};
+                                todayOpwebPrescriptions.push(todayDetails);
+                                </t>
+                            </script>
+                            <script type="text/html" id ="medDetailEntry">
+                                <div class="input-group medicineLines">
+                                    <input id="1_medicineOrder_1" class="med_no form-control rounded text-center col-1 p-0" type="number" step="0.25" value="1"/>
+                                    <select name="1_medicineFrequency_1" id="1_medicineFrequency_1" class="col-2 med_freq form-control text-center p-0 rounded">
+                                        <option value="1">Once a day</option>
+                                        <option value="2">Twice a day</option>
+                                        <option value="3">Thrice a day</option>
+                                        <option value="4">Four times a day</option>
+                                        <option value="5">Five times a day</option>
+                                        <option value="6">Others</option>
+                                    </select>
+                                    <input id="1_medicineDuration_1" type="number" step="1" class="col-1 med_duration form-control rounded p-0 text-center"></input>
+                                    <input id="1_medicineSpecial_1" type="textarea" class="med_special col-7 form-control p-0 text-center" placeholder="Special Instructions"></input>
+                                    <div class="p-0 m-0 col-1 btnCell">
+                                        <i class="fa fa-plus fa-sm faPlus" data-id="medLine[]"></i>
+                                        <i class="fa fa-minus fa-sm faMinus"></i>
+                                    </div>
+                                </div>
+                            </script>
+                            <script id="prescriptionLine" type="text/html">
+                                <div class="presLine pl-0 ml-0">
+                                    <div class="presLineDetails">
+                                        <div id="mainMed" class="mainMed">
+                                            <i class="fa fa-minus delMed"></i>
+                                            <label class="sr-only" for="1_medicineOrder" id="1_medicineLabel">1</label>
+                                            <span id="medIndex" class="presMedNo">1</span>
+                                            <input list="medicines" name="1_medicineOrder" class="form-control rounded p-0 presMedName"/>
+                                            <datalist id="medicines">
+                                                <t t-foreach="medications" t-as="medication">
+                                                    <option t-attf-value="#{medication.name}" t-attf-id="#{medication.id}" t-attf-med_price="#{medication.list_price}"/>
+                                                </t>
+                                            </datalist>
+                                            <label class="sr-only" for="1_medicineTotal" id="medicineTotal1">Total Order</label>
+                                            <input name="1_medicineTotal" type="number" class="form-control col-2 rounded text-center medTotal" id="medicineTotal1"/>
+                                        </div>
+                                        <div class="medicineRowContainer" id="medicineDetails">
+                                            <div class="input-group medicineLines">
+                                                <input id="1_medicineOrder_1" class="med_no form-control rounded text-center col-1 p-0" type="number" step="0.25" value="1"/>
+                                                <select name="1_medicineFrequency_1" id="1_medicineFrequency_1" class="col-2 med_freq form-control text-center p-0 rounded">
+                                                    <option value="1">Once a day</option>
+                                                    <option value="2">Twice a day</option>
+                                                    <option value="3">Thrice a day</option>
+                                                    <option value="4">Four times a day</option>
+                                                    <option value="5">Five times a day</option>
+                                                    <option value="6">Others</option>
+                                                </select>
+                                                <input id="1_medicineDuration_1" type="number" step="1" class="col-1 med_duration form-control rounded p-0 text-center"></input>
+                                                <input id="1_medicineSpecial_1" type="textarea" class="col-7 form-control p-0 text-center med_special" placeholder="Special Instructions"></input>
+                                                <div class="p-0 m-0 col-1 btnCell">
+                                                    <i class="fa fa-plus fa-sm faPlus" data-id="1"></i>
+                                                    <i class="fa fa-minus fa-sm faMinus"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="lineTotal bg-light">
+                                        </div>
+
+                                </div>
+                                </div>
+                            </script>
+                        </head>
+                        <body>
+                            <div class="container-flex d-flex flex-row">
+                                <div class="navMain" id="navMain">
+                                    <nav class="text-center bg-light pt-3" >
+                                        <a href="#" class="pharmacyNavbarName" id="pharmacyNavbarName">Today's Prescriptions</a>
+                                        <input id="navSearch" type="text" name="search" placeholder="Search" class="rounded"/>
+                                        <div id="pharmacyNavbar">
+                                        </div>
+                                    </nav>
+                                </div>
+                                <div class="pharmacyMain" id="pharmacyMain">
+                                    <div class="pharmacyDemographics">
+                                        <div id="patName" class="patName">Patient Name</div>
+                                        <div id="patAge" class="patAge">Age, Gender</div>
+                                        <div id="patReg" class="patReg">Registration</div>
+                                        <button type="button" id="preslistCollapse" class="btn btn-primary">
+                                            <i class="fa fa-bars"></i>
+                                        </button>
+                                    </div>
+                                    <hr />
+                                    <div class="pharmacyDetails" id="pharmacyDetails">
+                                        <div class="presMain" id="presMain">
+                                            <div id="prescriptionHeader" class="prescriptionHeader">
+                                            <span style="width: 35%">Medication</span><!--
+                                            --><span style="width: 5%">Total</span><!--
+                                            --><span style="width: 5%">No.</span><!--
+                                            --><span style="width: 10%">Frequency</span><!--
+                                            --><span style="width: 5%">Days</span><!--
+                                            --><span style="width: 40%">Special</span>
+                                            </div>
+                                            <div class="presLine pl-0 ml-0">
+                                            <div class="presLineDetails">
+                                                <div id="mainMed" class="mainMed">
+                                                    <i class="fa fa-minus delMed"></i>
+                                                    <label class="sr-only" for="1_medicineOrder" id="1_medicineLabel">1</label>
+                                                    <span id="medIndex" class="presMedNo">1</span>
+                                                    <input list="medicines" name="1_medicineOrder" id="1_medicineOrder" class="form-control rounded p-0 presMedName"/>
+                                                        <datalist id="medicines">
+                                                            <t t-foreach="medications" t-as="medication">
+                                                                <option t-attf-value="#{medication.name}" t-attf-id="#{medication.id}" />
+                                                            </t>
+                                                        </datalist>
+                                                    <label class="sr-only" for="1_medicineTotal" id="medicineTotal1">Total Order</label>
+                                                    <input name="medicineTotal" type="number" class="form-control col-2 rounded text-center medTotal" id="medicineTotal1"/>
+                                                </div>
+                                                <div class="medicineRowContainer" id="medicineDetails">
+                                                    <div class="input-group medicineLines">
+                                                        <input id="1_medicineOrder_1" class="med_no form-control rounded text-center col-1 p-0" type="number" step="0.25" value="1"/>
+                                                            <select name="1_medicineFrequency_1" id="1_medicineFrequency_1" class="col-2 med_freq form-control text-center p-0 rounded">
+                                                                    <option value="1">Once a day</option>
+                                                                    <option value="2">Twice a day</option>
+                                                                    <option value="3">Thrice a day</option>
+                                                                    <option value="4">Four times a day</option>
+                                                                    <option value="5">Five times a day</option>
+                                                                    <option value="6">Others</option>
+                                                            </select>
+                                                        <input id="1_medicineDuration_1" type="number" step="1" class="col-1 med_duration form-control rounded p-0 text-center"></input>
+                                                        <input id="1_medicineSpecial_1" type="textarea" class="col-7 form-control p-0 text-center med_special" placeholder="Special Instructions"></input>
+                                                        <div class="p-0 m-0 col-1 btnCell">
+                                                        <i class="fa fa-plus fa-sm faPlus" data-id="1"></i>
+                                                        <i class="fa fa-minus fa-sm faMinus"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="lineTotal bg-light">
+                                                </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                    <row>
+                                        <button class="btn btn-primary" id="opnewrow">Add More</button>
+                                    </row>      
+                                    <div class="servicesMain" id="servicesMain">
+                                        <div class="servicesHeader" id="servicesHeader">
+                                                <span style="width: 80%">Service</span><!--
+                                             --><span style="width: 20%">Amount</span>
+                                        </div>
+                                        <div class="servicesContainer" id="servicesContainer">
+                                            <div class="serviceDetailFixed">
+                                                <i class="fa fa-minus delServiceNone" ></i>
+                                                <span class="text-center consultationName" style="width: 70%; margin-left:15px">
+                                                    Consultation Fee
+                                                    </span>
+                                                <input id="consultationCharge" class="consultationCharge text-center form-control rounded" type="number" step="1" style="width: 20%; margin-left: 25px; margin-right: 5px" />
+                                            </div>
+                                            <div class="serviceDetailFixed">
+                                                <i class="fa fa-minus delServiceNone" ></i>
+                                                <span class="text-center registrationName" style="width: 70%; margin-left:15px" value="Registration Fee">
+                                                Registration Fee
+                                                </span>
+                                                <input id="registrationCharge" class="registrationCharge text-center form-control rounded" type="number" step="1" style="width: 20%; margin-left: 25px; margin-right: 5px" />
+                                            </div>
+                                            <div class="serviceDetailFixed">
+                                                <i class="fa fa-minus delServiceNone" ></i>
+                                                <span class="text-center consultationName" style="width: 70%; margin-left:15px">
+                                                    Round Off
+                                                    </span>
+                                                <input id="roundOff" class="roundOff text-center form-control rounded" type="number" step="1" style="width: 20%; margin-left: 25px; margin-right: 5px" />
+                                            </div>
+
+                                        </div>
+                                        <div id = "presTotal">
+                                                <span style="width: 80%">Total</span><!--
+                                             --><span style="width: 20%" id='amountTotal' class="amountTotal">Amount</span>
+
+                                        </div>
+                                    </div>
+                                        <row>
+                                            <button class="btn btn-primary" id="serviceNewRow">Add More</button>
+                                        </row>
+                                        <div class="paymentTotal">
+                                            <span style="width: 80%; margin-left: 25px; margin-right: 5px">Payment</span><!--                                                
+                                            --><input type="number" style="width: 20%; margin-left: 25px; margin-right: 5px" class="paymentInput" id="paymentTotal"/>
+                                        </div>      
+                                        <button type="button" id="pharmacyUpdateSubmit" class="btn btn-primary form_submit">Update Prescription</button>
+                                        <button type="button" id="pharmacyFormSubmit" class="btn btn-success form_submit">Sale Order</button>
+                                        <button type="button" class="btn btn-primary" id="printPrescription">Print Prescription</button>
+
+                                    </div>
+                                </div>
+                                <div class="old_pres_list active" id="oldPreslist">
+                                    <h5 class="card-header text-center bg-light">Old Prescriptions</h5>
+                                    <div class="card shadow border-light pr-1">
+                                        <div class="card-body p-0" id="old_prescriptions">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="modal fade" id="old_prescript_modal" tabindex="-1" role="dialog" aria-labelledby="old_presc_header" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 id="pres_date" style="text-align:center"></h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="oldPrescriptionDetail" class="oldPrescriptionDetail container-flex ">
+                                            <div class="oldPrescriptionHeader row bg-light">
+                                                <div class="col-1">#</div>
+                                                <div class="col-6">Medicine</div>
+                                                <div class="col-1">No.</div>
+                                                <div class="col-1">Freq.</div>
+                                                <div class="col-1">Days</div>
+                                                <div class="col-1">Special</div>
+                                                <div class="col-1">Total</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="pres_submit btn btn-success">Repeat</button>
+                                        <button type="button" id="close" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </body>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="opreg_doctor" name="Select Doctor">
+            <t t-call="website.layout">
+                <div class="oe_structure">
+                    <div class="container">
+                        <br/>
+                        <form action="/opweb/doc_submit">
+                            <div class="form-group">
+                                <label for="doctor">Doctor:</label>
+                                <select class="form-control" name="doctor">
+                                    <option t-attf-value="ssyiem">Dr. S. Syiem</option>
+                                    <option t-attf-value="eddie">Dr. E. Mukhim</option>
+                                    <option t-attf-value="gideon">Dr. G. Rynjah</option>
+                                    <option t-attf-value="didak">Dr. D. Khonglah</option>
+
+                                </select>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="opreg_details" name="OPD Registration Details">
+            <t t-call="web.layout">
+                <t t-call-assets="web.assets_common" t-js="false"/>
+                <t t-call-assets="web.assets_frontend" t-js="false"/>
+                <t t-call-assets="web_editor.summernote" t-js="false" groups="website.group_website_publisher"/>
+                <t t-call-assets="web_editor.assets_editor" t-js="false" groups="website.group_website_publisher"/>
+                <t t-call-assets="website.assets_editor" t-js="false" groups="website.group_website_publisher"/>
+                <t t-call-assets="web.assets_common" t-css="false"/>
+                <t t-call-assets="web.assets_frontend" t-css="false"/>
+                <t t-call-assets="web_editor.summernote" t-css="false" groups="website.group_website_publisher"/>
+                <t t-call-assets="web_editor.assets_editor" t-css="false" groups="website.group_website_publisher"/>
+                <t t-call-assets="website.assets_editor" t-css="false" groups="website.group_website_publisher"/>
+                <div class="oe_structure">
+                    <head>
+                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" />
+                        <script id="modal_html" type="text/html">
+                            <thead>
+                                <tr class="w-100">
+                                    <td>#</td>
+                                    <td>Medicine</td>
+                                    <td>No.</td>
+                                    <td>Frequency</td>
+                                    <td>Duration</td>
+                                    <td>Special Instruction</td>
+                                    <td>Total</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </script>
+                        <script type="text/html" id ="medDetailEntry">
+                            <div class="input-group medicineLines">
+                                <input id="1_medicineOrder_1" class="med_no form-control rounded text-center col-1 p-0" type="number" step="0.25" value="1"/>
+                                <select name="1_medicineFrequency_1" id="1_medicineFrequency_1" class="col-2 med_freq form-control text-center p-0 rounded">
+                                    <option value="1">Once a day</option>
+                                    <option value="2">Twice a day</option>
+                                    <option value="3">Thrice a day</option>
+                                    <option value="4">Four times a day</option>
+                                    <option value="5">Five times a day</option>
+                                    <option value="6">Others</option>
+                                </select>
+                                <input id="1_medicineDuration_1" type="number" step="1" class="col-1 med_duration form-control rounded p-0 text-center"></input>
+                                <input id="1_medicineSpecial_1" type="textarea" class="med_special col-7 form-control p-0 text-center" placeholder="Special Instructions"></input>
+                                <div class="p-0 m-0 col-1 btnCell">
+                                    <i class="fa fa-plus fa-sm faPlus" data-id="medLine[]"></i>
+                                    <i class="fa fa-minus fa-sm faMinus"></i>
+                                </div>
+                            </div>
+                        </script>
+                        <script id="prescriptionLine" type="text/html">
+                            <div class="presLine pl-0 ml-0">
+                                <div class="presLineDetails">
+                                    <div id="mainMed" class="mainMed">
+                                        <i class="fa fa-minus delMed"></i>
+                                        <label class="sr-only" for="1_medicineOrder" id="1_medicineLabel">1</label>
+                                        <span id="medIndex" class="presMedNo">1</span>
+                                        <input list="medicines" name="1_medicineOrder" id="1_medicineOrder" class="form-control rounded p-0 presMedName"/>
+                                        <datalist id="medicines">
+                                            <t t-foreach="medications" t-as="medication">
+                                                <option t-attf-value="#{medication.name}" t-attf-id="#{medication.id}" />
+                                            </t>
+                                        </datalist>
+                                        <label class="sr-only" for="1_medicineTotal" id="medicineTotal1">Total Order</label>
+                                        <input name="1_medicineTotal" type="number" class="form-control col-2 rounded text-center medTotal" id="medicineTotal1"/>
+                                    </div>
+                                    <div class="medicineRowContainer" id="medicineDetails">
+                                        <div class="input-group medicineLines">
+                                            <input id="1_medicineOrder_1" class="med_no form-control rounded text-center col-1 p-0" type="number" step="0.25" value="1"/>
+                                            <select name="1_medicineFrequency_1" id="1_medicineFrequency_1" class="col-2 med_freq form-control text-center p-0 rounded">
+                                                <option value="1">Once a day</option>
+                                                <option value="2">Twice a day</option>
+                                                <option value="3">Thrice a day</option>
+                                                <option value="4">Four times a day</option>
+                                                <option value="5">Five times a day</option>
+                                                <option value="6">Others</option>
+                                            </select>
+                                            <input id="1_medicineDuration_1" type="number" step="1" class="col-1 med_duration form-control rounded p-0 text-center"></input>
+                                            <input id="1_medicineSpecial_1" type="textarea" class="col-7 form-control p-0 text-center med_special" placeholder="Special Instructions"></input>
+                                            <div class="p-0 m-0 col-1 btnCell">
+                                                <i class="fa fa-plus fa-sm faPlus" data-id="1"></i>
+                                                <i class="fa fa-minus fa-sm faMinus"></i>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </script>
+
+                            <script type="text/javascript">
+                            var med_details = [];
+                            <t t-foreach="medications" t-as="medication">
+                            var med_id = '<t t-esc = "medication.id" />';
+                            var med_name = '<t t-esc="medication.name" />';
+                            var med = {med_id, med_name};
+                            med_details.push(med);
+                            </t>
+                            </script>
+                            <script type="text/javascript">
+                            var doctor = '<t t-esc="doctor" />';
+                            var date = '<t t-esc="datePres" />';
+                            var pat_list = [];
+                                <t t-foreach="op_details" t-as="pat">
+                                    pat_detail = [];
+                                    opregID = '<t t-esc="pat.id" />'
+                                    name = '<t t-esc="pat.partner_id.name"/>';
+                                    id = '<t t-esc="pat.partner_id.id"/>';
+                                    registration = '<t t-esc="pat.partner_id.registration"/>';
+                                    age = '<t t-esc="pat.agecal"/>';
+                                    gender = '<span t-if="pat['partner_id'].gender=='male'">M</span><span t-else="">F</span>';
+                                    diagnosis = [];
+                                    <t t-foreach="pat.partner_id.pat_diag" t-as="diagnosis">
+                                    diag_line = '<t t-esc="diagnosis.diagnosis.name" />'
+                                    diagnosis.push(diag_line);
+                                    </t>
+                                    appt_type='<t t-esc="pat.type" />'
+                                    pat_detail.push(name,id,registration,age, gender,  appt_type, diagnosis, opregID);
+                                    pat_list.push(pat_detail);
+                                </t>
+                            </script>
+
+                        <script id="prescription_html" type="text/html">
+                            <thead>
+                                <tr style="width:100%" class="pres_header">
+                                    <td class="pres_row_index">#</td>
+                                    <td class="pres_med">Medications</td>
+                                    <td class="pres_details">
+                                        <div class="row">
+                                            <div class="col-1">No.</div>
+                                            <div class="col-3">Frequency</div>
+                                            <div class="col-2">Duration</div>
+                                            <div class="col-4">Special Instruction</div>
+                                            <div class="col-2">Repeat</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </thead>
+                        </script>
+                    </head>
+                    <body class="main_body">
+                        <div class="container_main">
+                            <div class="container-flex d-flex flex-row">
+                                <div class="pat_list">
+                                    <div class="pat_list_1">
+                                        <h4>Patient List 
+                                            <span class="badge badge-pres" id="pat_no_list"></span>
+                                        </h4>
+                                    </div>
+                                    <div class="pat_list_2">
+                                        <input hidden="True" class="form-control rounded" id="pat_list_search" placeholder="Search"/>
+                                    </div>
+                                    <div class="card_list" id="opd_list"></div>
+                                </div>
+                                <div class="pres_main">
+                                    <div class="card shadow bg-light border-light">
+                                        <div class="card shadow border-success text-center">
+                                            <h2 id="patient_name" class="pt-2 pl-2">Patient Name</h2>
+                                            <h3 id="patient_details" class="pl-2">Registration No</h3>
+                                            <h4 id="patient_age" class="pl-2">Registration No</h4>
+                                            <h5 id = "diagnosis">Diagnosis</h5>
+                                            <div hidden="True" id="form_pat_id"></div>
+                                            <button type="button" id="old_pres_listCollapse" class="btn btn-primary">
+                                                <i class="fa fa-bars"></i>
+                                            </button>
+
+                                        </div>
+                                        <div class="main_card">Prescription</div>
+                                        <div class="presMain" id="presMain">
+                                            <div id="prescriptionHeader" class="prescriptionHeader">
+                                                <span style="width: 35%">Medication</span><!--
+                                             --><span style="width: 5%">Total</span><!--
+                                             --><span style="width: 5%">No.</span><!--
+                                             --><span style="width: 10%">Frequency</span><!--
+                                             --><span style="width: 5%">Days</span><!--
+                                             --><span style="width: 40%">Special</span>
+                                            </div>
+                                            <div class="presLine pl-0 ml-0">
+                                                <div class="presLineDetails">
+                                                    <div id="mainMed" class="mainMed">
+                                                        <i class="fa fa-minus delMed"></i>
+                                                        <label class="sr-only" for="1_medicineOrder" id="1_medicineLabel">1</label>
+                                                        <span id="medIndex" class="presMedNo">1</span>
+                                                        <input list="medicines" name="1_medicineOrder" id="1_medicineOrder" class="form-control rounded p-0 presMedName"/>
+                                                        <datalist id="medicines">
+                                                            <t t-foreach="medications" t-as="medication">
+                                                                <option t-attf-value="#{medication.name}" t-attf-id="#{medication.id}" />
+                                                            </t>
+                                                        </datalist>
+                                                        <label class="sr-only" for="1_medicineTotal" id="medicineTotal1">Total Order</label>
+                                                        <input name="medicineTotal" type="number" class="form-control col-2 rounded text-center medTotal" id="medicineTotal1"/>
+                                                    </div>
+                                                    <div class="medicineRowContainer" id="medicineDetails">
+                                                        <div class="input-group medicineLines">
+                                                            <input id="1_medicineOrder_1" class="med_no form-control rounded text-center col-1 p-0" type="number" step="0.25" value="1"/>
+                                                            <select name="1_medicineFrequency_1" id="1_medicineFrequency_1" class="col-2 med_freq form-control text-center p-0 rounded">
+                                                                <option value="1">Once a day</option>
+                                                                <option value="2">Twice a day</option>
+                                                                <option value="3">Thrice a day</option>
+                                                                <option value="4">Four times a day</option>
+                                                                <option value="5">Five times a day</option>
+                                                                <option value="6">Others</option>
+                                                            </select>
+                                                            <input id="1_medicineDuration_1" type="number" step="1" class="col-1 med_duration form-control rounded p-0 text-center"></input>
+                                                            <input id="1_medicineSpecial_1" type="textarea" class="col-7 form-control p-0 text-center med_special" placeholder="Special Instructions"></input>
+                                                            <div class="p-0 m-0 col-1 btnCell">
+                                                                <i class="fa fa-plus fa-sm faPlus" data-id="1"></i>
+                                                                <i class="fa fa-minus fa-sm faMinus"></i>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <row>
+                                        <button class="btn btn-primary" id="opnewrow">Add More</button>
+                                        <button type="button" id="form_submit" class="btn btn-success form_submit">Submit</button>
+                                    </row>                                    
+                                </div>                                
+                                <div class="old_pres_list active" id="old_pres_list">
+                                    <h5 class="card-header text-center bg-light">Old Prescriptions</h5>
+                                    <div class="card shadow border-light pr-1">
+                                        <div class="card-body p-0" id="old_prescriptions">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="old_prescript_modal" tabindex="-1" role="dialog" aria-labelledby="old_presc_header" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 id="pres_date" style="text-align:center"></h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="oldPrescriptionDetail" class="oldPrescriptionDetail container-flex ">
+                                            <div class="oldPrescriptionHeader row bg-light">
+                                                <div class="col-1">#</div>
+                                                <div class="col-6">Medicine</div>
+                                                <div class="col-1">No.</div>
+                                                <div class="col-1">Freq.</div>
+                                                <div class="col-1">Days</div>
+                                                <div class="col-1">Special</div>
+                                                <div class="col-1">Total</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="pres_submit btn btn-success">Repeat</button>
+                                        <button type="button" id="close" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </body>
+
+                </div>
+            </t>
+        </template>
+
+        <template id="opweb_assets_frontend" name="opweb_assets" inherit_id="website.assets_frontend">
+            <xpath expr="//script[last()]" position="after">
+                <script type="text/javascript" src="/opweb/static/src/js/san_ker.js"/>
+            </xpath>
+        </template>
+
+        <template id="assets_frontend" inherit_id="web.assets_frontend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/opweb/static/src/scss/san_ker.scss"/>
+            </xpath>
+        </template>
+
+    </data>
+</odoo>
+
+
+
+

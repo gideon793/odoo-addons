@@ -1,4 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_opregistration,opregistration,model_opregistration,base.group_user,1,1,1,1
 access_linediag,linediag,model_linediag,base.group_user,1,1,1,1
+access_opregistrationcertificates,opregistration,model_opregistration_certificates,base.group_user,1,1,1,1
+access_opregistrationfitnesscertificates,opregistrationfitness,model_opregistration_fitness,base.group_user,1,1,1,1
 

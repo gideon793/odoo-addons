@@ -52,6 +52,10 @@ class dailytakings(models.Model):
     vranee = fields.Float(string = 'Dr. V. Ranee OP Consultation')
     vraneedue = fields.Float(string ='VR due', compute ='_vranee')
     gideon = fields.Float(string = 'Dr. Gideon Rynjah OP Consultation')
+    rlaloo = fields.Float(string='Dr. R. Laloo OP Consultation')
+    rlaloodue = fields.Float(string = 'RL due', compute='_reena')
+    dkynjin = fields.Float(sting='Dr. D. Kynjin OP Consultation')
+    dkynjindue = fields.Float(string = 'DKJ due', compute='_kynjin')
     eeg = fields.Float(string = 'EEG/EMG')    
     gideondue = fields.Float(string ='GR due', compute ='_gideon')
     mhc = fields.Float(string='MHC')
@@ -67,21 +71,24 @@ class dailytakings(models.Model):
     mednet = fields.Float('Net', compute='_mednet')
     date_start = fields.Datetime()
     date_end = fields.Datetime()
+    lashngain = fields.Float(string = 'Dr. L. Sohliya OP Consultation')
+    lashngaindue = fields.Float(string='LMS due', compute = '_lashngain')
+    enttests = fields.Float('ENT Tests')
 
     @api.depends('opdmed','medfree','medreal', 'medbalance')
     def _medtotal(self):
         for record in self:
-            record.medtotal = record.mednet + record.medfree + record.medbalance - record.medreal
+            record.medtotal = record.mednet + record.medfree - record.medbalance - record.medreal
 
     @api.depends('consultnet','consultfree','consultreal', 'consultbalance')
     def _consulttotal(self):
         for record in self:
-            record.consulttotal =  record.consultnet + record.consultfree + record.consultbalance - record.consultreal
+            record.consulttotal =  record.consultnet + record.consultfree - record.consultbalance - record.consultreal
 
-    @api.depends('opdconsult', 'eddiedue', 'didakdue', 'gideondue', 'vraneedue', 'slahiridue', 'mhc')
+    @api.depends('opdconsult', 'eddiedue', 'didakdue', 'gideondue', 'vraneedue', 'slahiridue','rlaloodue', 'dkynjindue', 'mhc')
     def _consultnet(self):
         for record in self:
-            record.consultnet = round(record.opdconsult - (record.eddiedue + record.didakdue + record.vraneedue + record.gideondue + record.slahiridue + record.mhc), -1)
+            record.consultnet = round(record.opdconsult - (record.eddiedue + record.didakdue + record.vraneedue + record.gideondue + record.slahiridue + record.rlaloodue + record.dkynjindue + record.mhc), -1)
 
     @api.depends('opdmed')
     def _mednet(self):
@@ -124,7 +131,21 @@ class dailytakings(models.Model):
         for record in self:
             record.gideondue = (record.gideon/ 2) + record.eeg
 
-    
+    @api.depends('lashngain', 'enttests')
+    def _lashngain(self):
+        for record in self:
+            record.lashngaindue = (record.lashngain/ 2) + record.enttests
+
+    @api.depends('rlaloo')
+    def _reena(self):
+        for record in self:
+            record.rlaloodue = record.rlaloo/ 2
+
+    @api.depends('dkynjin')
+    def _kynjin(self):
+        for record in self:
+            record.dkynjindue  = record.dkynjin/ 2
+
 
     
 
@@ -146,26 +167,44 @@ class dailytakings(models.Model):
         sl_consult=0
         vr_consult=0
         gr_consult=0
-        ep_total = 0    
+        ep_total = 0  
+        rl_consult = 0    
+        dkj_consult = 0
+        lms_consult = 0
+        ent_test = 0   
+        
         for consultation in consultations:
-            if consultation.providerlink.name == 'Dr. Eddie Mukhim':
+            if consultation.doctor == 'eddie':
                 em_consult += consultation.fee
-            if consultation.providerlink.name == 'Dr. D. Khonglah':
+            if consultation.doctor == 'didak':
                 dk_consult += consultation.fee
-            if consultation.providerlink.name == 'Dr. S. Lahiri':
+            if consultation.doctor == 'slahiri':
                 sl_consult += consultation.fee
-            if consultation.providerlink.name == 'Dr. V. Ranee':
+            if consultation.doctor == 'vranee':
                 vr_consult += consultation.fee
-            if consultation.providerlink.name == 'Dr. Gideon Rynjah':
+            if consultation.doctor == 'gideon':
                 gr_consult += consultation.fee
+            if consultation.doctor == 'rlaloo':
+                rl_consult += consultation.fee
+            if consultation.doctor == 'dkynjin':
+                dkj_consult += consultation.fee
+            if consultation.doctor == 'lashngain':
+                lms_consult += consultation.fee
 
-        electros = self.env['pos.order'].search([['date_order','>=', self.date_start],['date_order','<=', self.date_end]])
+        electros = self.env['sale.order'].search([['date_order','>=', self.date_start],['date_order','<=', self.date_end]])
         for electro in electros:
-            for electro.line in electro.lines:
-                if electro.line.product_id.display_name == 'EEG':
-                    ep_total += electro.line.price_subtotal_incl
-                if electro.line.product_id.display_name == 'EMG':
-                    ep_total += electro.line.price_subtotal_incl
+            for line in electro.order_line:
+                if line.product_id.display_name == 'EEG':
+                    ep_total += line.price_subtotal
+                if line.product_id.display_name == 'EMG':
+                    ep_total += line.price_subtotal
+                if line.product_id.display_name == 'SPT':
+                    ent_test += line.price_subtotal
+                if line.product_id.display_name == 'Endoscopy':
+                    ent_test += line.price_subtotal
+                if line.product_id.display_name == 'Otoendoscopy':
+                    ent_test += line.price_subtotal
+
 
                     
         for record in self:
@@ -176,10 +215,11 @@ class dailytakings(models.Model):
             record.eddie = em_consult
             record.gideon  = gr_consult
             record.eeg = ep_total
+            record.rlaloo  = rl_consult
+            record.dkynjin  = dkj_consult
+            record.lashngain = lms_consult
+            record.enttests = ent_test
 
-
-
-            
 
 
 

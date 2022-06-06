@@ -9,3 +9,4 @@ from . import excelreport
 from . import project
 from . import pharmacyregister
 from . import nongstoin
+from . import certificates

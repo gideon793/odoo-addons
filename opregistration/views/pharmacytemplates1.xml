@@ -118,7 +118,8 @@
                     <group>
                         <field name="datetest" string="Date for report"/>          
                         <field name="dateselect" string="Date from" invisible="1"/>
-                        <field name="dateend" string="Date to" invisible="1"/>                                  
+                        <field name="dateend" string="Date to" invisible="1"/>
+                        <field name="point" string="Point of Sale" />
                     </group>
 <footer>
                     <button name="get_report" string="Get Report" type="object" class="oe_highlight"/>

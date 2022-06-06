@@ -1,0 +1,277 @@
+<odoo>
+    <data>
+        <template id="test_page" name="Test Page">
+            <t t-call="website.layout">
+                <div class="oe_structure">
+                    <div class="container">
+                        <p>Thanks</p>
+                        <p>Params
+                            <span t-esc="params"></span>
+                        </p>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+
+        <template id="opreg_doctor" name="Select Doctor">
+            <t t-call="website.layout">
+                <div class="oe_structure">
+                    <div class="container">
+                        <br/>
+                        <form action="/opweb/doc_submit">
+                            <div class="form-group">
+                                <label for="doctor">Doctor:</label>
+                                <select class="form-control" name="doctor">
+                                    <option t-attf-value="ssyiem">Dr. S. Syiem</option>
+                                    <option t-attf-value="eddie">Dr. E. Mukhim</option>
+                                    <option t-attf-value="gideon">Dr. G. Rynjah</option>
+
+                                </select>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="opreg_details" name="OPD Registration Details">
+            <t t-call="web.layout">
+                <t t-call-assets="web.assets_common" t-js="false"/>
+                <t t-call-assets="web.assets_frontend" t-js="false"/>
+                <t t-call-assets="web_editor.summernote" t-js="false" groups="website.group_website_publisher"/>
+                <t t-call-assets="web_editor.assets_editor" t-js="false" groups="website.group_website_publisher"/>
+                <t t-call-assets="website.assets_editor" t-js="false" groups="website.group_website_publisher"/>
+                <t t-call-assets="web.assets_common" t-css="false"/>
+                <t t-call-assets="web.assets_frontend" t-css="false"/>
+                <t t-call-assets="web_editor.summernote" t-css="false" groups="website.group_website_publisher"/>
+                <t t-call-assets="web_editor.assets_editor" t-css="false" groups="website.group_website_publisher"/>
+                <t t-call-assets="website.assets_editor" t-css="false" groups="website.group_website_publisher"/>
+                <div class="oe_structure">
+                    <head>
+                    <script id="modal_html" type="text/html">
+                            <thead>
+                                <tr class="w-100">
+                                    <td>#</td>  
+                                    <td>Medicine</td>
+                                    <td>No.</td>
+                                    <td>Frequency</td>
+                                    <td>Duration</td>
+                                    <td>Special Instruction</td>
+                                    <td>Total</td>
+                                </tr>
+                            </thead>
+                            <tbody>      
+                            </tbody>
+                        </script>
+                            <script id="prescription_html" type="text/html">
+                                            <thead>
+                                                <tr style="width:100%" class="pres_header">
+                                                    <td class="pres_row_index">#</td>
+                                                    <td class="pres_med">Medications</td>
+                                                    <td class="pres_details">
+                                                        <div class="row">
+                                                            <div class="col-1">No.</div>
+                                                            <div class="col-3">Frequency</div>
+                                                            <div class="col-2">Duration</div>
+                                                            <div class="col-4">Special Instruction</div>
+                                                            <div class="col-2">Repeat</div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </thead>
+                                            </script>
+                            <script id = "med_row" type="text/html">
+                                <tr class="p-0 m-0">
+                                    <td class="pres_row_index">Row Index</td>
+                                    <td class="pres_med" id="medication_input" >
+                                        <input list="medicines" name="medicine" id="medicine" class="form-control rounded p-0"/>
+                                        <datalist id="medicines">
+                                            <t t-foreach="medications" t-as="medication">
+                                                <option t-attf-value="#{medication.name}" t-attf-id="#{medication.id}" />
+                                            </t>
+                                        </datalist>
+                                        <div class="form-row pt-2 pr-2 med_form">                
+                                            <label class="col-6" for="total_order">Total No.:</label>
+                                            <input name="total_order" type="number" class="form-control col-3 rounded text-center" id="medication_total_order"/>
+                                            <button class="col-1 ml-2 del_med btn btn-danger rounded p-1"><i class="fa fa-minus "></i></button>
+                                        </div>
+                                   </td>
+                                    <td id="medication_details" class="pres_details">
+                                        <table id="medication_table">
+                                            <body>
+                                                <tr id="medic_row">
+                                                    <td>
+                                                        <div class="form-group row">
+                                                        <div class="col-1 p-0">
+                                                            <input class="med_no form-control rounded text-center p-0" type="number" step="0.25" value="1"/>
+                                                        </div>
+                                                        <div class="col-4 row_select">
+                                                            <select name="frequency" id="frequency" class="med_freq form-control text-center p-0 rounded">
+                                                                <option value="1">Once a day</option>
+                                                                <option value="2">Twice a day</option>
+                                                                <option value="3">Thrice a day</option>
+                                                                <option value="4">Four times a day</option>
+                                                                <option value="5">Five times a day</option>
+                                                                <option  value="6">Others</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-1 p-0" >
+                                                <input type="number" step="1" id="no_days" class="med_number form-control rounded p-0 text-center"></input>
+                                            </div>
+                                            <div class="col-6 row_select">
+                                                <input type="textarea" class="form-control p-0 text-center" placeholder="Special Instructions"></input>
+                                            </div>
+                                            </div>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-primary repeat_btn">
+                                                        <i class="fa fa-plus"></i>
+                                                </button>
+                                                <button class="btn btn-danger delete_row_btn ">
+                                                    <i class="fa fa-minus"></i>
+                                                </button>
+                                        </td>
+                                        </tr>
+                                        </body>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </script>
+                            <script type="text/javascript">
+                            var med_details = [];
+                            <t t-foreach="medications" t-as="medication">
+                            var med_id = '<t t-esc = "medication.id" />';
+                            var med_name = '<t t-esc="medication.name" />';
+                            var med = {med_id, med_name};
+                            med_details.push(med);
+                            </t>
+                            </script>
+                            <script type="text/javascript">
+                            var doctor = '<t t-esc="doctor" />';
+                            var date = '<t t-esc="date" />';
+                                var pat_list = [];
+                                <t t-foreach="op_details" t-as="pat">
+                                    pat_detail = [];
+                                    name = '<t t-esc="pat.partner_id.name"/>';
+                                    id = '<t t-esc="pat.partner_id.id"/>';
+                                    registration = '<t t-esc="pat.partner_id.registration"/>';
+                                    age = '<t t-esc="pat.agecal"/>';
+                                    gender = '<span t-if="pat['partner_id'].gender=='male'">M</span><span t-else="">F</span>';
+                                    diagnosis = [];
+                                    <t t-foreach="pat.partner_id.pat_diag" t-as="diagnosis">
+                                    diag_line = '<t t-esc="diagnosis.diagnosis.name" />'
+                                    diagnosis.push(diag_line);
+                                    </t>
+                                    old_prescriptions = [];
+                                    appt_type='<t t-esc="pat.type" />'
+                                    <t t-foreach="pat.pos" t-as="old_pres">
+                                        pres = [];
+                                        date_order = '<t t-esc="old_pres.date_order"/>';
+                                        pres_lines =[];
+                                        <t t-foreach="old_pres.lines" t-as="line">
+                                            line=[];
+                                            medicine_name = '<t t-esc="line.display_name"/>';
+                                            product_id ='<t t-esc="line.product_id.id"/>';
+                                            qty = '<t t-esc="line.qty"/>';
+                                            type='<t t-esc="line.product_id.type" />';
+                                            line.push(medicine_name,product_id, qty, type);
+                                            pres_lines.push(line);
+                                        </t>
+                                        pres.push(date_order, pres_lines);
+                                        old_prescriptions.push(pres);
+                                    </t>
+                                    pat_detail.push(name,id,registration,age, gender, old_prescriptions, appt_type, diagnosis);
+                                    pat_list.push(pat_detail);
+                                </t>
+                            </script>
+
+                        </head>
+                   <body class="main_body">
+                <div class="container_main">
+                    <div class="container-flex d-flex flex-row">
+                    <div class="pat_list">
+                        <div class="pat_list_1">
+                            <h4>Patient List 
+                                <span class="badge badge-success badge-pill" id="pat_no_list"></span>
+                            </h4>
+                        </div>
+                        <div  class="pat_list_2">
+                            <input hidden="True" class="form-control rounded" id="pat_list_search" placeholder="Search"/>
+                        </div>
+                        <div class="card_list" id="opd_list"></div>
+                    </div>
+            <div class="pres_main">
+                <div class="card shadow bg-light border-light text-center">
+                    <div class="card shadow border-success">
+                        <h2 id="patient_name" class="pt-2 pl-2">Patient Name</h2>
+                        <h3 id="patient_details" class="pl-2">Registration No</h3>
+                        <h4 id="patient_age" class="pl-2">Registration No</h4>
+                        <h5 id = "diagnosis">Diagnosis</h5>
+                        <div hidden="True" id="form_pat_id"></div>
+                        <button type="button" id="old_pres_listCollapse" class="btn btn-primary">
+                            <i class="fa fa-bars"></i>
+                        </button>
+
+                    </div>
+                    <div class="main_card">Prescription</div>
+                    <div class="pres_table">
+                    <table class="table" id="prescription">
+                    </table>
+                    </div>
+                    <row>
+                        <button class="btn btn-primary" id="opnewrow">Add More</button>
+                        <button type="button" id="form_submit" class="btn btn-success form_submit">
+                                                Submit
+                        </button>
+                    </row>
+                </div>
+            </div>
+            <div class="old_pres_list" id="old_pres_list">
+                <h5 class="card-header text-center bg-light">Old Prescriptions</h5>
+                <div class="card shadow border-light pr-1">
+                    <div class="card-body p-0" id="old_prescriptions">
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <div class="modal fade" id="old_prescript_modal" tabindex="-1" role="dialog" aria-labelledby="old_presc_header" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="pres_date" style="text-align:center"></h5>
+                </div>
+                <div class="modal-body">
+                    <table id="old_pres_table" class="w-100">
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="pres_submit btn btn-success">Repeat</button>
+                    <button type="button" id="close" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+                </div>
+            </t>
+        </template>
+
+        <template id="opweb_assets_frontend" name="opweb_assets" inherit_id="website.assets_frontend">
+            <xpath expr="//script[last()]" position="after">
+                <script type="text/javascript" src="/opweb/static/src/js/san_ker.js"/>
+            </xpath>
+        </template>
+
+        <template id="assets_frontend" inherit_id="web.assets_frontend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/opweb/static/src/scss/san_ker.scss"/>
+            </xpath>
+        </template>
+        
+            </data>
+</odoo>

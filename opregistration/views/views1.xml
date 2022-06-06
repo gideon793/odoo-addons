@@ -1,33 +1,78 @@
+<odoo>
+    <data>
+        <template id="opregistration_page" name="OP Registration">
+            <t t-call="website.layout">
+                <div class=”oe_structure”>
 
-   <record model="ir.ui.view" id="opregistration.list">
-    <field name="name">OPD Registration</field>
-    <field name="model">opregistration.opregistration</field>
-    <field name="arch" type="xml">
-     <form>
-      <group>
-       <field name = "partner_id"/>
-      </group>
-      <group name="diagnosislines"> 
-       <field name="diagline">
-        <tree>
-         <field name="code"/>
-        </tree>
-       </field>
-      </group>
-     </form> 
-    </field>
-   </record>
+                <div class=”container”>
 
-   <record id="opregistration_menu_action" model="ir.actions.act_window">
-    <field name="name">OPD Registration</field>
-    <field name="res_model">opregistration.opregistration</field>
-    <field name="view_mode">tree,form</field>
-   </record>
+                <br/>
 
+                <center>
+                    <h3>Sale Order Details</h3>
+                </center>
 
+                <br/>
 
+                <table class=”table-striped table”>
 
-<menuitem id="opregistration_menu" parent="sanker.main_menu" name="OP Registration"/>
-<menuitem id="main_opregistration_menu" parent="opregistration_menu" name="OPD Registration" action="opregistration_menu_action"/>
+                <thead style=”font-size: 23px;”>
 
+                <tr>
 
+                    <h6>
+
+                        <b>
+
+                            <th>Sale Order</th>
+
+                            <th>Customer</th>
+
+                            <th>Date</th>
+
+                            <th>
+                                <b>State</b>
+                            </th>
+
+                        </b>
+
+                    </h6>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <t t-foreach=”my_details” t-as=”order”>
+
+                <tr>
+
+                    <td><span t-esc=”order.name”/>
+                    </td>
+
+                    <td><span t-esc=”order.partner_id.name”/>
+                    </td>
+
+                    <td><span t-esc=”order.date_order”/>
+                    </td>
+
+                    <td><span t-esc=”order.state”/>
+                    </td>
+
+                </tr>
+
+            </t>
+
+        </tbody>
+
+    </table
+
+</div>
+
+        </div>
+
+        </t>
+        </template>
+        </data>
+        </odoo>

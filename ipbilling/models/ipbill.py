@@ -20,7 +20,7 @@ class ipbill(models.Model):
     amount_diff=fields.Monetary(compute='_amountdiff',string='Amount rounded off')    
     remarks = fields.Char(string='Remarks', size =100)
     billingdate=fields.Date(string='Billing Date')
-    
+
     def _amountwords(self):
         for record in self:
             record.text_amount= num2words(record.amount_round, lang='en_IN', to='currency', currency='INR')
@@ -40,6 +40,7 @@ class posbill(models.Model):
     _name = 'pos.order'
     text_amount = fields.Char(compute='_amountwords',string='Amount in words')
     currency_id = fields.Many2one('res.currency', default=lambda self: self.env.user.company_id.currency_id)
+    periodofbill  = fields.Char('Period of bill')
 
 
     def _amountwords(self):

@@ -2,6 +2,7 @@
  <data>
 
  <report id="inpatientreport" string="SAN-KER Discharge Summary" model="admission" report_type="qweb-pdf" name="inpatient.inpatient_template" file="inpatient.inpatient_template" menu="True"/>
+ <report id="ipfacesheet" string="SAN-KER IP Facesheet" model="admission" report_type="qweb-pdf" name="inpatient.inpatient_facesheet" file="inpatient.inpatient_facesheet" menu="True"/>
 
   <template id="inpatient_template">
    <t t-call="web.html_container">
@@ -79,7 +80,103 @@
  </t>
    </t>
 
-  </template>   
+  </template>
+
+
+<template id="inpatient_facesheet">
+   <t t-call="web.html_container">
+    <t t-foreach="docs" t-as="o">
+      <div class="page">
+<br />
+<br />
+<br />
+<br />
+<table>
+<tr class="text-center" style="font-size:20px" >
+<td style="width:220px"><![CDATA[&nbsp;]]></td>
+<td><span t-field="docs.partner_id" /></td>
+<td style="width:350px"></td>
+<td><span t-field="docs.ipregno" /></td>
+</tr>
+<tr><td><![CDATA[&nbsp;]]></td></tr>
+<tr class="text-center" style="font-size:20px" >
+<td />
+<td><span t-field="docs.agecal" /></td>
+<td />
+<td><span t-field="docs.admdate" /></td>
+</tr>
+<tr><td><![CDATA[&nbsp;]]></td></tr>
+<tr><td><![CDATA[&nbsp;]]></td></tr>
+<tr class="text-center" style="font-size:20px" >
+<td />
+<td><span t-field="docs.partner_id.gender" /></td>
+<td><span t-field="docs.discdate" /></td>
+</tr>
+<tr><td><![CDATA[&nbsp;]]></td></tr>
+</table>
+<table>
+<tr class="text-center" style="font-size:20px" >
+<td style="width:250px" />
+<td><span t-field="docs.partner_id.maritalstatus" /></td>
+</tr>
+</table>
+<table>
+<tr><td><![CDATA[&nbsp;]]></td></tr>
+<tr><td style="width:275px" ><![CDATA[&nbsp;]]></td>
+<td style="font-size:20px" class="text-center"><span t-field="docs.partner_id.occupation" /></td>
+</tr>
+</table>
+<table>
+<tr><td style="width:200px" ><![CDATA[&nbsp;]]></td><td /></tr>
+<tr><td><![CDATA[&nbsp;]]></td><td /></tr>
+<tr class="text-center" style="font-size:20px" >
+<td ><![CDATA[&nbsp;]]></td>
+<td><span t-field="docs.partner_id.religion" /></td>
+</tr>
+</table>
+<table>
+<tr><td><![CDATA[&nbsp;]]></td></tr>
+<tr><td><![CDATA[&nbsp;]]></td></tr>
+
+<tr class="text-center" style="font-size:20px" >
+<td style="width:300px"><![CDATA[&nbsp;]]></td>
+<td><span t-field="docs.partner_id.contact_address" /></td>
+</tr>
+<tr><td><![CDATA[&nbsp;]]></td></tr>
+<tr><td><![CDATA[&nbsp;]]></td></tr>
+</table>
+<table>
+<tr><td><![CDATA[&nbsp;]]></td></tr>
+<tr><td><![CDATA[&nbsp;]]></td></tr>
+<tr class="text-center" style="font-size:20px" >
+<td style="width:400px"><![CDATA[&nbsp;]]></td>
+<td><span t-field="docs.partner_id.phone" />/<span t-field="docs.partner_id.mobile" /></td>
+</tr>
+</table>
+<table>
+<tr><td><![CDATA[&nbsp;]]></td></tr>
+<tr><td><![CDATA[&nbsp;]]></td></tr>
+
+<tr class="text-center" style="font-size:20px" >
+<td style="width:400px"><![CDATA[&nbsp;]]></td>
+<td><span t-field="docs.partner_id.localadress" /></td>
+</tr>
+<tr><td><![CDATA[&nbsp;]]></td></tr>
+<tr><td><![CDATA[&nbsp;]]></td></tr>
+
+<tr class="text-center" style="font-size:20px" >
+<td style="width:400px"><![CDATA[&nbsp;]]></td>
+<td><span t-field="docs.partner_id.relativephone" /></td>
+</tr>
+
+</table>
+     </div>
+    </t>
+  </t>
+
+  </template>
+
+   
  </data>
 </odoo>
 

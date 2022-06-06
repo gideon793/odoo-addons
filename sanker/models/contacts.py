@@ -11,7 +11,7 @@ class patients(models.Model):
     _name = 'res.partner'
     age = fields.Integer(string='Age')
     gender = fields.Selection([('male', 'Male'), ('female', 'Female'), ('others', 'Others')], string='Gender')
-    registration = fields.Char('Registration number')
+    registration = fields.Char(string='Registration number')
     religion = fields.Char('Religion')
     maritalstatus = fields.Selection([('single','Single'), ('married','Married'),('separated','Separated'), ('divorced','Divorced'),('widowed','Widowed')],string='Marital Status')
     relative = fields.Text(string='Contact Person')
@@ -22,6 +22,7 @@ class patients(models.Model):
     occupation = fields.Char('Occupation')
     pat_diag = fields.One2many('sanker.diagnosis','patdiagnosis', string='Diagnosis')
     district = fields.Selection([('shillong','East Khasi Hills - Shillong'), ('ekh','East Khasi Hills - outside Shillong'), ('wkh','West Khasi Hills'), ('swkh','South West Khasi Hills'), ('rbd','Ri Bhoi District'), ('wjh','West Jaintia Hills'), ('ejh','East Jaintia Hills'), ('wgh','West Garo Hills'), ('egh','East Garo Hills'), ('ngh','North Garo Hills'), ('sgh','South Garo Hills'), ('swgh','South West Garo Hills'), ('others','Outside Meghalaya')], string='District')
+    localadress = fields.Char('Local Address')
 
 class diagnosis(models.Model):
     _name = 'sanker.diagnosis'

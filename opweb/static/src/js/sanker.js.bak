@@ -1,0 +1,251 @@
+odoo.define('opweb.opnewrow', function (require) {
+    "use strict";
+    $(document).ready(function () {
+        console.log(date);
+        console.log('Patient no:' + pat_list.length);
+        document.getElementById('pat_no_list').innerHTML = pat_list.length;
+        var today_list = document.getElementById('opd_list');
+        var pat_list_html = '<ul class="appt_sidebar">';
+        for (var i=0; i<pat_list.length; i++){
+            if (pat_list[i][6]=='new'){
+                var appt_type = 'N';
+            }
+            else if(pat_list[i][6]=='old'){
+                var appt_type = 'O';
+            }
+            else {
+                var appt_type= 'M';
+            };
+        pat_list_html  = pat_list_html + '<li class="card_pat shadow"><a href="#" class="patient_click" id="pat['+ i +']">' + pat_list[i][0] + '<span class="badge badge-primary ml-1">' + appt_type + '</span><br />' + pat_list[i][2] +'</li></a>';
+        };
+        pat_list_html = pat_list_html + '</ul>';
+        today_list.innerHTML = pat_list_html;
+        $(document).on('click', '.repeat_btn', function () {
+            var tr = $(this).closest('tr').parent().closest('tr').index();
+            var row_search= tr + '_medication_details';
+            var table = document.getElementById(row_search).children[0];
+            var row = table.insertRow(-1);
+            row.innerHTML = document.getElementById(tr +'_medication_details_row_'+row.rowIndex).innerHTML;
+            row.id =  tr + '_medication_details_row_'+(row.rowIndex + 1) ;
+            row.cells[0].children[0].children[0].children[0].id = tr + '_medNo_'+(row.rowIndex + 1);
+         });
+
+        $(document).on('click', '.patient_click', function(){
+        var pat_id = this.id.substring(4, this.id.length-1);
+        var pat_enquiry ={};
+        pat_enquiry['params']={'partner_id': pat_list[pat_id][1], 'date': date};
+        var pat_enquiry_json = JSON.stringify(pat_enquiry);
+        console.log(pat_enquiry_json);
+            function serverCall() {
+                return $.ajax({
+                    type: "POST",
+                    datatype: "json",
+                    contentType: 'application/json',
+                    url: "http://192.168.2.100:8069/opweb/patdetail",
+                    data: pat_enquiry_json,
+                    success: function (data) {
+                        console.log('JSON:', data);
+                    }
+                });
+            }
+        $.when(serverCall()).done(function(a1){
+            var todayPrescription = a1['result']['prescription_lines'];
+            for (var tp=0; tp<todayPrescription.length; tp++){
+                var tpTable = document.getElementById('prescription');
+                var tpRow = tpTable.insertRow(-1);
+                tpRow.innerHTML = document.getElementById('med_row').innerHTML;
+                tpRow.cells[0].innerHTML = tpRow.rowIndex;
+                tpRow.cells[1].children[0].id = [tpRow.rowIndex] + ' medication'
+                tpRow.cells[1].children[2].children[1].id = [tpRow.rowIndex] + '_medication_total'
+                tpRow.cells[2].id = [tpRow.rowIndex] + '_medication_details'
+                tpRow.cells[2].children[0].children[0].children[0].id = tpRow.rowIndex+'_medication_details_row_1'
+                tpRow.cells[1].children[0].value = todayPrescription[tp].med_name;
+                tpRow.cells[1].children[2].children[1].value = todayPrescription[tp].ordered_no;
+                for (var tpline=0; tpline<todayPrescription[tp].medicine_lines.length; tpline++){
+                    var medDetailsRow = tpRow.cells[2].children[0].children[0].children[0].children[0].children[0]
+                    medDetailsRow.children[0].children[0].value = todayPrescription[tp].medicine_lines[tpline].dose;
+                    console.log(todayPrescription[tp].medicine_lines[tpline])
+                    medDetailsRow.children[1].children[0].value = todayPrescription[tp].medicine_lines[tpline].frequency;
+                    medDetailsRow.children[2].children[0].value = todayPrescription[tp].medicine_lines[tpline].duration;
+                    medDetailsRow.children[3].children[0].value = todayPrescription[tp].medicine_lines[tpline].special; 
+                    }
+                console.log(tpRow.cells[1]);
+    
+
+            }
+        });
+        var str = pat_list[pat_id][0];
+        document.getElementById('patient_name').innerHTML = str;
+        document.getElementById('form_pat_id').innerHTML = pat_list[pat_id][1];
+        var diagnosis_display = [];
+        var dd =0;
+        while (dd<pat_list[pat_id][7].length){
+            diagnosis_display.push(pat_list[pat_id][7][dd]);
+            dd +=1;
+        };
+        document.getElementById('diagnosis').innerHTML = diagnosis_display;
+        var pat_det_list = document.getElementById('patient_details');
+        pat_det_list.innerHTML = pat_list[pat_id][2];
+        document.getElementById('patient_age').innerHTML = pat_list[pat_id][3] +'/'+ pat_list[pat_id][4];
+        var old_pres = document.getElementById('old_prescriptions');
+        var old_pres_html = '<ul class="pres_list">';
+        for (var i=0; i<pat_list[pat_id][5].length; i++){
+            var date_inside = new Date(pat_list[pat_id][5][i][0]).toLocaleDateString('en-IN',{day:'numeric', month:'long', year:'numeric'});
+            var det = pat_list[pat_id][5][i][1];
+            var tot = 0;
+            for (var v=0; v<det.length; v++){
+                if (det[v][3]=="product"){
+                    tot = tot+1;
+                }
+            }
+        if (tot>=1){
+        old_pres_html = old_pres_html + '<li class="pl-0 pt-1 mt-1 card_pat shadow rounded"><a href="#" class="old_pres_det" data-date_inside="'+date_inside+'" data-pat_id="'+pat_id+'" data-id="'+i+'">'+date_inside+'</a></li>';
+         }
+        }
+        old_pres_html = old_pres_html + '</ul>';
+        old_pres.innerHTML = old_pres_html;
+        document.getElementById('prescription').innerHTML = document.getElementById('prescription_html').innerHTML;
+        });
+        
+        $(document).on('click','.old_pres_det', function(){
+            console.log('Click');
+            document.getElementById('old_pres_table').innerHTML = document.getElementById('modal_html').innerHTML
+            var pat_id = $(this).data('pat_id');
+            var date_inside = $(this).data('date_inside');
+            var pres_id = $(this).data('id');
+            document.getElementById('pres_date').innerHTML = date_inside;
+            console.log(pat_id, date_inside, pres_id)
+            var pres_details = pat_list[pat_id][5][pres_id];
+            for (i=0; i<pres_details[1].length; i++){
+                var pro = pres_details[1][i][3];
+                if (pro == "product"){
+                    var table=document.getElementById('old_pres_table');
+                    var row = table.insertRow(-1);
+                    row.innerHTML = "<td>Ix</td><td>Medicine</td><td>No</td><td>Frequency</td><td>Duration</td><td>Ins</td><td>Total</td>"
+                    row.cells[0].innerHTML = (i+1);
+                    row.cells[1].innerHTML = pres_details[1][i][0];
+                    row.cells[1].id = pres_details[1][i][1];
+                    row.cells[6].innerHTML = pres_details[1][i][2];
+                 }; 
+            };         
+            $('#old_prescript_modal').modal('show');
+        });
+
+        $(document).on('click','.pres_submit', function(){
+            var modal_table = document.getElementById('old_pres_table');
+            var pres_table = document.getElementById('prescription');
+            pres_table.innerHTML = document.getElementById('prescription_html').innerHTML;
+            for (i=1; i<modal_table.rows.length; i++){
+                var row = pres_table.insertRow(-1);
+                row.innerHTML = document.getElementById('med_row').innerHTML;
+                row.cells[0].innerHTML = row.rowIndex;
+                row.cells[1].children[0].id = [row.rowIndex] + ' medication'
+                row.cells[2].id = [row.rowIndex] + '_medication_details'
+                row.cells[2].children[0].children[0].children[0].id = row.rowIndex+'_medication_details_row_1'
+                var pro_id = modal_table.rows[i].cells[1].id;
+                row.cells[1].children[0].value = med_details.find( ({med_id}) => med_id === pro_id).med_name.replace('&amp;', '&');
+                row.cells[1].children[2].children[1].value = modal_table.rows[i].cells[6].innerHTML;
+                console.log(row.cells[1]);
+                row.cells[1].children[2].children[1].innerHTML = modal_table.rows[i].cells[6].innerHTML;
+            };
+            $('#old_prescript_modal').modal('hide');
+        });
+        $('#opnewrow').click(function (e) {
+            var table = document.getElementById('prescription');
+            var row = table.insertRow(-1);
+            row.innerHTML = document.getElementById('med_row').innerHTML;
+            row.cells[0].innerHTML = row.rowIndex;
+            row.cells[1].children[0].id = [row.rowIndex] + ' medication'
+            row.cells[1].children[2].children[1].id = [row.rowIndex] + '_medication_total'
+            row.cells[2].id = [row.rowIndex] + '_medication_details'
+            row.cells[2].children[0].children[0].children[0].id = row.rowIndex+'_medication_details_row_1'
+            row.cells[2].children[0].children[0].children[0].children[0].children[0].children[0].children[0].id = row.rowIndex+'_medNo_1';
+            row.cells[2].children[0].children[0].children[0].children[0].children[0].children[1].children[0].id = row.rowIndex+'_medFreq_1';
+            row.cells[2].children[0].children[0].children[0].children[0].children[0].children[2].children[0].id = row.rowIndex+'_medDuration_1';
+            row.cells[2].children[0].children[0].children[0].children[0].children[0].children[3].children[0].id = row.rowIndex+'_medSpecial_1';
+
+            console.log(row.cells[2].children[0]);
+        });
+        $('#form_submit').click(function (e) {
+            var san_form = {};
+            var form_pat = document.getElementById('form_pat_id').innerHTML;
+            var table = document.getElementById('prescription');
+            var product = [];
+            for (i=1; i<table.rows.length; i++){
+                product_id = {};
+                var medication = document.getElementById(i + ' medication').value;
+                const result = med_details.find( ({med_name}) => med_name === medication);
+                if (result){
+                product_id.med_id = result.med_id;
+                product_id.name = result.med_name;                
+                } else {
+                    product_id.med_id = '';
+                    product_id.name = medication;
+                }
+                product_id.ordered_no = table.rows[i].cells[1].children[2].children[1].value
+                var med_det_table = document.getElementById(i+'_medication_details').children[0]
+                console.log(med_det_table.rows.length);
+                var med_lines=[];
+                for (var im=0; im<med_det_table.rows.length; im++){
+                    var med_det_lines = {};
+                    var det_row = med_det_table.rows[im].children[0].children[0];
+                    med_det_lines.num = det_row.children[0].children[0].value;
+                    med_det_lines.freq = det_row.children[1].children[0].value;
+                    med_det_lines.duration = det_row.children[2].children[0].value;
+                    med_det_lines.special = det_row.children[3].children[0].value;
+                    med_lines.push(med_det_lines);
+                    }
+                    product_id.lines=med_lines;
+                    product.push(product_id);
+            };
+            san_form['params']={'partner_id': form_pat, 'doctor': doctor, 'date': date, 'prescription': product}
+            var san_form_json = JSON.stringify(san_form);
+            console.log('form:' + san_form_json)
+            $.ajax({
+                type: "POST",
+                datatype: "json",
+                contentType: 'application/json',
+                url: "http://192.168.2.100:8069/opweb/prescription",
+                data: san_form_json,
+                success: function (data) {
+                    alert(data['result']);
+                }
+            })
+        });
+        $(document).on('click','.delete_row_btn', function(){
+            var tr = $(this).closest('tr').parent().closest('tr').index();
+            var row_to_del=$(this).closest('tr').index();
+            var row_search= tr + '_medication_details';
+            var table = document.getElementById(row_search).children[0];
+            if (row_to_del>0){
+                table.deleteRow(row_to_del)};
+                for (i=0; i<table.rows.length; i++){
+                    table.rows[i].cells[0].children[0].id = (tr)+'_medication_details_row_'+ (i+1);
+                }; 
+        });
+        $(document).on('click','.del_med',function(){
+            var row=$(this).closest('tr').index();
+            var table = document.getElementById('prescription');
+            table.deleteRow(row);
+            for (i=1; i<table.rows.length; i++){
+                table.rows[i].cells[0].innerHTML = i;
+            }
+        });
+        $('#old_pres_listCollapse').on('click', function () {
+            console.log('collaps');
+            $('#old_pres_list').toggleClass('active');
+        });
+        $(document).on('change', '.med_number, .med_no, .med_freq', function(){
+            var tr = $(this).closest('tr').parent().closest('tr').index();
+            var row=tr+'_medication_details_row_'+($(this).closest('tr').index()+1);
+            var med_tab = document.getElementById(row).children[0].children[0];
+            var med_quant, med_frequency, med_duration, total = 0;
+            med_quant = med_tab.children[0].children[0].value;
+            med_frequency = med_tab.children[1].children[0].value;
+            med_duration = med_tab.children[2].children[0].value;
+            total = med_quant * med_frequency * med_duration;
+            console.log(med_quant, med_frequency, med_duration, total);
+            document.getElementById(tr+'_medication_total').value = total;
+        });
+        })
+});

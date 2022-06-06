@@ -6,6 +6,7 @@ from odoo import models, fields, api
 class monthlyacct(models.Model):
     _name = 'sankeremployee.monthly'
     _order = 'sequences, id'
+    _rec_name = 'employee'
     employee = fields.Many2one('sankeremployee.sankeremployee', string='Employee name')
     designation = fields.Char(related='employee.designation', store=True, string='Designation')
     basic = fields.Float(string='Basic Pay')
@@ -13,6 +14,7 @@ class monthlyacct(models.Model):
     grossdue = fields.Float(string='Gross Amount Due', compute="_gross", store=True)
     epfc = fields.Float(string='EPF contribution', compute="_epfc", store=True)
     professionaltax = fields.Float(string='Professional Tax')
+    tds= fields.Float('Tax Deductable at Source')
     deduction = fields.Float(string='Total Deduction', compute="_deduct", store=True)
     netpayable = fields.Float(string='Net Amount Payable', compute="_net", store=True)
     salaries = fields.Many2one('sankeremployee.salaries', ondelete='cascade')
@@ -35,20 +37,20 @@ class monthlyacct(models.Model):
             else:
                 record.epfc = round(record.basic * 0.12)
 
-    @api.depends('basic', 'epfc','professionaltax')
+    @api.depends('basic', 'epfc','professionaltax','tds')
     def _deduct(self):
         for record in self:
-            record.deduction = record.epfc + record.professionaltax
+            record.deduction = record.epfc + record.professionaltax + record.tds
 
     @api.depends('basic','allowance','special')
     def _gross(self):
         for record in self:
             record.grossdue = record.basic + record.allowance + record.special
 
-    @api.depends('grossdue','epfc','professionaltax')
+    @api.depends('grossdue','epfc','professionaltax','tds')
     def _net(self):
         for record in self:
-            record.netpayable = record.grossdue - record.epfc - record.professionaltax
+            record.netpayable = record.grossdue - record.epfc - record.professionaltax - record.tds
 
     @api.model
     def create(self, vals):

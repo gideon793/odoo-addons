@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sanker','mail'],
+    'depends': ['base','sanker','point_of_sale'],
 
     # always loaded
     'data': [
@@ -31,4 +31,6 @@
     'demo': [
         'demo/demo.xml',
     ],
+    'external_dependencies': {
+        'python' : ['checkdigit', 'sockets']}
 }

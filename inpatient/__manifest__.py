@@ -7,7 +7,7 @@
     'website': "http://www.san-ker.org",
     'category': 'Healthcare',
     'version': '0.1',
-    'depends': ['base','sale','sanker'],
+    'depends': ['base','sale','sanker','web'],
     'data': [
         'security/ir.model.access.csv',
         'views/views.xml',

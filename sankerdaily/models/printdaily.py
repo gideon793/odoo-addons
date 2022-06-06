@@ -107,6 +107,14 @@ class consultrecordprint(models.AbstractModel):
                 'gideon': appt.gideon,
                 'eeg': appt.eeg,
                 'gideondue': appt.gideondue,
+                'rlaloo': appt.rlaloo,
+                'rlaloodue': appt.rlaloodue,
+                'dkynjin': appt.dkynjin,
+                'dkynjindue': appt.dkynjindue,
+                'lashngain': appt.lashngain,
+                'lashngaindue': appt.lashngaindue,
+                'enttests': appt.enttests
+
         })
 
         return {

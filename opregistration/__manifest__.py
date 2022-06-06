@@ -8,7 +8,7 @@
 	'maintainer': 'SAN-KER',
 	'company': 'SAN-KER',
 	'website': 'http://www.san-ker.org',
-	'depends': ['base','doctors','diagnosis','report_xlsx','dateofbirth'],
+	'depends': ['base','doctors','diagnosis','report_xlsx','dateofbirth','point_of_sale','sanker'],
 	'data': [
         'views/views.xml',
         'views/templates.xml',
@@ -17,6 +17,7 @@
         'views/pharmacyexcel.xml',
         'views/project.xml',
         'views/nongstoin.xml',
+        'views/certificates.xml',
         'security/ir.model.access.csv',
        ],
 	'images': [],

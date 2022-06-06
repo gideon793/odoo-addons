@@ -1,167 +1,171 @@
 <odoo>
-  <data>
+    <data>
 
 
-   <record model="ir.ui.view" id="opregistration.list">
-    <field name="name">OPD Registration</field>
-    <field name="model">opregistration</field>
-    <field name="arch" type="xml">
-     <form string="OPD Registration">
-      <group>
-       <group string ="Patient Details">
-       <field name = "partner_id" widget="res_partner_many2one" context="{'show_address':1}"/>
-       <field name = "registration"/>
-       <field name = "agecal" string="Age"/>
-       <field name = "gender" string = "Gender" /> 
-      <field name = "address" string="Address" />
-       </group>
-       <group string ="Appointment details">
-       <field name = "providerlink"/>
-       <field name = "date"/>
-       <field name = "type"/>
-       <field name = "fee"/>
-       <field name = "freecare" invisible="1"/>
-    </group> 
-     </group>
-     </form> 
-    </field>
-   </record>
-
-<record model="ir.ui.view" id="opregistration.popup">
-    <field name="name">OPD Registration</field>
-    <field name="model">opregistration</field>
-    <field name="arch" type="xml">
-     <form string="OPD Registration">
-<p>Warning</p>
-     </form> 
-    </field>
-   </record>
-
-
-  <record model="ir.ui.view" id="opregistration_tree">
-    <field name="name">OPD Registration</field>
-    <field name="model">opregistration</field>
-    <field name="arch" type="xml">
-     <tree default_order="create_date asc">
-       <field name = "partner_id" string = "Patient Name"/>
-       <field name = "registration"/>
-       <field name = "agecal" string="Age"/>
-       <field name = "providerlink"/>
-       <field name = "date"/>
-       <field name = "type"/>
-       <field name = "fee" invisible="1"/>
-       <field name = "freecare" string="Free Care" invisible="1"/>
-     </tree> 
-    </field>
-   </record>
-
-
-   <record id="opregistration_menu_action" model="ir.actions.act_window">
-    <field name="name">OPD Registration</field>
-    <field name="res_model">opregistration</field>
-    <field name="view_mode">tree,form</field>
-    <field name="context">{"search_default_today_filter":1}</field>
-   </record>
-
-
-  <act_window id="wizard_menu_action"
-                name="Daily OPD Report"
-                res_model="opregistration.wizard"
-                view_mode="form"
-                target="new"/>
-
-
-  <act_window id="meddaily_menu_action"
-                name="Daily Medications Report"
-                res_model="opregistration.meddaily"
-                view_mode="form"
-                target="new"/>
-
-
-
- <record id="
-" model="ir.ui.view">
-            <field name="name">OPD Registration Search</field>
+        <record model="ir.ui.view" id="opregistration.list">
+            <field name="name">OPD Registration</field>
             <field name="model">opregistration</field>
-            <field name="mode">primary</field>
             <field name="arch" type="xml">
-               <search>
-                <filter string="Today's Appointments" name="today_filter" domain="[('date', '=', datetime.datetime.now().strftime('%Y-%m-%d'))]" context="{'group_by':'providerlink'}" />
-                 <field name="partner_id" string="Name" filter_domain="[('partner_id','ilike',self)]"/>
-                 <field name="date" string="Date of Appointment" filter_domain="[('date','ilike',self)]"/>
-                 <field name="registration" string="Registration Number" filter_domain="[('registration','ilike',self)]"/>
+                <form string="OPD Registration">
+                    <group>
+                        <group string="Patient Details">
+                            <field name="partner_id" widget="res_partner_many2one" context="{'show_address':1}"/>
+                            <field name="registration"/>
+                            <field name="agecal" string="Age"/>
+                            <field name="gender" string="Gender"/>
+                            <field name="address" string="Address"/>
+                            <button name="button" string="Print" type="object" class="oe_highlight"/>
 
-            </search>
+                        </group>
+                        <group string="Appointment details">
+                            <field name="doctor"/>
+                            <field name="providerlink" readonly="1"/>
+                            <field name="date"/>
+                            <field name="type"/>
+                            <field name="fee"/>
+                            <field name="freecare" invisible="1"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="opregistration.popup">
+            <field name="name">OPD Registration</field>
+            <field name="model">opregistration</field>
+            <field name="arch" type="xml">
+                <form string="OPD Registration">
+                    <p>Warning</p>
+                </form>
             </field>
         </record>
 
 
-
-
-
-
-
-
-<menuitem id="opregistration_menu" parent="sanker.main_menu" name="Out Patient Department"/>
-<menuitem id="main_opregistration_menu" parent="opregistration_menu" name="OPD Registration" action="opregistration_menu_action"/>
-<menuitem id="wizard_menu" parent="opregistration_menu" name="OPD Daily report" action="wizard_menu_action"/>
-<menuitem id="medaily_menu" parent="opregistration_menu" name="Medicine Refills Daily report" action="meddaily_menu_action"/>
-
-
-<record model="ir.ui.view" id="wizard_form_view">
-<field name="name">wizard.form</field>
-<field name="model">opregistration.wizard</field>
-<field name="arch" type="xml">
-<form string="Select Date">
-  <group>
-   <field name="dateselect"/>
-   </group>
-<footer>
-                    <button name="get_report" string="Get Report" type="object" class="oe_highlight"/>
-                    <button string="Cancel" special="cancel"/>
-                </footer>
-
-    </form>
+        <record model="ir.ui.view" id="opregistration_tree">
+            <field name="name">OPD Registration</field>
+            <field name="model">opregistration</field>
+            <field name="arch" type="xml">
+                <tree default_order="create_date asc">
+                    <field name="partner_id" string="Patient Name"/>
+                    <field name="registration"/>
+                    <field name="agecal" string="Age"/>
+                    <field name="doctor"/>
+                    <field name="date"/>
+                    <field name="type"/>
+                    <field name="fee" invisible="1"/>
+                    <field name="freecare" string="Free Care" invisible="1"/>
+                </tree>
             </field>
- </record>
+        </record>
 
 
+        <record id="opregistration_menu_action" model="ir.actions.act_window">
+            <field name="name">OPD Registration</field>
+            <field name="res_model">opregistration</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{"search_default_today_filter":1}</field>
+        </record>
 
 
-<record model="ir.ui.view" id="meddaily_form_view">
-<field name="name">meddaily.form</field>
-<field name="model">opregistration.meddaily</field>
-<field name="arch" type="xml">
-<form string="Select Date">
-  <group>
-   <field name="dateselect"/>
-   </group>
-<footer>
-                    <button name="get_report" string="Get Report" type="object" class="oe_highlight"/>
-                    <button string="Cancel" special="cancel"/>
-                </footer>
-</form>
+        <act_window id="wizard_menu_action"
+                    name="Daily OPD Report"
+                    res_model="opregistration.wizard"
+                    view_mode="form"
+                    target="new"/>
+
+
+        <act_window id="meddaily_menu_action"
+                    name="Daily Medications Report"
+                    res_model="opregistration.meddaily"
+                    view_mode="form"
+                    target="new"/>
+
+
+        <record id="opregistration_search" model="ir.ui.view">
+            <field name="name">OPD Registration Search</field>
+            <field name="model">opregistration</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Today's Appointments" name="today_filter"
+                            domain="[('date', '=', datetime.datetime.now().strftime('%Y-%m-%d'))]"
+                            context="{'group_by':'doctor'}"/>
+                    <field name="partner_id" string="Name" filter_domain="[('partner_id','ilike',self)]"/>
+                    <field name="date" string="Date of Appointment" filter_domain="[('date','ilike',self)]"/>
+                    <field name="registration" string="Registration Number"
+                           filter_domain="[('registration','ilike',self)]"/>
+
+                </search>
             </field>
-</record>
+        </record>
 
 
-
-<record id="view_opregistration_warning" model="ir.ui.view">
-           <field name="name">opregistration_warning_form</field>
-           <field name="model">opregistration.warning</field>
-           <field name="arch" type="xml">
-           <form>
-              <group>
-                 <span>Warning</span>
-                  <field name="message" />
-               </group>
-               <footer>
-                <button string="OK" special="cancel" class="oe_highlight"/>
-                </footer>
-           </form>
-           </field>
-   </record>
+        <menuitem id="opregistration_menu" parent="sanker.main_menu" name="Out Patient Department"/>
+        <menuitem id="main_opregistration_menu" parent="opregistration_menu" name="OPD Registration"
+                  action="opregistration_menu_action"/>
+        <menuitem id="wizard_menu" parent="opregistration_menu" name="OPD Daily report" action="wizard_menu_action"/>
+        <menuitem id="medaily_menu" parent="opregistration_menu" name="Medicine Refills Daily report"
+                  action="meddaily_menu_action"/>
 
 
-   </data>
+        <record model="ir.ui.view" id="wizard_form_view">
+            <field name="name">wizard.form</field>
+            <field name="model">opregistration.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Select Date">
+                    <group>
+                        <field name="dateselect"/>
+                    </group>
+                    <footer>
+                        <button name="get_report" string="Get Report" type="object" class="oe_highlight"/>
+                        <button string="Cancel" special="cancel"/>
+                    </footer>
+
+                </form>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="meddaily_form_view">
+            <field name="name">meddaily.form</field>
+            <field name="model">opregistration.meddaily</field>
+            <field name="arch" type="xml">
+                <form string="Select Date">
+                    <group>
+                        <field name="dateselect"/>
+                    </group>
+                    <footer>
+                        <button name="get_report" string="Get Report" type="object" class="oe_highlight"/>
+                        <button string="Cancel" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="view_opregistration_warning" model="ir.ui.view">
+            <field name="name">opregistration_warning_form</field>
+            <field name="model">opregistration.warning</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <span>Warning</span>
+                        <field name="message"/>
+                    </group>
+                    <footer>
+                        <button string="OK" special="cancel" class="oe_highlight"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <report id="pharmacy_bill_report" 
+                string="SAN-KER Pharmacy Bill Report"
+                model="sale.order"
+                report_type="qweb-pdf"
+                name="opregistration.opbill_template"
+                file="opregistration.opbill_template"
+                menu="True"/>
+
+    </data>
 </odoo>

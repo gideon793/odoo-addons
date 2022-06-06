@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_outreach_outreach,outreach.outreach,model_outreach_outreach,base.group_user,1,1,1,1
+access_outreach_records,outreach.records,model_outreach_records,base.group_user,1,1,1,1
+access_outreach_clinicdetails,outreach.clinicdetails,model_outreach_clinicdetails,base.group_user,1,1,1,1

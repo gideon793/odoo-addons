@@ -1,22 +1,1594 @@
 <odoo>
     <data>
-        <!-- <template id="listing"> -->
-        <!--   <ul> -->
-        <!--     <li t-foreach="objects" t-as="object"> -->
-        <!--       <a t-attf-href="#{ root }/objects/#{ object.id }"> -->
-        <!--         <t t-esc="object.display_name"/> -->
-        <!--       </a> -->
-        <!--     </li> -->
-        <!--   </ul> -->
-        <!-- </template> -->
-        <!-- <template id="object"> -->
-        <!--   <h1><t t-esc="object.display_name"/></h1> -->
-        <!--   <dl> -->
-        <!--     <t t-foreach="object._fields" t-as="field"> -->
-        <!--       <dt><t t-esc="field"/></dt> -->
-        <!--       <dd><t t-esc="object[field]"/></dd> -->
-        <!--     </t> -->
-        <!--   </dl> -->
-        <!-- </template> -->
+        <report id="lab_report"
+                model="lab.labvisit"
+                string="Laboratory Report - SAN-KER"
+                report_type="qweb-pdf"
+                name="lab.labvisit_report"
+                menu="True"/>
+
+        <report id="viral_report"
+                model="lab.labvisit"
+                string="Laboratory Report - Viral Serology"
+                report_type="qweb-pdf"
+                name="lab.viral_report_pdf"
+                menu="True"/>
+
+        <report id="miscs_report"
+                model="lab.labvisit"
+                string="Laboratory Report - Misc"
+                report_type="qweb-pdf"
+                name="lab.misc_report"
+                menu="True"/>
+
+        <report id="electrolytes_report"
+                model="lab.labvisit"
+                string="Electrolytes Report"
+                report_type="qweb-pdf"
+                name="lab.electrolyte_report"
+                menu="True"/>
+
+        <report id="pos_bill"
+                string="SAN-KER Laboratory Bill"
+                model="pos.order"
+                report_type="qweb-pdf"
+                name="lab.pos_template"
+                menu="True"/>
+
+        <template id="pos_template">
+            <t t-name="lab.pos_template">
+                <t t-call="web.html_container">
+                    <t t-foreach="docs" t-as="o">
+                        <t t-call="web.external_layout">
+                            <div class="page">
+                                <div class="text-center" style="text-decoration: underline">
+                                    <strong>Laboratory Bill</strong>
+                                    <br/>
+                                    <br/>
+                                </div>
+                                <table class="patient and bill details">
+                                    <thead></thead>
+                                    <tr>
+                                        <td style="width:200px">
+                                            <name>Patient details:</name>
+                                        </td>
+                                        <td style="width:1000px">
+                                            <span t-field="docs.partner_id"
+                                                  t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
+                                        </td>
+                                        <td style="width:500px">
+                                            <table>
+                                                <tr>
+                                                    <td>
+                                                        <name>Registration number:</name>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td style="width:500px">
+                                            <table>
+                                                <tr>
+                                                    <td>
+                                                        <span t-field="docs.partner_id.registration"/>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:200px">
+                                            <name>Bill Number:</name>
+                                        </td>
+                                        <td style="width:1000px">
+                                            <span t-field="docs.name"/>
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+                                        <td style="width:500px">
+                                            <name>Billing date:</name>
+                                        </td>
+                                        <td style="width:500px">
+                                            <span t-field="docs.date_order"/>
+                                        </td>
+                                        <t t-if="docs.config_id.name == 'In Patient Sale'">
+                                            <td>
+                                                <name>Period of Bill:</name>
+                                            </td>
+                                            <td>
+                                                <span t-field="docs.periodofbill"/>
+                                            </td>
+                                        </t>
+
+                                    </tr>
+
+                                </table>
+                                <table class="table table-sm o_main_table">
+                                    <thead>
+                                        <tr>
+                                            <t t-set="colspan" t-value="5"/>
+                                            <th class="text-left">Description</th>
+                                            <th class="text-right">Quantity</th>
+                                            <th class="text-right">Unit Price</th>
+                                            <th class="text-right">
+                                                <t groups="account.group_show_line_subtotals_tax_excluded">Amount</t>
+                                                <t groups="account.group_show_line_subtotals_tax_included">Total Price
+                                                </t>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="sale_tbody">
+                                        <t t-set="current_subtotal" t-value="0"/>
+                                        <t t-foreach="docs.lines" t-as="line">
+                                            <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal"
+                                               groups="account.group_show_line_subtotals_tax_excluded"/>
+                                            <t t-set="current_subtotal" t-value="current_subtotal + line.price_total"
+                                               groups="account.group_show_line_subtotals_tax_included"/>
+                                            <tr>
+                                                <td>
+                                                    <span t-field="line.product_id"/>
+                                                </td>
+                                                <td class="text-right">
+                                                    <span t-esc="'%.0f'% line.qty"/>
+                                                </td>
+                                                <td class="text-right">
+                                                    <span t-esc="'%.2f'% line.price_unit"/>
+                                                </td>
+                                                <td t-if="display_discount" class="text-right"
+                                                    groups="sale.group_discount_per_so_line">
+                                                    <span t-field="line.discount"/>
+                                                </td>
+                                                <td class="text-right o_price_total">
+                                                    <span t-esc="'%.2f'% line.price_subtotal"
+                                                          groups="account.group_show_line_subtotals_tax_excluded"/>
+                                                    <span t-esc="'%.2f'% line.price_total"
+                                                          groups="account.group_show_line_subtotals_tax_included"/>
+                                                </td>
+                                            </tr>
+                                            <t t-if="current_section and (line_last or docs.order_line[line_index+1].display_type == 'line_section')">
+                                                <tr class="is-subtotal text-right">
+                                                    <td colspan="99">
+                                                        <strong class="mr16">Subtotal</strong>
+                                                        <span t-esc="current_subtotal"
+                                                              t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: docs.pricelist_id.currency_id}"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </t>
+                                    </tbody>
+                                </table>
+                                <div class="clearfix">
+                                    <div id="total" class="row" name="total">
+                                        <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
+                                            <table class="table table-sm">
+                                                <tr class="border-black o_subtotal">
+                                                    <td>
+                                                        <strong>Total</strong>
+                                                    </td>
+                                                    <td class="text-right">
+                                                        <span t-field="docs.amount_total"
+                                                              t-options="{'widget':'monetary','display_currency': currency_id}"/>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="text-uppercase">
+                                    <strong>Total Amount:</strong>
+                                    <span t-field="docs.text_amount"/>
+                                </div>
+
+                                <div style="padding-top:100px; text-align:right">For SAN-KER</div>
+                            </div>
+                        </t>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+
+        <template id="electrolyte_report">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-size:16px">
+                        <h3 class="text-center">Laboratory Reports</h3>
+                        <hr style="width:100%; height:1px; color: black; background-color: black"></hr>
+
+                        <table style="width:100%; font-size: 18px; ">
+                            <tr>
+                                <td><![CDATA[&nbsp;]]></td>
+                            </tr>
+                            <tr>
+                                <td>Name:</td>
+                                <td>
+                                    <span t-esc="docs['name']"/>
+                                </td>
+                                <td>Date:</td>
+                                <td>
+                                    <span t-esc="docs['date']" t-options="{'widget': 'date'}"/>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>Gender:</td>
+                                <td>
+                                    <t t-set="sex"
+                                       t-value="dict([('male','Male'),('female','Female'),('false','False')])"/>
+                                    <span t-esc="sex[docs['gender']]"/>
+                                </td>
+                                <td>Age:</td>
+                                <td>
+                                    <span t-esc="docs['agecal']"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Registration No.:</td>
+                                <td>
+                                    <span t-esc="docs['registration']"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><![CDATA[&nbsp;]]></td>
+                                <td><![CDATA[&nbsp;]]></td>
+                            </tr>
+                        </table>
+                        <hr style="width:100%; height:1px; color: black; background-color: black"></hr>
+                        <table style="width:100%">
+                            <thead style="width:100%;">
+                                <tr style="border-bottom:1px solid black">
+                                    <td style="width: 45%">Investigation</td>
+                                    <td style="width: 20%;text-align:right">Result</td>
+                                    <td style="width: 10%"></td>
+                                    <td style="width: 25%">Reference Range</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><![CDATA[&nbsp;]]></td>
+                                    <td><![CDATA[&nbsp;]]></td>
+                                </tr>
+                                <tr>
+                                    <td>SERUM ELECTROLYTES</td>
+                                </tr>
+                                <t t-if="docs['sodium']">
+                                    <tr>
+                                        <td>Sodium</td>
+                                        <td style="text-align:right">
+                                            <span t-esc="docs['sodium']"/>
+                                        </td>
+                                        <td style="text-align:left">mmol/L</td>
+                                        <td>135-145 mmol/L</td>
+                                    </tr>
+                                </t>
+                                <t t-if="docs['potassium']">
+                                    <tr>
+                                        <td>Potassium</td>
+                                        <td style="text-align:right">
+                                            <span t-esc="docs['potassium']"/>
+                                        </td>
+                                        <td style="text-align:left">mmol/L</td>
+                                        <td>3.6 - 5.2 mmol/L</td>
+                                    </tr>
+                                </t>
+                                <t t-if="docs['calcium']">
+                                    <tr>
+                                        <td>Ionized Calcium</td>
+                                        <td style="text-align:right">
+                                            <span t-esc="docs['calcium']"/>
+                                        </td>
+                                        <td style="text-align:left">mmol/L</td>
+                                        <td>1.05 - 1.3 mmol/L</td>
+                                    </tr>
+                                </t>
+                                <t t-if="docs['lithium']">
+                                    <tr>
+                                        <td>Lithium</td>
+                                        <td style="text-align:right">
+                                            <span t-esc="docs['lithium']"/>
+                                        </td>
+                                        <td style="text-align:left">mmol/L</td>
+                                        <td>0.5 to 1.2 mmol/L</td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+
+            </t>
+        </template>
+
+
+        <template id="viral_report_pdf">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-size:16px">
+                        <h3 class="text-center">Laboratory Reports</h3>
+                        <hr style="width:100%; height:1px; color: black; background-color: black"></hr>
+
+                        <table style="width:100%; font-size: 18px; ">
+                            <tr>
+                                <td><![CDATA[&nbsp;]]></td>
+                            </tr>
+                            <tr>
+                                <td>Name:</td>
+                                <td>
+                                    <span t-esc="docs['name']"/>
+                                </td>
+                                <td>Date:</td>
+                                <td>
+                                    <span t-esc="docs['date']" t-options="{'widget': 'date'}"/>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>Gender:</td>
+                                <td>
+                                    <t t-set="sex"
+                                       t-value="dict([('male','Male'),('female','Female'),('false','False')])"/>
+                                    <span t-esc="sex[docs['gender']]"/>
+                                </td>
+                                <td>Age:</td>
+                                <td>
+                                    <span t-esc="docs['agecal']"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Registration No.:</td>
+                                <td>
+                                    <span t-esc="docs['registration']"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><![CDATA[&nbsp;]]></td>
+                                <td><![CDATA[&nbsp;]]></td>
+                            </tr>
+                        </table>
+                        <hr style="width:100%; height:1px; color: black; background-color: black"></hr>
+                        <table style="width:100%">
+                            <thead style="width:100%;">
+                                <tr style="border-bottom:1px solid black">
+                                    <td style="width: 45%">Investigation</td>
+                                    <td style="width: 20%;text-align:right">Result</td>
+                                    <td style="width: 10%"></td>
+                                    <td style="width: 25%">Reference Range</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><![CDATA[&nbsp;]]></td>
+                                    <td><![CDATA[&nbsp;]]></td>
+                                </tr>
+                                <tr>
+                                    <td>VIRAL SEROLOGY</td>
+                                </tr>
+                                <t t-set="result"
+                                   t-value="dict([('pos','Positive'),('neg','Negative'),('false','False')])"/>
+
+
+                                <t t-if="docs['hiv']">
+                                    <tr>
+                                        <td>HIV 1 &amp; 2</td>
+                                        <td style="text-align:right">
+                                            <span t-esc="result[docs['hiv']]"/>
+                                        </td>
+                                        <td style="text-align:left"></td>
+                                        <td>Negative</td>
+                                    </tr>
+                                </t>
+                                <t t-if="docs['hbsag']">
+                                    <tr>
+                                        <td>Hepatitis B</td>
+                                        <td style="text-align:right">
+                                            <span t-esc="result[docs['hbsag']]"/>
+                                        </td>
+                                        <td style="text-align:left"></td>
+                                        <td>Negative</td>
+                                    </tr>
+                                </t>
+                                <t t-if="docs['hcv']">
+                                    <tr>
+                                        <td>Anti-HCV</td>
+                                        <td style="text-align:right">
+                                            <span t-esc="result[docs['hcv']]"/>
+                                        </td>
+                                        <td style="text-align:left"></td>
+                                        <td>Negative</td>
+                                    </tr>
+                                </t>
+                                <t t-if="docs['lithium']">
+                                    <tr>
+                                        <td>Lithium</td>
+                                        <td style="text-align:right">
+                                            <span t-esc="docs['lithium']"/>
+                                        </td>
+                                        <td style="text-align:left">mmol/L</td>
+                                        <td>0.5 to 1.2 mmol/L</td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+
+            </t>
+        </template>
+
+        <template id="labvisit_report">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-size:16px">
+                        <h3 class="text-center">Laboratory Reports</h3>
+                        <hr style="width:100%; height:1px; color: black; background-color: black"></hr>
+
+                        <table style="width:100%; font-size: 18px; ">
+                            <tr>
+                                <td><![CDATA[&nbsp;]]></td>
+                            </tr>
+                            <tr>
+                                <td>Name:</td>
+                                <td>
+                                    <span t-esc="docs['name']"/>
+                                </td>
+                                <td>Date:</td>
+                                <td>
+                                    <span t-esc="docs['date']" t-options="{'widget': 'date'}"/>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>Gender:</td>
+                                <td>
+                                    <t t-set="sex"
+                                       t-value="dict([('male','Male'),('female','Female'),('false','False')])"/>
+                                    <span t-esc="sex[docs['gender']]"/>
+                                </td>
+                                <td>Age:</td>
+                                <td>
+                                    <span t-esc="docs['agecal']"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Registration No.:</td>
+                                <td>
+                                    <span t-esc="docs['registration']"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><![CDATA[&nbsp;]]></td>
+                                <td><![CDATA[&nbsp;]]></td>
+                            </tr>
+                        </table>
+                        <hr style="width:100%; height:1px; color: black; background-color: black"></hr>
+                        <table style="width:100%">
+                            <thead style="width:100%;">
+                                <tr style="border-bottom:1px solid black">
+                                    <td style="width: 45%">Investigation</td>
+                                    <td style="width: 20%;text-align:right">Result</td>
+                                    <td style="width: 10%"></td>
+                                    <td style="width: 25%">Reference Range</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><![CDATA[&nbsp;]]></td>
+                                    <td><![CDATA[&nbsp;]]></td>
+                                </tr>
+                                <t t-if="docs['hemoglobin']">
+                                    <tr>
+                                        <td>
+                                            <strong>HEMATOLOGY</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Hemoglobin
+                                        </td>
+                                        <td style='text-align:right'>
+                                            <span t-esc="docs['hemoglobin']"/>
+                                        </td>
+                                        <td style='text-align:left'>
+                                            g/dL
+                                        </td>
+                                        <td>
+                                            11-17 g/dL
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Total Leucocyte Count
+                                        </td>
+                                        <td style='text-align:right'>
+                                            <span t-esc="docs['tlc']"/>
+                                        </td>
+                                        <td style='text-align:left'>
+                                            per μL
+                                        </td>
+                                        <td>
+                                            4000-11000 per μL
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Neutrophils
+                                        </td>
+                                        <td style='text-align:right'>
+                                            <span t-esc="docs['neutrophils']"/>
+                                        </td>
+                                        <td style='text-align:left'>
+                                            %
+                                        </td>
+                                        <td>
+                                            50-70%
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Lymphocytes
+                                        </td>
+                                        <td style='text-align:right'>
+                                            <span t-esc="docs['lymphocytes']"/>
+                                        </td>
+                                        <td style='text-align:left'>
+                                            %
+                                        </td>
+                                        <td>
+                                            20-40%
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Eosinophils
+                                        </td>
+                                        <td style='text-align:right'>
+                                            <span t-esc="docs['eosinophils']"/>
+                                        </td>
+                                        <td style='text-align:left'>
+                                            %
+                                        </td>
+                                        <td>
+                                            0.5-5%
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Basophils
+                                        </td>
+                                        <td style='text-align:right'>
+                                            <span t-esc="docs['basophils']"/>
+                                        </td>
+                                        <td style='text-align:left'>
+                                            %
+                                        </td>
+                                        <td>
+                                            0-1%
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Monocytes
+                                        </td>
+                                        <td style='text-align:right'>
+                                            <span t-esc="docs['monocytes']"/>
+                                        </td>
+                                        <td style='text-align:left'>
+                                            %
+                                        </td>
+                                        <td>
+                                            3-12%
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Platelets
+                                        </td>
+                                        <td style='text-align:right'>
+                                            <span t-esc="docs['platelets']"/>
+                                        </td>
+                                        <td style='text-align:left'>
+                                            per μL
+                                        </td>
+                                        <td>
+                                            1,50,000 - 4,50,000 per μL
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            MCV
+                                        </td>
+                                        <td style='text-align:right'>
+                                            <span t-esc="docs['mcv']"/>
+                                        </td>
+                                        <td style='text-align:left'>
+                                            μm³
+                                        </td>
+                                        <td>
+                                            80-100 μm³
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            MCH
+                                        </td>
+                                        <td style='text-align:right'>
+                                            <span t-esc="docs['mch']"/>
+                                        </td>
+                                        <td style='text-align:left'>
+                                            pg
+                                        </td>
+                                        <td>
+                                            27-34pg
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            MCHC
+                                        </td>
+                                        <td style='text-align:right'>
+                                            <span t-esc="docs['mchc']"/>
+                                        </td>
+                                        <td style='text-align:left'>
+                                            g/L
+                                        </td>
+                                        <td>
+                                            320-360 g/L
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            RDW_CV
+                                        </td>
+                                        <td style='text-align:right'>
+                                            <span t-esc="docs['rdw_cv']"/>
+                                        </td>
+                                        <td style='text-align:left'>
+                                            %
+                                        </td>
+                                        <td>
+                                            11-16%
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            RDW_SD
+                                        </td>
+                                        <td style='text-align:right'>
+                                            <span t-esc="docs['rdw_sd']"/>
+                                        </td>
+                                        <td style='text-align:left'>
+                                            fL
+                                        </td>
+                                        <td>
+                                            35-56fL
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            PCV
+                                        </td>
+                                        <td style='text-align:right'>
+                                            <span t-esc="docs['pcv']"/>
+                                        </td>
+                                        <td style='text-align:left'>
+                                            %
+                                        </td>
+                                        <td>
+                                            37 - 54%
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            RBC
+                                        </td>
+                                        <td style='text-align:right'>
+                                            <span t-esc="docs['rbc']"/>
+                                        </td>
+                                        <td style='text-align:left'>
+                                            x 10&#94;12/L
+                                        </td>
+                                        <td>
+                                            3.50 - 5.50 x 10&#94;12/L
+                                        </td>
+                                    </tr>
+                                    <t t-if="docs['esr']">
+                                        <tr>
+                                            <td>
+                                                ESR
+                                            </td>
+                                            <td style='text-align:right'>
+                                                <span t-esc="docs['esr']"/>
+                                            </td>
+                                            <td style='text-align:left'>
+                                                mm/Hr
+                                            </td>
+                                            <td>
+                                                0-30mm/Hr
+                                            </td>
+                                        </tr>
+
+                                    </t>
+                                    <tr>
+                                        <td><![CDATA[&nbsp;]]></td>
+                                    </tr>
+                                </t>
+                                <t t-if="docs['totalbil_result'] or docs['creat_result'] or docs['totchol_result'] or docs['rbs_result'] or docs['fbs_result'] or docs['ppbs_result'] or docs['hba1c_result'] or docs['uricacid_result'] or docs['cpk_result'] or docs['sodium'] or docs['potassium'] or docs['calcium'] or docs['phosphorus'] or docs['lithium'] or docs['crp_result']">
+                                    <tr>
+                                        <td>
+                                            <strong>BIOCHEMISTRY</strong>
+                                        </td>
+                                    </tr>
+                                    <t t-if="docs['sodium'] or docs['potassium']">
+                                        <tr>
+                                            <td>
+                                                <strong>Serum Electrolytes</strong>
+                                            </td>
+                                        </tr>
+                                        <t t-if="docs['sodium']">
+                                            <tr>
+                                                <td>Sodium</td>
+                                                <td style="text-align:right">
+                                                    <span t-esc="docs['sodium']"/>
+                                                </td>
+                                                <td style="text-align:left">mmol/L</td>
+                                                <td>135-145 mmol/L</td>
+                                            </tr>
+                                        </t>
+                                        <t t-if="docs['potassium']">
+                                            <tr>
+                                                <td>Potassium</td>
+                                                <td style="text-align:right">
+                                                    <span t-esc="docs['potassium']"/>
+                                                </td>
+                                                <td style="text-align:left">mmol/L</td>
+                                                <td>3.6 - 5.2 mmol/L</td>
+                                            </tr>
+                                        </t>
+                                        <tr>
+                                            <td><![CDATA[&nbsp;]]></td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="docs['calcium'] or docs['phosphorus'] or docs['lithium']">
+                                        <t t-if="docs['calcium']">
+                                            <tr>
+                                                <td>Ionized Calcium</td>
+                                                <td style="text-align:right">
+                                                    <span t-esc="docs['calcium']"/>
+                                                </td>
+                                                <td style="text-align:left">mmol/L</td>
+                                                <td>1.05 - 1.3 mmol/L</td>
+                                            </tr>
+                                        </t>
+                                        <t t-if="docs['phosphorus']">
+                                            <tr>
+                                                <td>Phosphorus</td>
+                                                <td style="text-align:right">
+                                                    <span t-esc="docs['phosphorus']"/>
+                                                </td>
+                                                <td style="text-align:left">mmol/L</td>
+                                                <td>2.5 - 4.5 mmol/L</td>
+                                            </tr>
+                                        </t>
+                                        <t t-if="docs['lithium']">
+                                            <tr>
+                                                <td>Lithium</td>
+                                                <td style="text-align:right">
+                                                    <span t-esc="docs['lithium']"/>
+                                                </td>
+                                                <td style="text-align:left">mmol/L</td>
+                                                <td>0.5 to 1.2 mmol/L</td>
+                                            </tr>
+                                            <tr>
+                                                <td><![CDATA[&nbsp;]]></td>
+                                            </tr>
+
+                                        </t>
+                                    </t>
+                                    <t t-if="docs['totalbil_result']">
+                                        <tr>
+                                            <td>
+                                                <strong>Liver Function Tests</strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Bilirubin</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="docs['totalbil_result']"/>
+                                            </td>
+                                            <td style="text-align:left">mg/dL</td>
+                                            <td>0.1 - 1.2mg/dL</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Direct Bilirubin</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="docs['db_result']"/>
+                                            </td>
+                                            <td style="text-align:left">mg/dL</td>
+                                            <td>0.1 - 0.3mg/dL</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Indirect Bilirubin</td>
+                                            <t t-set="indirectbil"
+                                               t-value="round(float(docs['totalbil_result'])- float(docs['db_result']),2)"/>
+                                            <td style="text-align:right">
+                                                <span t-esc="indirectbil"/>
+                                            </td>
+                                            <td style="text-align:left">mg/dL</td>
+                                            <td>0.1 - 1.2mg/dL</td>
+                                        </tr>
+                                        <t t-if="docs['sgot_result']">
+                                            <tr>
+                                                <td>SGOT/AST</td>
+                                                <td style="text-align:right">
+                                                    <span t-esc="docs['sgot_result']"/>
+                                                </td>
+                                                <td style="text-align:left">IU/L</td>
+                                                <td>8-40IU/L</td>
+                                            </tr>
+                                        </t>
+                                        <tr>
+                                            <td>SGPT/ALT</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="docs['sgpt_result']"/>
+                                            </td>
+                                            <td style="text-align:left">IU/L</td>
+                                            <td>Males: &lt; 45IU/L</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>Females: &lt; 34IU/L</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Protein</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="docs['protein_result']"/>
+                                            </td>
+                                            <td style="text-align:left">g/dL</td>
+                                            <td>6.0 - 8.3g/dL</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Albumin</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="docs['albumin_result']"/>
+                                            </td>
+                                            <td style="text-align:left">g/dL</td>
+                                            <td>3.4 - 5.4 g/dL</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Globulin</td>
+                                            <t t-set="globulin"
+                                               t-value="round(float(docs['protein_result']) - float(docs['albumin_result']),2)"/>
+                                            <td style="text-align:right">
+                                                <span t-esc="globulin"/>
+                                            </td>
+                                            <td style="text-align:left">g/dL</td>
+                                            <td>2.0 - 3.9 g/dL</td>
+                                        </tr>
+                                        <t t-if="docs['alp_result']">
+                                            <tr>
+                                                <td>Alkaline Phosphatase</td>
+                                                <td style="text-align:right">
+                                                    <span t-esc="docs['alp_result']"/>
+                                                </td>
+                                                <td style="text-align:left">IU/L</td>
+                                                <td>44-177 IU/L</td>
+                                            </tr>
+                                        </t>
+                                        <tr>
+                                            <td><![CDATA[&nbsp;]]></td>
+                                        </tr>
+
+                                    </t>
+                                    <t t-if="docs['creat_result'] or docs['urea_result']">
+                                        <tr>
+                                            <td>
+                                                <strong>Kidney Function Tests</strong>
+                                            </td>
+                                        </tr>
+                                        <t t-if="docs['urea_result']">
+                                            <tr>
+                                                <td>Urea</td>
+                                                <td style="text-align:right">
+                                                    <span t-esc="docs['urea_result']"/>
+                                                </td>
+                                                <td style="text-align:left">mg/dL</td>
+                                                <td>5-40 mg/dL</td>
+                                            </tr>
+                                        </t>
+
+                                        <t t-if="docs['creat_result']">
+                                            <tr>
+                                                <td>Creatinine</td>
+                                                <td style="text-align:right">
+                                                    <span t-esc="docs['creat_result']"/>
+                                                </td>
+                                                <td style="text-align:left">mg/dL</td>
+                                                <td>Males: 0.8 - 1.3 mg/dL</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>Females: 0.5 - 0.9 mg/dL</td>
+                                            </tr>
+                                        </t>
+                                        <tr>
+                                            <td><![CDATA[&nbsp;]]></td>
+                                        </tr>
+                                    </t>
+
+                                    <t t-if="docs['uricacid_result']">
+                                        <tr>
+                                            <td>Uric Acid</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="docs['uricacid_result']"/>
+                                            </td>
+                                            <td style="text-align:left">mg/dL</td>
+                                            <td>Males: 3.6 - 8.2 mg/dL</td>
+                                        </tr>
+                                        <tr>
+                                            <td><![CDATA[&nbsp;]]></td>
+                                            <td><![CDATA[&nbsp;]]></td>
+                                            <td><![CDATA[&nbsp;]]></td>
+                                            <td>Females: 2.3 - 6.1 mg/dL</td>
+                                        </tr>
+                                        <tr>
+                                            <td><![CDATA[&nbsp;]]></td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="docs['cpk_result']">
+                                        <tr>
+                                            <td>CPK</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="docs['cpk_result']"/>
+                                            </td>
+                                            <td style="text-align:left">U/L</td>
+                                            <td>0-250 U/L</td>
+                                        </tr>
+                                        <tr>
+                                            <td><![CDATA[&nbsp;]]></td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="docs['amylase_result']">
+                                        <tr>
+                                            <td>Amylase</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="docs['amylase_result']"/>
+                                            </td>
+                                            <td style="text-align:left">U/L</td>
+                                            <td>28-100 U/L</td>
+                                        </tr>
+                                        <tr>
+                                            <td><![CDATA[&nbsp;]]></td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="docs['crp_result']">
+                                        <tr>
+                                            <td>CRP</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="docs['crp_result']"/>
+                                            </td>
+                                            <td style="text-align:left">U/L</td>
+                                            <td>0-250 U/L</td>
+                                        </tr>
+                                        <tr>
+                                            <td><![CDATA[&nbsp;]]></td>
+                                        </tr>
+                                    </t>
+
+                                    <tr>
+                                        <td><![CDATA[&nbsp;]]></td>
+                                    </tr>
+                                </t>
+                                <t t-if="docs['rbs_result'] or docs['fbs_result'] or docs['ppbs_result'] or docs['hba1c_result']">
+                                    <tr>
+                                        <td>
+                                            <strong>Blood Sugar</strong>
+                                        </td>
+                                    </tr>
+                                    <t t-if="docs['rbs_result']">
+                                        <tr>
+                                            <td>Random Blood Sugar</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="docs['rbs_result']"/>
+                                            </td>
+                                            <td style="text-align:left">mg%</td>
+                                            <td>&lt;200mg%</td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="docs['fbs_result']">
+                                        <tr>
+                                            <td>Fasting Blood Sugar</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="docs['fbs_result']"/>
+                                            </td>
+                                            <td style="text-align:left">mg%</td>
+                                            <td>70-110 mg%</td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="docs['ppbs_result']">
+                                        <tr>
+                                            <td>Post Prandial Blood Sugar</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="docs['ppbs_result']"/>
+                                            </td>
+                                            <td style="text-align:left">mg%</td>
+                                            <td><![CDATA[&lt;]]>200mg%</td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="docs['hba1c_result']">
+                                        <tr>
+                                            <td>HbA1C (Glycosylated Hemoglobin)</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="docs['hba1c_result']"/>
+                                            </td>
+                                            <td style="text-align:left">%</td>
+                                            <td>Normal: 4 - 5.6%</td>
+                                        </tr>
+                                        <tr>
+                                            <td><![CDATA[&nbsp;]]></td>
+                                            <td><![CDATA[&nbsp;]]></td>
+                                            <td style="text-align:left"></td>
+                                            <td>Prediabetes: 5.7 - 6.4%</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td><![CDATA[&nbsp;]]></td>
+                                            <td><![CDATA[&nbsp;]]></td>
+                                            <td style="text-align:left"></td>
+                                            <td>Diabetes: <![CDATA[&gt;]]> 6.5%</td>
+                                        </tr>
+                                        <tr>
+                                            <td><![CDATA[&nbsp;]]></td>
+                                            <td><![CDATA[&nbsp;]]></td>
+                                            <td style="text-align:left"></td>
+                                            <td>Uncontrolled diabetes: <![CDATA[&gt;]]> 7%</td>
+                                        </tr>
+                                    </t>
+                                    <tr>
+                                        <td><![CDATA[&nbsp;]]></td>
+                                    </tr>
+                                </t>
+                                <t t-if="docs['totchol_result'] or docs['hdl_result'] or docs['ldl_result'] or docs['triglyceride_result']">
+                                    <tr>
+                                        <td>
+                                            <strong>Lipid Profile</strong>
+                                        </td>
+                                    </tr>
+                                    <t t-if="docs['totchol_result']">
+                                        <tr>
+                                            <td>Total Cholestrol</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="docs['totchol_result']"/>
+                                            </td>
+                                            <td style="text-align:left">mg/dL</td>
+                                            <td>125 to 200mg/dL</td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="docs['ldl_result']">
+                                        <tr>
+                                            <td>LDL</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="docs['ldl_result']"/>
+                                            </td>
+                                            <td style="text-align:left">mg/dL</td>
+                                            <td><![CDATA[&lt;]]> 100 mg/dL</td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="docs['hdl_result']">
+                                        <tr>
+                                            <td>HDL</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="docs['hdl_result']"/>
+                                            </td>
+                                            <td style="text-align:left">mg/dL</td>
+                                            <td><![CDATA[&gt;]]> 40 mg/dL</td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="docs['triglyceride_result']">
+                                        <tr>
+                                            <td>Triglycerides</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="docs['triglyceride_result']"/>
+                                            </td>
+                                            <td style="text-align:left">mg/dL</td>
+                                            <td><![CDATA[&lt;]]> 150 mg/dL</td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="docs['vldl_result']">
+                                        <tr>
+                                            <td>VLDL</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="docs['vldl_result']"/>
+                                            </td>
+                                            <td style="text-align:left">mg/dL</td>
+                                            <td>2-30 mg/dL</td>
+                                        </tr>
+                                    </t>
+
+                                    <tr>
+                                        <td><![CDATA[&nbsp;]]></td>
+                                    </tr>
+                                </t>
+
+                                <t t-if="docs['tsh_result'] or docs['t3_result'] or docs['t4_result']">
+                                    <tr>
+                                        <td>
+                                            <strong>Thyroid Function Tests</strong>
+                                        </td>
+                                    </tr>
+                                    <t t-if="docs['tsh_result']">
+                                        <tr>
+                                            <td>TSH</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="docs['tsh_result']"/>
+                                            </td>
+                                            <td style="text-align:left">mIU/L</td>
+                                            <td>0.35 - 5.1 mIU/L</td>
+                                        </tr>
+
+                                    </t>
+                                    <t t-if="docs['t3_result']">
+                                        <tr>
+                                            <td>Total T3</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="docs['t3_result']"/>
+                                            </td>
+                                            <td style="text-align:left">ng/ml</td>
+                                            <td>0.58 - 1.62 ng/ml</td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="docs['t4_result']">
+                                        <tr>
+                                            <td>Total T4</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="docs['t4_result']"/>
+                                            </td>
+                                            <td style="text-align:left">mcg/dL</td>
+                                            <td>5.0 - 14.5 mcg/dL</td>
+                                        </tr>
+
+                                    </t>
+                                    <tr>
+                                        <td><![CDATA[&nbsp;]]></td>
+                                    </tr>
+                                </t>
+                                <t t-if="docs['rf_report']">
+                                    <tr>
+                                    <td>Rheumatoid Factor</td>
+                                    <td style="text-align:right">
+                                    <span t-esc="docs['rf_report']"/>
+                                        </td>
+                                        <td style="text-align:left">IU/ml</td>
+                                        <td>&lt;18 IU/ml</td>
+
+                                    </tr>
+                                </t>
+                                <t t-if="docs['vitb12_result']">
+                                    <tr>
+                                        <td>Vitamin B12</td>
+                                        <td style="text-align:right">
+                                            <span t-esc="docs['vitb12_result']"/>
+                                        </td>
+                                        <td style="text-align:left">pg/ml</td>
+                                        <td>200 - 950 pg/ml</td>
+                                    </tr>
+                                    <tr>
+                                        <td><![CDATA[&nbsp;]]></td>
+                                    </tr>
+                                </t>
+                                <t t-if="docs['vitd_result']">
+                                    <tr>
+                                        <td>Vitamin D</td>
+                                        <td style="text-align:right">
+                                            <span t-esc="docs['vitd_result']"/>
+                                        </td>
+                                        <td style="text-align:left">ng/ml</td>
+                                        <td>30-100 ng/ml</td>
+                                    </tr>
+                                    <tr>
+                                        <td><![CDATA[&nbsp;]]></td>
+                                    </tr>
+                                </t>
+
+                                <t t-if="docs['hiv'] or docs['hbsag'] or docs['hcv'] or docs['tpha']">
+                                    <tr>
+                                        <td>
+                                            <strong>Serology</strong>
+                                        </td>
+                                    </tr>
+                                    <t t-set="result"
+                                       t-value="dict([('pos','Positive'),('neg','Negative'),('false','False')])"/>
+                                    <t t-if="docs['hiv']">
+                                        <tr>
+                                            <td>HIV - 1 &amp; 2 Rapid Test</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="result[docs['hiv']]"/>
+                                            </td>
+                                            <td style="text-align:left"></td>
+                                            <td>Negative</td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="docs['hbsag']">
+                                        <tr>
+                                            <td>Hepatitis B Surface Antigen (HBsAg)</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="result[docs['hbsag']]"/>
+                                            </td>
+                                            <td style="text-align:left"></td>
+                                            <td>Negative</td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="docs['hcv']">
+                                        <tr>
+                                            <td>Anti-HCV</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="result[docs['hcv']]"/>
+                                            </td>
+                                            <td style="text-align:left"></td>
+                                            <td>Negative</td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="docs['tpha']">
+                                        <tr>
+                                            <td>TPHA</td>
+                                            <td style="text-align:right">
+                                                <span t-esc="result[docs['tpha']]"/>
+                                            </td>
+                                            <td style="text-align:left"></td>
+                                            <td>Negative</td>
+                                        </tr>
+                                    </t>
+
+                                    <tr>
+                                        <td><![CDATA[&nbsp;]]></td>
+                                        <td><![CDATA[&nbsp;]]></td>
+                                    </tr>
+
+                                </t>
+                                <t t-if="docs['ure_urobilinogen'] or docs['ure_bilirubin'] or docs['ure_ketone'] or docs['ure_blood'] or docs['ure_protein'] or docs['ure_nitrite'] or docs['ure_leucocytes'] or docs['ure_glucose'] or docs['ure_specificgravity'] or docs['ure_ph']">
+                                    <tr>
+                                        <td>
+                                            <strong>Urine Routine Examination</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Urobilinogen</td>
+                                        <t t-set="urobresult"
+                                           t-value="dict([('1','+'),('2','++'),('3','+++'),('0','Negative')])"/>
+                                        <td style="text-align:center">
+                                            <span t-esc="urobresult[docs['ure_urobilinogen']]"/>
+                                        </td>
+                                        <td style="text-align:left"></td>
+                                        <td>Negative</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bilirubin</td>
+                                        <t t-set="urobilresult"
+                                           t-value="dict([('0','Negative'),('1','+'),('2','++'),('3','+++')])"/>
+                                        <td style="text-align:center">
+                                            <span t-esc="urobilresult[docs['ure_bilirubin']]"/>
+                                        </td>
+                                        <td style="text-align:left"></td>
+                                        <td>Negative</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ketones</td>
+                                        <t t-set="uroketone"
+                                           t-value="dict([('0','Negative'),('1','+/-'),('2','+'),('3','++'),('4','+++'),('5','++++')])"/>
+                                        <td style="text-align:center">
+                                            <span t-esc="uroketone[docs['ure_ketone']]"/>
+                                        </td>
+                                        <td style="text-align:left"></td>
+                                        <td>Negative</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Blood</td>
+                                        <t t-set="uroblresult"
+                                           t-value="dict([('1','+'),('2','++'),('3','+++'),('0','Negative')])"/>
+
+                                        <td style="text-align:center">
+
+                                            <span t-esc="uroblresult[docs['ure_blood']]"/>
+                                        </td>
+                                        <td style="text-align:left"></td>
+                                        <td>Negative</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Protein</td>
+                                        <t t-set="uroprresult"
+                                           t-value="dict([('1','+'),('2','++'),('3','+++'),('0','Negative')])"/>
+
+                                        <td style="text-align:center">
+
+                                            <span t-esc="uroprresult[docs['ure_protein']]"/>
+                                        </td>
+                                        <td style="text-align:left"></td>
+                                        <td>Negative</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nitrite</td>
+                                        <t t-set="uronitresult"
+                                           t-value="dict([('1','+'),('2','++'),('3','+++'),('0','Negative')])"/>
+
+                                        <td style="text-align:center">
+
+                                            <span t-esc="uronitresult[docs['ure_nitrite']]"/>
+                                        </td>
+                                        <td style="text-align:left"></td>
+                                        <td>Negative</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Leucocytes</td>
+                                        <t t-set="uroleresult"
+                                           t-value="dict([('1','+'),('2','++'),('3','+++'),('0','Negative'),('4','+/-')])"/>
+
+                                        <td style="text-align:center">
+
+                                            <span t-esc="uroleresult[docs['ure_leucocytes']]"/>
+                                        </td>
+                                        <td style="text-align:left"></td>
+                                        <td>Negative</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Glucose</td>
+                                        <t t-set="urogluresult"
+                                           t-value="dict([('1','+'),('2','++'),('3','+++'),('0','Negative')])"/>
+
+                                        <td style="text-align:center">
+
+                                            <span t-esc="urogluresult[docs['ure_glucose']]"/>
+                                        </td>
+                                        <td style="text-align:left"></td>
+                                        <td>Negative</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Specific Gravity</td>
+                                        <t t-set="urospresult"
+                                           t-value="dict([('0','1.000'),('1','1.005'),('2','1.010'),('3','1.015'),('4','1.020'),('5','1.025'),('6','1.030')])"/>
+                                        <td style="text-align:center">
+                                            <span t-esc="urospresult[docs['ure_specificgravity']]"/>
+                                        </td>
+                                        <td style="text-align:left"></td>
+                                        <td>1.005 - 1.030</td>
+                                    </tr>
+                                    <tr>
+                                        <td>pH</td>
+                                        <t t-set="urophresult"
+                                           t-value="dict([('0','5.0'),('1','6.0'),('2','6.5'),('3','7.0'), ('4','7.5'),('5','8.0'),('6','8.5')])"/>
+                                        <td style="text-align:center">
+                                            <span t-esc="urophresult[docs['ure_ph']]"/>
+                                        </td>
+                                        <td style="text-align:left"></td>
+                                        <td>4.6 - 8.0</td>
+                                    </tr>
+                                    <t t-if="docs['um_rbc'] or docs['um_wbc'] or docs['um_epithelial'] or docs['um_crystals'] or docs['um_bacteria'] or docs['um_misc']">
+                                        <tr>
+                                            <td>
+                                                <strong>Urine Microscopy</strong>
+                                            </td>
+                                        </tr>
+                                        <t t-if="docs['um_appearance']">
+                                            <tr>
+                                                <td>Apprearance</td>
+                                                <td style="text-align:center">
+                                                    <span t-esc="docs['um_appearance']"/>
+                                                </td>
+                                                <td style="text-align:left"></td>
+                                                <td></td>
+                                            </tr>
+                                        </t>
+
+                                        <t t-if="docs['um_wbc']">
+                                            <tr>
+                                                <td>WBC/ Pus Cells</td>
+                                                <td style="text-align:center">
+                                                    <span t-esc="docs['um_wbc']"/>
+                                                </td>
+                                                <td style="text-align:left"></td>
+                                                <td>0 - 5/ HPF</td>
+                                            </tr>
+                                        </t>
+                                        <t t-if="docs['um_rbc']">
+                                            <tr>
+                                                <td>RBC</td>
+                                                <td style="text-align:center">
+                                                    <span t-esc="docs['um_rbc']"/>
+                                                </td>
+                                                <td style="text-align:left"></td>
+                                                <td>0 - 4/ HPF</td>
+                                            </tr>
+                                        </t>
+                                        <t t-if="docs['um_epithelial']">
+                                            <tr>
+                                                <td>Epithelial Cells</td>
+                                                <td style="text-align:center">
+                                                    <span t-esc="docs['um_epithelial']"/>
+                                                </td>
+                                                <td style="text-align:left"></td>
+                                                <td>0 - 2/ HPF</td>
+                                            </tr>
+                                        </t>
+                                        <t t-if="docs['um_crystals']">
+                                            <tr>
+                                                <td>Crystals</td>
+                                                <td style="text-align:center">
+                                                    <span t-esc="docs['um_crystals']"/>
+                                                </td>
+                                                <td style="text-align:left"></td>
+                                                <td></td>
+
+                                            </tr>
+                                        </t>
+                                                                                <t t-if="docs['um_casts']" >
+                                        <tr>
+                                            <td>Casts</td>
+                                            <td style="text-align:center">
+                                                <span t-esc="docs['um_casts']"/>
+                                            </td>
+                                            <td style="text-align:left"></td>
+                                            <td></td>
+                                        </tr>
+                                        </t>
+
+                                        <t t-if="docs['um_bacteria']">
+                                            <tr>
+                                                <td>Bacteria</td>
+                                                <td style="text-align:center">
+                                                    <span t-esc="docs['um_bacteria']"/>
+                                                </td>
+                                                <td style="text-align:left"></td>
+                                                <td></td>
+                                            </tr>
+                                        </t>
+                                        <t t-if="docs['um_misc']">
+                                            <tr>
+                                                <td>Others</td>
+                                                <td style="text-align:center">
+                                                    <span t-esc="docs['um_misc']"/>
+                                                </td>
+                                                <td style="text-align:left"></td>
+                                                <td></td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <tr>
+                                        <td><![CDATA[&nbsp;]]></td>
+                                    </tr>
+                                </t>
+                                <t t-if="docs['upt_report']">
+                                    <tr>
+                                        <td><strong>Urine <![CDATA[&beta;]]>-HCG</strong></td>
+                                                <td style="text-align:center">
+                                                    <span t-esc="docs['upt_report']"/>
+                                                </td>
+                                    </tr>
+                                <tr><td><![CDATA[&nbsp;]]></td></tr>
+                                </t>
+                                <t t-if="docs['bleedingTime_results']">
+                                  <tr>
+                                   <td><strong>Bleeding Time</strong></td>
+                                    <td style="text-align:right">
+                                        <span t-esc="docs['bleedingTime_results']"/>
+                                    </td>
+                                  <td> </td>
+                                  <td>2-7 minutes </td>
+                                  </tr>
+                                 </t>
+                                  <t t-if="docs['clottingTime_results']">
+                                  <tr>
+                                    <td><strong>Clotting Time</strong></td>
+                                      <td style="text-align:right">
+                                        <span t-esc="docs['clottingTime_results']"/>
+                                    </td>
+                                    <td></td>
+                                    <td>8-15 minutes
+                                    </td>
+                                  </tr>
+                                 </t>
+                            </tbody>
+                        </table>
+
+                        <div style="text-align:right">
+                            <br/>
+                            <br/>
+                            <br/>
+                            Lab Technician
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+        <template id="misc_report">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-size:16px">
+                        <h3 class="text-center">Laboratory Reports</h3>
+                        <hr style="width:100%; height:1px; color: black; background-color: black"></hr>
+                        <table style="width:100%; font-size: 18px; ">
+                            <tr>
+                                <td><![CDATA[&nbsp;]]></td>
+                            </tr>
+                            <tr>
+                                <td>Name:</td>
+                                <td>
+                                    <span t-esc="docs['name']"/>
+                                </td>
+                                <td>Date:</td>
+                                <td>
+                                    <span t-esc="docs['date']" t-options="{'widget': 'date'}"/>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>Gender:</td>
+                                <td>
+                                    <t t-set="sex"
+                                       t-value="dict([('male','Male'),('female','Female'),('false','False')])"/>
+                                    <span t-esc="sex[docs['gender']]"/>
+                                </td>
+                                <td>Age:</td>
+                                <td>
+                                    <span t-esc="docs['agecal']"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Registration No.:</td>
+                                <td>
+                                    <span t-esc="docs['registration']"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><![CDATA[&nbsp;]]></td>
+                                <td><![CDATA[&nbsp;]]></td>
+                            </tr>
+                        </table>
+                        <hr style="width:100%; height:1px; color: black; background-color: black"></hr>
+                        <table style="width:100%">
+                            <thead style="width:100%;">
+                                <tr style="border-bottom:1px solid black">
+                                    <td style="width: 45%">Investigation</td>
+                                    <td style="width: 20%;text-align:right">Result</td>
+                                    <td style="width: 10%"></td>
+                                    <td style="width: 25%">Reference Range</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><![CDATA[&nbsp;]]></td>
+                                    <td><![CDATA[&nbsp;]]></td>
+                                </tr>
+
+                                <t t-foreach="docs['miscresults']" t-as="inv">
+                                    <tr>
+                                        <td>
+                                            <span t-esc="inv.name"/>
+                                        </td>
+                                        <td style='text-align:right'>
+                                            <span t-esc="inv.result"/>
+                                        </td>
+                                        <td style='text-align:left'>
+                                            <span t-esc="inv.units"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="inv.range"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </template>
+
     </data>
+
 </odoo>

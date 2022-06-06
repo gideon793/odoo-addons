@@ -1,5 +1,38 @@
 <odoo>
   <data>
+
+    <record model="ir.ui.view" id="sankeremployee_payincrement_list">
+      <field name="name">sankeremployee payincrement list</field>
+      <field name="model">sankeremployee.payincrement</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="incrementdate"/>
+          <field name="incrementamount"/>
+        </tree>
+      </field>
+    </record>
+
+ <record model="ir.ui.view" id="sankeremployee_payincrement_form">
+      <field name="name">sankeremployee payincrement form</field>
+      <field name="model">sankeremployee.payincrement</field>
+      <field name="arch" type="xml">
+        <form>
+         <group>
+          <field name="employee" readonly="True"/>
+          <field name="employmentno" readonly="True"/>
+          <field name="age" readonly="True"/>
+          <field name="designation" readonly="True"/>
+          <field name="incrementdate"/>
+          <field name="incrementamount"/>
+
+         </group>
+           <button name="%(increment_print)d" string ="Print Increment Memo" type="action" />
+
+        </form>
+      </field>
+    </record>
+
+
     <record model="ir.ui.view" id="sankeremployee.list">
       <field name="name">sankeremployee list</field>
       <field name="model">sankeremployee.sankeremployee</field>
@@ -15,6 +48,12 @@
           <field name="regular"/>
           <field name="contract"/>
           <field name="ddrs"/>
+           <field name="basicpay" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_group"/>
+           <field name="allowance" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_group"/>
+           <field name="special" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_user"/>
+           <field name="lastincrementdue" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_group"/>
+           <field name="nextincrementdue" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_group"/>
+
         </tree>
       </field>
     </record>
@@ -33,6 +72,8 @@
            <field name="gender"/>
            <field name="marital_status"/>
            <field name="address"/>
+          <field name="mobile"/>
+
           </group>
           <group string="Employment Details" colspan="1" col="3">
            <field name="designation"/>
@@ -50,9 +91,6 @@
            <field name="aadhar"/>
            <field name="driving"/>
            <field name="bloodgroup"/>
-           <field name="basicpay" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_group"/>
-           <field name="allowance" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_group"/>
-           <field name="special" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_user"/>
           </group>
           <group string="EPF and ESIC Details" colspan="1" col="3">
             <field name="isepf"/>
@@ -63,9 +101,29 @@
            <field name="esicname"/>
            <field name="esicno"/>
           </group>
+<group string = "Salary details" colspan="1" col="3">
+           <field name="scale" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_user"/>
+           <field name="joiningpay" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_group" string="Pay on Joining"/>
+           <field name="basicpay" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_group" string="Current Basic Pay"/>
+           <field name="allowance" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_group"/>
+           <field name="special" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_user"/>
+           <field name="lastincrement" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_group"/>
+           <field name="nextincrement" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_group"/>
+           <field name="lastincrementdue" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_group"/>
+           <field name="nextincrementdue" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_group"/>
+           <field name="increments" groups="sankeremployee.sankeremployee_group,-sankeremployee.employee_group"  string="Increments History" context="{'default_employee': id,'default_age':age}"/>
 
-          <group string="Additional Information" colspan="2">
+
+</group>
+
+          <group string="Additional Information" colspan="1" col="2">
            <field name="remarks" widget="html"/>
+           <field name="photo" widget="image" class="oe_avatar"/>
+           <field name="signature" widget="image" class="oe_avatar"/>
+            <field name="identification" string="Identification Marks" />
+
+       <button name="%(id_print)d" string="Print ID Card" type="action"/>
+
           </group>
        </group>
         </form>

@@ -11,7 +11,8 @@ class pharmacyregister(models.TransientModel):
     dateselect = fields.Datetime()
     dateend = fields.Datetime()
     datetest = fields.Date('Select date', default=fields.Date.today)
-    
+    point = fields.Selection([('Pharmacy', 'SAN-KER Pharmacy'),('Pharmacy 2','Pharmacy 2nd Counter'), ('Jowai', 'Jowai'), ('Mawkyrwat', 'Mawkyrwat Project'), ('Nongstoin','Nongstoin Project'), ('Mairang','Mairang Project'),('Fatima','Fatima Project'),('Laboratory','Laboratory')], string='Location', default='Pharmacy')
+
     @api.onchange('datetest')
     def datecalc(self):
         for record in self:
@@ -33,6 +34,7 @@ class pharmacyregister(models.TransientModel):
             'form': {
                 'dateselect': self.dateselect,
                 'dateend': self.dateend,
+                'point': self.point
             },
         }
         return self.env.ref('opregistration.pharmacyregister_report').report_action(self, data=data)
@@ -44,16 +46,18 @@ class pharmacyregister(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         dateselect=data['form']['dateselect']
         dateend=data['form']['dateend']
+        point = data['form']['point']
         docs = []
-        appts  = self.env['pos.order'].search([['date_order','>=',dateselect],['date_order','<=',dateend]],order='create_date')
+        appts  = self.env['sale.order'].search([['date_order','>=',dateselect],['date_order','<=',dateend],['user_id','=',8]],order='create_date')
         for appt in appts:
+            invoices = self.env['account.invoice'].search([['origin','=',appt.name]])
             docs.append({
                 'name': appt.partner_id.name,
                 'registration': appt.partner_id.registration,
                 'age': appt.partner_id.agecal,
-                'lines':appt.lines,
+                'lines':appt.order_line,
                 'total':appt.amount_total,
-                'statement_ids':appt.statement_ids,
+                'paid': (appt.amount_total - invoices.residual),
             })
 
         return {

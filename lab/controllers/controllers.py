@@ -1,10 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import http
 
-# class Lab(http.Controller):
-#     @http.route('/lab/lab/', auth='public')
-#     def index(self, **kw):
-#         return "Hello, world"
 
 #     @http.route('/lab/lab/objects/', auth='public')
 #     def list(self, **kw):

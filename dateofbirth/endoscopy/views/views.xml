@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+    <!--
+    <record model="ir.ui.view" id="endoscopy.list">
+      <field name="name">endoscopy list</field>
+      <field name="model">endoscopy.endoscopy</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+    -->
+
+    <!-- actions opening views on models -->
+    <!--
+    <record model="ir.actions.act_window" id="endoscopy.action_window">
+      <field name="name">endoscopy window</field>
+      <field name="res_model">endoscopy.endoscopy</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    -->
+
+    <!-- server action to the one above -->
+    <!--
+    <record model="ir.actions.server" id="endoscopy.action_server">
+      <field name="name">endoscopy server</field>
+      <field name="model_id" ref="model_endoscopy_endoscopy"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": self._name,
+        }
+      </field>
+    </record>
+    -->
+
+    <!-- Top menu item -->
+    <!--
+    <menuitem name="endoscopy" id="endoscopy.menu_root"/>
+    -->
+    <!-- menu categories -->
+    <!--
+    <menuitem name="Menu 1" id="endoscopy.menu_1" parent="endoscopy.menu_root"/>
+    <menuitem name="Menu 2" id="endoscopy.menu_2" parent="endoscopy.menu_root"/>
+    -->
+    <!-- actions -->
+    <!--
+    <menuitem name="List" id="endoscopy.menu_1_list" parent="endoscopy.menu_1"
+              action="endoscopy.action_window"/>
+    <menuitem name="Server to list" id="endoscopy" parent="endoscopy.menu_2"
+              action="endoscopy.action_server"/>
+    -->
+  </data>
+</odoo>

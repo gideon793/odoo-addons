@@ -60,10 +60,10 @@
                                   <span t-esc="line['product_id'].display_name"/>
                                 </td>
                                   <td class="text-center">
-                                    <span t-esc="line['qty']"/>
+                                    <span t-esc="line['product_uom_qty']"/>
                                 </td>
                                  <td class="text-center" style="background:#d9d9d9">
-                                    <span t-esc="'%.2f'% line['price_subtotal_incl']"/>
+                                    <span t-esc="'%.2f'% line['price_total']"/>
                                 </td>
                                     </tr>
                                    </t>
@@ -73,8 +73,7 @@
                                 <td class="text-center" style="">
                                     <span t-esc="'%.2f'% doc['total']"/>
                                        <t t-set="total" t-value="total+doc['total']"/>
-                                </td>                                   
-
+                                </td>
                             </tr>
                         </t>
                     </tbody>
@@ -106,9 +105,11 @@
 <field name="arch" type="xml">
                 <form string="Select date">
                     <group>
-                        <field name="datetest" string="Date for report"/>          
+                        <field name="datetest" string="Date for report"/>
+                        <field name="point" />
                         <field name="dateselect" string="Date from" invisible="1"/>
-                        <field name="dateend" string="Date to" invisible="1"/>                                  
+                        <field name="dateend" string="Date to" invisible="1"/>
+
                     </group>
 <footer>
                     <button name="get_report" string="Get Report" type="object" class="oe_highlight"/>

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_opweb_opweb,opweb.opweb,model_opweb_opweb,base.group_user,1,1,1,1
+access_opweb_prescriptionlines,opweb.prescriptionlines,model_opweb_prescriptionlines,base.group_user,1,1,1,1
+access_opweb_medicinelines,opweb.medicinelines,model_opweb_medicinelines,base.group_user,1,1,1,1
+access_opweb_servicelines,opweb.servicelines,model_opweb_serviceslines,base.group_user,1,1,1,1

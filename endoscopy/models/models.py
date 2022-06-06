@@ -18,7 +18,7 @@ class endoscopy(models.Model):
     images=fields.One2many('endoscopy.images','endoscopy', string ='Images' )
     findings = fields.Text('Endoscopy Findings')
     impression = fields.Char('Impression')
-    study = fields.Selection([('nasal','Nasal Endoscopy'),('laryngoscopy','Laryngoscopy')])
+    study = fields.Selection([('nasal','Nasal Endoscopy'),('laryngoscopy','Laryngoscopy'),('otoendoscopy','Otoendoscopy')])
 
     @api.depends('dob', 'date')
     def _age(self):
