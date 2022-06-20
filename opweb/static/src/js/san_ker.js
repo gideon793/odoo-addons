@@ -19,14 +19,26 @@ odoo.define('opweb.opnewrow', function (require) {
         });
         function pharmacyServicesUpdate(serviceUpdate){
             document.getElementById('registrationCharge').value = serviceUpdate['registration_charge'];
+            document.getElementById('registrationCharge').dispatchEvent(new Event('change', { bubbles: true }));
             document.getElementById('roundOff').value = serviceUpdate['roundOff'];
+            document.getElementById('roundOff').dispatchEvent(new Event('change', { bubbles: true }));
             document.getElementById('consultationCharge').value = serviceUpdate['consultationCharge'];
-            for (var i=0; i<serviceUpdate['serviceLines'].length; i++){
-                console.log(serviceUpdate['serviceLines'][i])
-            }            
+            document.getElementById('consultationCharge').dispatchEvent(new Event('change', { bubbles: true }));
+            var serviceLineEntries = document.getElementById('servicesContainer').getElementsByClassName('serviceAdditional');
+            for (var i=serviceLineEntries.length -1; i>=0; --i){
+                serviceLineEntries[i].remove();
+            }
+            for (var i= 0; i<serviceUpdate['serviceLines'].length; i++){
+                var div = document.createElement('div');
+                div.innerHTML = document.getElementById('servicesEntries').innerHTML;
+                div.classList.add('serviceAdditional');
+                div.getElementsByClassName('serviceName')[0].value = serviceUpdate['serviceLines'][i]['serviceName'];
+                div.getElementsByClassName('serviceCharge')[0].value = serviceUpdate['serviceLines'][i]['serviceCharge'];                
+                div.getElementsByClassName('serviceCharge')[0].dispatchEvent(new Event('change', { bubbles: true }));
+                document.getElementById('servicesContainer').appendChild(div);    
+            };
+            
         }
-
-
         function pharmacyDemographics(opPrescription) {
             document.getElementById('patName').innerHTML = opPrescription['name'];
             document.getElementById('patName').doctor = opPrescription['doctor'];
@@ -34,7 +46,15 @@ odoo.define('opweb.opnewrow', function (require) {
             document.getElementById('patReg').innerHTML = opPrescription['registration'];
             document.getElementById('patName').partner_id = opPrescription['partner_id'];
             document.getElementById('patName').opregID = opPrescription['opreg_id'];
-            console.log(document.getElementById('patName'))
+            var doctorDict = {  'ssyiem': 'Dr. S. Syiem', 
+                            'eddie': 'Dr. E. Mukhim',
+                            'didak': 'Dr. D. Khonglah',
+                            'gideon': 'Dr. G. Rynjah', 
+                            'rlaloo':  'Dr. R. Laloo',
+                            'lashngain': 'Dr.  L. Sohliya', 
+                            'dkynjin': 'Dr. D. Kynjin',}
+            document.getElementById('apptDoctor').innerHTML = doctorDict[opPrescription['doctor']];
+
         }
 
         function updatePrescription(passPres) {
@@ -135,9 +155,10 @@ odoo.define('opweb.opnewrow', function (require) {
 
         $(document).on('click', '.patient_click', function () {
             var pat_id = this.id.substring(4, this.id.length - 1);
+            console.log($(this));
             var pat_enquiry = {};
             var oldPrescriptionList = [];
-            pat_enquiry['params'] = { 'partner_id': pat_list[pat_id][1], 'date': date };
+            pat_enquiry['params'] = { 'partner_id': pat_list[pat_id][1], 'date': date, 'opregId': Number(pat_list[pat_id][7])};
             var pat_enquiry_json = JSON.stringify(pat_enquiry);
             function serverCall() {
                 return $.ajax({
@@ -147,6 +168,7 @@ odoo.define('opweb.opnewrow', function (require) {
                     url: "http://192.168.2.100:8069/opweb/patdetail",
                     data: pat_enquiry_json,
                     success: function (data) {
+                        console.log(data)
                     }
                 });
             }
@@ -159,6 +181,7 @@ odoo.define('opweb.opnewrow', function (require) {
             var str = pat_list[pat_id][0];
             document.getElementById('patient_name').innerHTML = str;
             document.getElementById('form_pat_id').innerHTML = pat_list[pat_id][1];
+            document.getElementById('form_pat_id').opregID = Number(pat_list[pat_id][7]);
             var diagnosis_display = [];
             var dd = 0;
             while (dd < pat_list[pat_id][6].length) {
@@ -186,11 +209,11 @@ odoo.define('opweb.opnewrow', function (require) {
                 oldPres1.classList.add('col-1')
                 oldPres1.innerHTML = i + 1;
                 var oldPres2 = document.createElement('div');
-                oldPres2.classList.add('col-6');
+                oldPres2.classList.add('col-5');
                 oldPres2.innerHTML = pres_details[i]['medName'];
-                var oldPres7 = document.createElement('div');
-                oldPres7.classList.add('col-1');
-                oldPres7.innerHTML = pres_details[i]['medicineQuantity'];
+                var oldPres8 = document.createElement('div');
+                oldPres8.classList.add('col-1');
+                oldPres8.innerHTML = pres_details[i]['medicineQuantity'];
                 var oldPres3 = document.createElement('div');
                 oldPres3.classList.add('col-1');
                 var oldPres4 = document.createElement('div');
@@ -199,7 +222,9 @@ odoo.define('opweb.opnewrow', function (require) {
                 oldPres5.classList.add('col-1');
                 var oldPres6 = document.createElement('div');
                 oldPres6.classList.add('col-1')
-                var freqValues = { '1': 'OD', '2': 'BD', '3': 'TID', '4': 'QID', '5': 'PID', '6': 'Others' }
+                var oldPres7 = document.createElement('div');
+                oldPres7.classList.add('col-1')
+                var freqValues = { '1': 'OD', '2': 'BD', '3': 'TID', '4': 'PID', '5': 'PID', '6': 'HSOD', '7': 'SOS', '8': 'stat', '9':'others' }
                 if (pres_details[i]['medicineLines']) {
                     for (var pd = 0; pd < pres_details[i]['medicineLines'].length; pd++) {
                         var oldPres3add = '';
@@ -209,23 +234,28 @@ odoo.define('opweb.opnewrow', function (require) {
                         oldPres3.appendChild(oldPres3add);
                         var oldPres4add = '';
                         oldPres4add = document.createElement('div');
-                        oldPres4add.classList.add('presLineOld')
-                        oldPres4add.innerHTML = freqValues[pres_details[i]['medicineLines'][pd]['frequency']];
+                        oldPres4add.classList.add('presLineOld');
+                        oldPres4add.innerHTML = pres_details[i]['medicineLines'][pd]['units']
                         oldPres4.appendChild(oldPres4add);
                         var oldPres5add = '';
                         oldPres5add = document.createElement('div');
                         oldPres5add.classList.add('presLineOld')
-                        oldPres5add.innerHTML = pres_details[i]['medicineLines'][pd]['duration'];
+                        oldPres5add.innerHTML = freqValues[pres_details[i]['medicineLines'][pd]['frequency']];
                         oldPres5.appendChild(oldPres5add);
                         var oldPres6add = '';
                         oldPres6add = document.createElement('div');
-                        oldPres6add.classList.add('presLineOld')
-                        if (pres_details[i]['medicineLines'][pd]['special']) {
-                            oldPres6add.innerHTML = pres_details[i]['medicineLines'][pd]['special'];
-                        } else {
-                            oldPres6add.innerHTML = "-";
-                        };
+                        oldPres6add.classList.add('presLineOld');
+                        oldPres6add.innerHTML = pres_details[i]['medicineLines'][pd]['duration'];
                         oldPres6.appendChild(oldPres6add);
+                        var oldPres7add = '';
+                        oldPres7add.classList.add('presLineOld');
+                        if (pres_details[i]['medicineLines'][pd]['special']) {
+                            oldPres7add.innerHTML = pres_details[i]['medicineLines'][pd]['special'];
+                        } else {
+                            oldPres7add.innerHTML = "-";
+                        };
+                        oldPres7.appendChild(oldPres7add)
+
                     }
                 }
                 else {
@@ -233,15 +263,15 @@ odoo.define('opweb.opnewrow', function (require) {
                     oldPres4.innerHTML = '-';
                     oldPres5.innerHTML = '-';
                     oldPres6.innerHTML = '-';
+                    oldPres7.innerHTML = '-';
                 };
-                oldPrescriptionLines.append(oldPres1, oldPres2, oldPres3, oldPres4, oldPres5, oldPres6, oldPres7);
+                oldPrescriptionLines.append(oldPres1, oldPres2, oldPres3, oldPres4, oldPres5, oldPres6, oldPres7, oldPres8);
                 oldPresDetails.appendChild(oldPrescriptionLines);
             };
             $('#old_prescript_modal').modal('show');
         });
 
         $(document).on('click', '.pres_submit', function () {
-            console.log(document.getElementById('oldPrescriptionDetail').presDetail);
             updatePrescription(document.getElementById('oldPrescriptionDetail').presDetail);
             $('#old_prescript_modal').modal('hide');
         });
@@ -312,6 +342,7 @@ odoo.define('opweb.opnewrow', function (require) {
                     presLineEntries.freq = presMedDetails[mpl].getElementsByClassName('med_freq')[0].value;
                     presLineEntries.duration = presMedDetails[mpl].getElementsByClassName('med_duration')[0].value;
                     presLineEntries.special = presMedDetails[mpl].getElementsByClassName('med_special')[0].value;
+                    presLineEntries.units = presMedDetails[mpl].getElementsByClassName('medUnits')[0].value;
                     presLines.push(presLineEntries);
                 }
                 medDetails.lines = presLines;
@@ -319,6 +350,7 @@ odoo.define('opweb.opnewrow', function (require) {
             }
             san_form['params'] = { 'partner_id': form_pat, 'doctor': doctor, 'date': date, 'prescription': presDetails, 'opreg_id': formOPregID }
             var san_form_json = JSON.stringify(san_form);
+            console.log(san_form_json);
             $.ajax({
                 type: "POST",
                 datatype: "json",
@@ -388,10 +420,11 @@ odoo.define('opweb.opnewrow', function (require) {
         $(document).on('click', '.apptListItem', function () {
             var partnerId = {};
             var partnerIdThis = $(this)[0].dataset['partner_id']
-            partnerId['params'] = { 'partner_id': $(this)[0].dataset['partner_id'] };
+            partnerId['params'] = { 'partner_id': $(this)[0].dataset['partner_id'], 'opreg_id':  $(this)[0].dataset['opreg_id']};
             var pharmacyJSON = JSON.stringify(partnerId);
             var prescriptionDoctor = $(this)[0].dataset['doctor'];
             var prescriptionOPregID = $(this)[0].dataset['opreg_id'];
+            console.log(pharmacyJSON);
             function pharmacyserverCall() {
                 return $.ajax({
                     type: "POST",
@@ -411,7 +444,8 @@ odoo.define('opweb.opnewrow', function (require) {
                 updatePrescription(todayPrescription);
                 pharmacyDemographics(prescriptionDemographics);
                 pharmacyServicesUpdate(serviceDetails);
-                var patientdetailJSON = JSON.stringify({'params': {'partner_id': partnerIdThis, 'date': date}})
+                var patientdetailJSON = JSON.stringify({'params': {'partner_id': partnerIdThis, 'date': date, 'opregId': Number(prescriptionOPregID)}})
+                console.log(patientdetailJSON);
                 function patientdetail(){
                     return $.ajax({
                         type: "POST",
@@ -427,14 +461,16 @@ odoo.define('opweb.opnewrow', function (require) {
                 $.when(patientdetail()).done(function (a1){
                     var oldPrescriptionList = a1['result']['old_prescriptions']
                     oldPrescriptionUpdate(oldPrescriptionList, partnerIdThis);
+                    document.getElementById('paymentTotal').value = a1['result']['payment'];
+
                 });                
             });
         });
         $('#pharmacyDetails').unbind().on('change', '.medTotal', function () {
-            var selectedMed = $(this)[0].parentElement.children[3].value;
+            var selectedMed = $(this)[0].parentElement.children[1].value;
             var productClick = $(this)[0];
-            var productPrice = productClick.parentElement.children[4].querySelector('option[value="' + selectedMed + '"]').getAttribute('med_price');
-            var productIdQuery = $(this)[0].parentElement.children[4].querySelector('option[value="' + selectedMed + '"]').id;
+            var productPrice = productClick.parentElement.children[2].querySelector('option[value="' + selectedMed + '"]').getAttribute('med_price');
+            var productIdQuery = $(this)[0].parentElement.children[2].querySelector('option[value="' + selectedMed + '"]').id;
             if (productIdQuery) {
                 var productId = JSON.stringify({ 'params': { 'product_id': productIdQuery } });
                 function medGetStock() {
@@ -497,6 +533,7 @@ odoo.define('opweb.opnewrow', function (require) {
                         presLineEntries.freq = presMedDetails[mpl].getElementsByClassName('med_freq')[0].value;
                         presLineEntries.duration = presMedDetails[mpl].getElementsByClassName('med_duration')[0].value;
                         presLineEntries.special = presMedDetails[mpl].getElementsByClassName('med_special')[0].value;
+                        presLineEntries.units = presMedDetails[mpl].getElementsByClassName('medUnits')[0].value;
                         presLines.push(presLineEntries);
                     }
                     medDetails.lines = presLines;
@@ -516,6 +553,7 @@ odoo.define('opweb.opnewrow', function (require) {
                         presLineEntries.freq = presMedDetails[mpl].getElementsByClassName('med_freq')[0].value;
                         presLineEntries.duration = presMedDetails[mpl].getElementsByClassName('med_duration')[0].value;
                         presLineEntries.special = presMedDetails[mpl].getElementsByClassName('med_special')[0].value;
+                        presLineEntries.units = presMedDetails[mpl].getElementsByClassName('medUnits')[0].value;
                         presLines.push(presLineEntries);
                     }
                     medDetails.lines = presLines;
@@ -556,8 +594,12 @@ odoo.define('opweb.opnewrow', function (require) {
         $('#serviceNewRow').click(function (e) {
             var div = document.createElement('div');
             div.innerHTML = document.getElementById('servicesEntries').innerHTML;
+            div.classList.add('serviceAdditional');
             document.getElementById('servicesContainer').appendChild(div);
         });
+        $(document).on('click','.delService',function(e){
+            $(this).closest('.serviceAdditional').remove();
+        })
         $('#pharmacyMain').on('change', '.consultationCharge, .registrationCharge, .medTotal, .serviceCharge, .roundOff', function(){
             var presTotal = 0;
             var presLine = document.getElementById('presMain').getElementsByClassName('mainMed');
@@ -578,13 +620,13 @@ odoo.define('opweb.opnewrow', function (require) {
         $('#pharmacyUpdateSubmit').click(function(e){
             var params = {};
             var formPat = document.getElementById('patName').partner_id;
+            var formopregID = document.getElementById('patName').opregID;
             var formDoctor = document.getElementById('patName').doctor;
             var paymentDetail = document.getElementById('paymentTotal').value;
             var presDetails = [];
             var mainPrescription = document.getElementById('presMain').getElementsByClassName('presLine');
             for (var mD = 0; mD < mainPrescription.length; mD++) {
-                var medDetails = {};
-                
+                var medDetails = {};                
                 var medName = mainPrescription[mD].getElementsByClassName('presMedName')[0].value;
                 var productId = mainPrescription[mD].querySelector('option[value="' + medName + '"]').id;
                 var medPrice = mainPrescription[mD].querySelector('option[value="' + medName + '"]').med_price;                
@@ -601,6 +643,7 @@ odoo.define('opweb.opnewrow', function (require) {
                         presLineEntries.freq = presMedDetails[mpl].getElementsByClassName('med_freq')[0].value;
                         presLineEntries.duration = presMedDetails[mpl].getElementsByClassName('med_duration')[0].value;
                         presLineEntries.special = presMedDetails[mpl].getElementsByClassName('med_special')[0].value;
+                        presLineEntries.units = presMedDetails[mpl].getElementsByClassName('medUnits')[0].value;
                         presLines.push(presLineEntries);
                     }
                     medDetails.lines = presLines;
@@ -618,6 +661,7 @@ odoo.define('opweb.opnewrow', function (require) {
                         var presLineEntries = {};
                         presLineEntries.num = presMedDetails[mpl].getElementsByClassName('med_no')[0].value;
                         presLineEntries.freq = presMedDetails[mpl].getElementsByClassName('med_freq')[0].value;
+                        presLineEntries.units = presMedDetails[mpl].getElementsByClassName('medUnits')[0].value;
                         presLineEntries.duration = presMedDetails[mpl].getElementsByClassName('med_duration')[0].value;
                         presLineEntries.special = presMedDetails[mpl].getElementsByClassName('med_special')[0].value;
                         presLines.push(presLineEntries);
@@ -640,10 +684,10 @@ odoo.define('opweb.opnewrow', function (require) {
             params.services = servicesLines;
             params.partner_id = formPat;
             params.lines = presDetails;
+            params.opreg_no = formopregID;
             params.payment = paymentDetail;
             params.doctor = formDoctor;
             var saleOrderJSON = JSON.stringify({ 'params': { params } });
-            console.log(saleOrderJSON);
             $.ajax({
                 type: "POST",
                 datatype: "json",
@@ -654,7 +698,137 @@ odoo.define('opweb.opnewrow', function (require) {
                     alert(data['result']);
                 }
             })
-        })
-    });
+        });
+        $('#printPrescription').click(function(e){
+            var opwebID;
+            function printPrescription(){
+            return $.ajax({
+                    type: "POST",
+                    datatype: "json",
+                    contentType: 'application/json',
+                    url: "http://192.168.2.100:8069/opweb/printquery",
+                    data: JSON.stringify({'params': {'report_id': document.getElementById('patName').opregID}}),
+                    success: function (data) {
+                    }
+                });
+            };
+            $.when(printPrescription()).done(function (a1){
+                console.log(a1);
+                var reportURL = 'http://192.168.2.100:8069/report/pdf/opweb.opdPrescription_template/' + a1['result'];
+                window.open(reportURL).print();
+            });
+        });
+        $('#printReceipt').click(function(e){
+            var xmlReceipt = document.implementation.createDocument(null, "receipt");
+            var receipt = xmlReceipt.getElementsByTagName('receipt')[0];
+            var header = xmlReceipt.createElement('h2');
+            header.innerHTML = 'SAN-KER';
+            header.setAttribute('align', 'center');
+            receipt.appendChild(header);
+            var br = xmlReceipt.createElement('br');
+            receipt.appendChild(br);
+            var title = xmlReceipt.createElement('h4');
+            title.innerHTML = 'Pharmacy Bill';
+            title.setAttribute('align', 'center');
+            receipt.appendChild(title);
+            var br = xmlReceipt.createElement('br');
+            receipt.appendChild(br);
+            var br = xmlReceipt.createElement('br');
+            receipt.appendChild(br);
+            var xmlPatName = xmlReceipt.createElement('h3');
+            xmlPatName.setAttribute('align', 'left');
+            xmlPatName.innerHTML = 'Name:' + String(document.getElementById('patName').innerHTML);
+            receipt.appendChild(xmlPatName);
+            var xmlRegNo = xmlReceipt.createElement('span');
+            xmlRegNo.setAttribute('align', 'left');
+            xmlRegNo.innerHTML = 'Registration: '+ String(document.getElementById('patReg').innerHTML);
+            receipt.appendChild(xmlRegNo);
+            var xmlDate = xmlReceipt.createElement('span');
+            var receiptDate = new Date(date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+            xmlDate.setAttribute('align', 'left');
+             xmlDate.innerHTML = 'Date: ' + receiptDate;
+            receipt.appendChild(xmlDate);
+            var br = xmlReceipt.createElement('br');
+            receipt.appendChild(br);
+            var hr = xmlReceipt.createElement('span');
+            hr.setAttribute('align', 'center');
+            hr.innerHTML = '------------------------------';
+            receipt.appendChild(hr);
+            var br = xmlReceipt.createElement('br');
+            receipt.appendChild(br);
+            var mainPrescription = document.getElementById('presMain').getElementsByClassName('presLine');
+            for (var i = 0; i < mainPrescription.length; i++){
+                var medName = mainPrescription[i].getElementsByClassName('presMedName')[0].value;
+                var productId = mainPrescription[i].querySelector('option[value="' + medName + '"]').id;
+                var medPrice = Number(mainPrescription[i].querySelector('option[value="' + medName + '"]').getAttribute('med_price')).toFixed(2);
+                console.log(productId, medPrice);                
+                var medTotal = mainPrescription[i].getElementsByClassName('medTotal')[0].value;
+                var lineTotal = Number(mainPrescription[i].getElementsByClassName('lineTotal')[0].innerHTML);
+                if (productId){
+                    var presMedPrint = xmlReceipt.createElement('span');
+                    presMedPrint.setAttribute('align', 'left');
+                    presMedPrint.innerHTML = String(medName);
+                    receipt.appendChild(presMedPrint);
+                    var presLinePrint = xmlReceipt.createElement('line');
+                    presLinePrint.innerHTML = '<left>' + String(medTotal) + 'x'+ String(medPrice) + '</left>';
+                    presLinePrint.innerHTML += '<right>' + String(lineTotal) + '</right>';
+                    receipt.appendChild(presLinePrint);
+                }
+            };
+            var mainServices = document.getElementById('servicesContainer').getElementsByClassName('serviceDetail');
+            for (var i=0; i<mainServices.length; i++){
+                var xmlServiceName = mainServices[i].getElementsByClassName('serviceName')[0].value;
+                var xmlServiceCharge = mainServices[i].getElementsByClassName('serviceCharge')[0].value;
+                var xmlService = xmlReceipt.createElement('line');
+                xmlServiceName.innerHTML = '<left>'+ String(xmlServiceName) +'</left>' + '<right>' + String(xmlServiceCharge) +'</right>';
+                receipt.appendChild(xmlService);
+            };
+            var xmlConsultationCharge = xmlReceipt.createElement('line');
+            xmlConsultationCharge.innerHTML = '<left>Consultation Charge: </left><right>' + String(document.getElementById('consultationCharge').value) + '</right>';
+            receipt.appendChild(xmlConsultationCharge);
+            var xmlRegistrationCharge = xmlReceipt.createElement('line');
+            xmlRegistrationCharge.innerHTML = '<left>Registration Charge: </left><right>' + String(document.getElementById('registrationCharge').value) + '</right>';
+            receipt.appendChild(xmlConsultationCharge);
+            var xmlRoundOff = xmlReceipt.createElement('line');
+            xmlRoundOff.innerHTML = '<left>Round Off: </left><right>' + String(document.getElementById('roundOff').value) + '</right>';
+            receipt.appendChild(xmlRoundOff);
+            var br = xmlReceipt.createElement('br');
+            receipt.appendChild(br);
+            var hr = xmlReceipt.createElement('span');
+            hr.setAttribute('align', 'center');
+            hr.innerHTML = '------------------------------';
+            receipt.appendChild(hr);
+            var br = xmlReceipt.createElement('br');
+            receipt.appendChild(br);
+            var xmlTotal = xmlReceipt.createElement('line');
+            xmlTotal.setAttribute('size', 'double-height');
+            xmlTotal.innerHTML = '<left>Total: </left><right>'+ Number(document.getElementById('amountTotal').innerHTML).toFixed(2) + '</right>';
+            receipt.appendChild(xmlTotal);
+            var hr = xmlReceipt.createElement('span');
+            hr.setAttribute('align', 'center');
+            hr.innerHTML = '------------------------------';
+            receipt.appendChild(hr);
+            var br = xmlReceipt.createElement('br');
+            receipt.appendChild(br);
+            var xmlPayment = xmlReceipt.createElement('line');
+            xmlPayment.innerHTML = '<left>Payment: </left><right>' + Number(document.getElementById('paymentTotal').value).toFixed(2) + '</right>'
+            receipt.appendChild(xmlPayment);
+            var xmlBalance = xmlReceipt.createElement('line');
+            var balanceCalculate = Number(document.getElementById('amountTotal').innerHTML) - Number(document.getElementById('paymentTotal').value)
+            xmlBalance.innerHTML = '<left>Balance: </left><right>'+ balanceCalculate.toFixed(2) +'</right>';
+            receipt.appendChild(xmlBalance);
+            var br = xmlReceipt.createElement('br');
+            receipt.appendChild(br);
+            console.log(xmlReceipt);
+            $.ajax({
+                type: "POST",
+                processData: false,
+                datatype: "json",
+                contentType: 'application/json',
+                url: "http://127.0.0.1:5000/",
+                data: xmlReceipt,
+            });
+        });
+        });
     
 });

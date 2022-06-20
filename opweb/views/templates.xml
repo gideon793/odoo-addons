@@ -40,6 +40,7 @@
                                     <td>#</td>
                                     <td>Medicine</td>
                                     <td>No.</td>
+                                    <td>Units</td>
                                     <td>Frequency</td>
                                     <td>Duration</td>
                                     <td>Special Instruction</td>
@@ -95,16 +96,30 @@
                             <script type="text/html" id ="medDetailEntry">
                                 <div class="input-group medicineLines">
                                     <input id="1_medicineOrder_1" class="med_no form-control rounded text-center col-1 p-0" type="number" step="0.25" value="1"/>
+                                            <select name="medUnits" class="col-2 form-control medUnits">
+                                                    <option value="1">tablet</option>
+                                                    <option value="2">ml</option>
+                                                    <option value="3">drops</option>
+                                                    <option value="4">puffs</option>
+                                                    <option value="5">patch</option>
+                                                    <option value="6">ampuole</option> 
+                                                    <option value="7">spoons</option>                                                    
+                                                    <option value="8">local application</option>                                                    
+                                                </select>
+
                                     <select name="1_medicineFrequency_1" id="1_medicineFrequency_1" class="col-2 med_freq form-control text-center p-0 rounded">
-                                        <option value="1">Once a day</option>
-                                        <option value="2">Twice a day</option>
-                                        <option value="3">Thrice a day</option>
-                                        <option value="4">Four times a day</option>
-                                        <option value="5">Five times a day</option>
-                                        <option value="6">Others</option>
+                                                                    <option value="1">Once a day</option>
+                                                                    <option value="2">Twice a day</option>
+                                                                    <option value="3">Thrice a day</option>
+                                                                    <option value="4">Four times a day</option>
+                                                                    <option value="5">Five times a day</option>
+                                                                    <option value="6">Once Daily at Bedtime</option>
+                                                                    <option value="7">When Required</option>
+                                                                    <option value="8">Immediately</option>
+                                                                    <option value="9">Others</option>
                                     </select>
                                     <input id="1_medicineDuration_1" type="number" step="1" class="col-1 med_duration form-control rounded p-0 text-center"></input>
-                                    <input id="1_medicineSpecial_1" type="textarea" class="med_special col-7 form-control p-0 text-center" placeholder="Special Instructions"></input>
+                                    <input id="1_medicineSpecial_1" type="textarea" class="med_special col-5 form-control p-0 text-center" placeholder="Special Instructions"></input>
                                     <div class="p-0 m-0 col-1 btnCell">
                                         <i class="fa fa-plus fa-sm faPlus" data-id="medLine[]"></i>
                                         <i class="fa fa-minus fa-sm faMinus"></i>
@@ -116,8 +131,6 @@
                                     <div class="presLineDetails">
                                         <div id="mainMed" class="mainMed">
                                             <i class="fa fa-minus delMed"></i>
-                                            <label class="sr-only" for="1_medicineOrder" id="1_medicineLabel">1</label>
-                                            <span id="medIndex" class="presMedNo">1</span>
                                             <input list="medicines" name="1_medicineOrder" class="form-control rounded p-0 presMedName"/>
                                             <datalist id="medicines">
                                                 <t t-foreach="medications" t-as="medication">
@@ -130,16 +143,30 @@
                                         <div class="medicineRowContainer" id="medicineDetails">
                                             <div class="input-group medicineLines">
                                                 <input id="1_medicineOrder_1" class="med_no form-control rounded text-center col-1 p-0" type="number" step="0.25" value="1"/>
+                                                <select name="medUnits" class="col-2 form-control medUnits">
+                                                    <option value="1">tablet</option>
+                                                    <option value="2">ml</option>
+                                                    <option value="3">drops</option>
+                                                    <option value="4">puffs</option>
+                                                    <option value="5">patch</option>
+                                                    <option value="6">ampuole</option>
+                                                    <option value="7">spoons</option>                                                    
+                                                    <option value="8">local application</option>                                                    
+                                                </select>
+
                                                 <select name="1_medicineFrequency_1" id="1_medicineFrequency_1" class="col-2 med_freq form-control text-center p-0 rounded">
                                                     <option value="1">Once a day</option>
                                                     <option value="2">Twice a day</option>
                                                     <option value="3">Thrice a day</option>
                                                     <option value="4">Four times a day</option>
                                                     <option value="5">Five times a day</option>
-                                                    <option value="6">Others</option>
+                                                    <option value="6">Once Daily at Bedtime</option>
+                                                    <option value="7">When Required</option>
+                                                    <option value="8">Immediately</option>
+                                                    <option value="9">Others</option>
                                                 </select>
                                                 <input id="1_medicineDuration_1" type="number" step="1" class="col-1 med_duration form-control rounded p-0 text-center"></input>
-                                                <input id="1_medicineSpecial_1" type="textarea" class="col-7 form-control p-0 text-center med_special" placeholder="Special Instructions"></input>
+                                                <input id="1_medicineSpecial_1" type="textarea" class="col-5 form-control p-0 text-center med_special" placeholder="Special Instructions"></input>
                                                 <div class="p-0 m-0 col-1 btnCell">
                                                     <i class="fa fa-plus fa-sm faPlus" data-id="1"></i>
                                                     <i class="fa fa-minus fa-sm faMinus"></i>
@@ -169,6 +196,7 @@
                                         <div id="patName" class="patName">Patient Name</div>
                                         <div id="patAge" class="patAge">Age, Gender</div>
                                         <div id="patReg" class="patReg">Registration</div>
+                                        <div id="apptDoctor" class="apptDoctor">Doctor</div>
                                         <button type="button" id="preslistCollapse" class="btn btn-primary">
                                             <i class="fa fa-bars"></i>
                                         </button>
@@ -177,9 +205,10 @@
                                     <div class="pharmacyDetails" id="pharmacyDetails">
                                         <div class="presMain" id="presMain">
                                             <div id="prescriptionHeader" class="prescriptionHeader">
-                                            <span style="width: 35%">Medication</span><!--
-                                            --><span style="width: 5%">Total</span><!--
+                                            <span style="width: 33%">Medication</span><!--
+                                            --><span style="width: 7%">Total</span><!--
                                             --><span style="width: 5%">No.</span><!--
+                                            --><span style="width: 5%">Units</span><!--
                                             --><span style="width: 10%">Frequency</span><!--
                                             --><span style="width: 5%">Days</span><!--
                                             --><span style="width: 40%">Special</span>
@@ -188,8 +217,6 @@
                                             <div class="presLineDetails">
                                                 <div id="mainMed" class="mainMed">
                                                     <i class="fa fa-minus delMed"></i>
-                                                    <label class="sr-only" for="1_medicineOrder" id="1_medicineLabel">1</label>
-                                                    <span id="medIndex" class="presMedNo">1</span>
                                                     <input list="medicines" name="1_medicineOrder" id="1_medicineOrder" class="form-control rounded p-0 presMedName"/>
                                                         <datalist id="medicines">
                                                             <t t-foreach="medications" t-as="medication">
@@ -202,16 +229,30 @@
                                                 <div class="medicineRowContainer" id="medicineDetails">
                                                     <div class="input-group medicineLines">
                                                         <input id="1_medicineOrder_1" class="med_no form-control rounded text-center col-1 p-0" type="number" step="0.25" value="1"/>
-                                                            <select name="1_medicineFrequency_1" id="1_medicineFrequency_1" class="col-2 med_freq form-control text-center p-0 rounded">
+                                                        <select name="medUnits" class="col-2 form-control medUnits">
+                                                            <option value="1">tablet</option>
+                                                            <option value="2">ml</option>
+                                                            <option value="3">drops</option>
+                                                            <option value="4">puffs</option>
+                                                            <option value="5">patch</option>
+                                                            <option value="6">ampuole</option>
+                                                            <option value="7">spoons</option>                                                    
+                                                            <option value="8">local application</option>                                                    
+                                                        </select>
+                                                        <select name="1_medicineFrequency_1" id="1_medicineFrequency_1" class="col-2 med_freq form-control text-center p-0 rounded">
                                                                     <option value="1">Once a day</option>
                                                                     <option value="2">Twice a day</option>
                                                                     <option value="3">Thrice a day</option>
                                                                     <option value="4">Four times a day</option>
                                                                     <option value="5">Five times a day</option>
-                                                                    <option value="6">Others</option>
-                                                            </select>
+                                                                    <option value="6">Once Daily at Bedtime</option>
+                                                                    <option value="7">When Required</option>
+                                                                    <option value="8">Immediately</option>
+                                                                    <option value="9">Others</option>
+                                                        </select>
+
                                                         <input id="1_medicineDuration_1" type="number" step="1" class="col-1 med_duration form-control rounded p-0 text-center"></input>
-                                                        <input id="1_medicineSpecial_1" type="textarea" class="col-7 form-control p-0 text-center med_special" placeholder="Special Instructions"></input>
+                                                        <input id="1_medicineSpecial_1" type="textarea" class="col-5 form-control p-0 text-center med_special" placeholder="Special Instructions"></input>
                                                         <div class="p-0 m-0 col-1 btnCell">
                                                         <i class="fa fa-plus fa-sm faPlus" data-id="1"></i>
                                                         <i class="fa fa-minus fa-sm faMinus"></i>
@@ -255,15 +296,16 @@
                                             </div>
 
                                         </div>
+                                        <row>
+                                            <button class="btn btn-primary" id="serviceNewRow">Add More</button>
+                                        </row>
+
                                         <div id = "presTotal">
                                                 <span style="width: 80%">Total</span><!--
                                              --><span style="width: 20%" id='amountTotal' class="amountTotal">Amount</span>
 
                                         </div>
                                     </div>
-                                        <row>
-                                            <button class="btn btn-primary" id="serviceNewRow">Add More</button>
-                                        </row>
                                         <div class="paymentTotal">
                                             <span style="width: 80%; margin-left: 25px; margin-right: 5px">Payment</span><!--                                                
                                             --><input type="number" style="width: 20%; margin-left: 25px; margin-right: 5px" class="paymentInput" id="paymentTotal"/>
@@ -271,7 +313,7 @@
                                         <button type="button" id="pharmacyUpdateSubmit" class="btn btn-primary form_submit">Update Prescription</button>
                                         <button type="button" id="pharmacyFormSubmit" class="btn btn-success form_submit">Sale Order</button>
                                         <button type="button" class="btn btn-primary" id="printPrescription">Print Prescription</button>
-
+                                        <button type="button" class="btn btn-primary" id="printReceipt">Print Receipt</button>
                                     </div>
                                 </div>
                                 <div class="old_pres_list active" id="oldPreslist">
@@ -293,8 +335,9 @@
                                         <div id="oldPrescriptionDetail" class="oldPrescriptionDetail container-flex ">
                                             <div class="oldPrescriptionHeader row bg-light">
                                                 <div class="col-1">#</div>
-                                                <div class="col-6">Medicine</div>
+                                                <div class="col-5">Medicine</div>
                                                 <div class="col-1">No.</div>
+                                                <div class="col-1">Units</div>
                                                 <div class="col-1">Freq.</div>
                                                 <div class="col-1">Days</div>
                                                 <div class="col-1">Special</div>
@@ -328,7 +371,9 @@
                                     <option t-attf-value="eddie">Dr. E. Mukhim</option>
                                     <option t-attf-value="gideon">Dr. G. Rynjah</option>
                                     <option t-attf-value="didak">Dr. D. Khonglah</option>
-
+                                    <option t-attf-value="lashngain">Dr. L. Sohliya</option>
+                                    <option t-attf-value="rlaloo">Dr. R. Laloo</option>
+                                    <option t-attf-value="dkynjin">Dr. D. Kynjin</option>
                                 </select>
                                 <button type="submit" class="btn btn-primary">Submit</button>
                             </div>
@@ -359,6 +404,7 @@
                                     <td>#</td>
                                     <td>Medicine</td>
                                     <td>No.</td>
+                                    <td>Units</td>
                                     <td>Frequency</td>
                                     <td>Duration</td>
                                     <td>Special Instruction</td>
@@ -371,16 +417,31 @@
                         <script type="text/html" id ="medDetailEntry">
                             <div class="input-group medicineLines">
                                 <input id="1_medicineOrder_1" class="med_no form-control rounded text-center col-1 p-0" type="number" step="0.25" value="1"/>
+                                            <select name="medUnits" class="col-2 form-control medUnits">
+                                                    <option value="1">tablet</option>
+                                                    <option value="2">ml</option>
+                                                    <option value="3">drops</option>
+                                                    <option value="4">puffs</option>
+                                                    <option value="5">patch</option>
+                                                    <option value="6">ampuole</option>                                                    
+                                                    <option value="7">spoons</option>                                                    
+                                                    <option value="8">local application</option>                                                    
+
+                                </select>
+
                                 <select name="1_medicineFrequency_1" id="1_medicineFrequency_1" class="col-2 med_freq form-control text-center p-0 rounded">
                                     <option value="1">Once a day</option>
                                     <option value="2">Twice a day</option>
                                     <option value="3">Thrice a day</option>
                                     <option value="4">Four times a day</option>
                                     <option value="5">Five times a day</option>
-                                    <option value="6">Others</option>
+                                    <option value="6">Once Daily at Bedtime</option>
+                                    <option value="7">When Required</option>
+                                    <option value="8">Immediately</option>
+                                    <option value="9">Others</option>
                                 </select>
                                 <input id="1_medicineDuration_1" type="number" step="1" class="col-1 med_duration form-control rounded p-0 text-center"></input>
-                                <input id="1_medicineSpecial_1" type="textarea" class="med_special col-7 form-control p-0 text-center" placeholder="Special Instructions"></input>
+                                <input id="1_medicineSpecial_1" type="textarea" class="med_special col-5 form-control p-0 text-center" placeholder="Special Instructions"></input>
                                 <div class="p-0 m-0 col-1 btnCell">
                                     <i class="fa fa-plus fa-sm faPlus" data-id="medLine[]"></i>
                                     <i class="fa fa-minus fa-sm faMinus"></i>
@@ -392,8 +453,6 @@
                                 <div class="presLineDetails">
                                     <div id="mainMed" class="mainMed">
                                         <i class="fa fa-minus delMed"></i>
-                                        <label class="sr-only" for="1_medicineOrder" id="1_medicineLabel">1</label>
-                                        <span id="medIndex" class="presMedNo">1</span>
                                         <input list="medicines" name="1_medicineOrder" id="1_medicineOrder" class="form-control rounded p-0 presMedName"/>
                                         <datalist id="medicines">
                                             <t t-foreach="medications" t-as="medication">
@@ -406,16 +465,32 @@
                                     <div class="medicineRowContainer" id="medicineDetails">
                                         <div class="input-group medicineLines">
                                             <input id="1_medicineOrder_1" class="med_no form-control rounded text-center col-1 p-0" type="number" step="0.25" value="1"/>
+                                            <select name="medUnits" class="col-2 form-control medUnits">
+                                                    <option value="1">tablet</option>
+                                                    <option value="2">ml</option>
+                                                    <option value="3">drops</option>
+                                                    <option value="4">puffs</option>
+                                                    <option value="5">patch</option>
+                                                    <option value="6">ampuole</option>   
+                                                    <option value="7">spoons</option>                                                    
+                                                    <option value="8">local application</option>                                                                                                                                                 
+                                                </select>
+
                                             <select name="1_medicineFrequency_1" id="1_medicineFrequency_1" class="col-2 med_freq form-control text-center p-0 rounded">
-                                                <option value="1">Once a day</option>
-                                                <option value="2">Twice a day</option>
-                                                <option value="3">Thrice a day</option>
-                                                <option value="4">Four times a day</option>
-                                                <option value="5">Five times a day</option>
-                                                <option value="6">Others</option>
+                                                                    <option value="1">Once a day</option>
+                                                                    <option value="2">Twice a day</option>
+                                                                    <option value="3">Thrice a day</option>
+                                                                    <option value="4">Four times a day</option>
+                                                                    <option value="5">Five times a day</option>
+                                                                    <option value="6">Once Daily at Bedtime</option>
+                                                                    <option value="7">When Required</option>
+                                                                    <option value="8">Immediately</option>
+                                                                    <option value="9">Others</option>
+
                                             </select>
+
                                             <input id="1_medicineDuration_1" type="number" step="1" class="col-1 med_duration form-control rounded p-0 text-center"></input>
-                                            <input id="1_medicineSpecial_1" type="textarea" class="col-7 form-control p-0 text-center med_special" placeholder="Special Instructions"></input>
+                                            <input id="1_medicineSpecial_1" type="textarea" class="col-5 form-control p-0 text-center med_special" placeholder="Special Instructions"></input>
                                             <div class="p-0 m-0 col-1 btnCell">
                                                 <i class="fa fa-plus fa-sm faPlus" data-id="1"></i>
                                                 <i class="fa fa-minus fa-sm faMinus"></i>
@@ -510,16 +585,15 @@
                                                 <span style="width: 35%">Medication</span><!--
                                              --><span style="width: 5%">Total</span><!--
                                              --><span style="width: 5%">No.</span><!--
+                                            --><span style="width: 10%">Units</span> <!--
                                              --><span style="width: 10%">Frequency</span><!--
                                              --><span style="width: 5%">Days</span><!--
-                                             --><span style="width: 40%">Special</span>
+                                             --><span style="width: 30%">Special</span>
                                             </div>
                                             <div class="presLine pl-0 ml-0">
                                                 <div class="presLineDetails">
                                                     <div id="mainMed" class="mainMed">
                                                         <i class="fa fa-minus delMed"></i>
-                                                        <label class="sr-only" for="1_medicineOrder" id="1_medicineLabel">1</label>
-                                                        <span id="medIndex" class="presMedNo">1</span>
                                                         <input list="medicines" name="1_medicineOrder" id="1_medicineOrder" class="form-control rounded p-0 presMedName"/>
                                                         <datalist id="medicines">
                                                             <t t-foreach="medications" t-as="medication">
@@ -532,16 +606,32 @@
                                                     <div class="medicineRowContainer" id="medicineDetails">
                                                         <div class="input-group medicineLines">
                                                             <input id="1_medicineOrder_1" class="med_no form-control rounded text-center col-1 p-0" type="number" step="0.25" value="1"/>
+                                                <select name="medUnits" class="col-2 form-control medUnits">
+                                                    <option value="1">tablet</option>
+                                                    <option value="2">ml</option>
+                                                    <option value="3">drops</option>
+                                                    <option value="4">puffs</option>
+                                                    <option value="5">patch</option>
+                                                    <option value="6">ampuole</option>
+                                                    <option value="7">spoons</option>                                                    
+                                                    <option value="8">local application</option>                                                    
+
+                                                </select>
+
                                                             <select name="1_medicineFrequency_1" id="1_medicineFrequency_1" class="col-2 med_freq form-control text-center p-0 rounded">
-                                                                <option value="1">Once a day</option>
-                                                                <option value="2">Twice a day</option>
-                                                                <option value="3">Thrice a day</option>
-                                                                <option value="4">Four times a day</option>
-                                                                <option value="5">Five times a day</option>
-                                                                <option value="6">Others</option>
+                                                                    <option value="1">Once a day</option>
+                                                                    <option value="2">Twice a day</option>
+                                                                    <option value="3">Thrice a day</option>
+                                                                    <option value="4">Four times a day</option>
+                                                                    <option value="5">Five times a day</option>
+                                                                    <option value="6">Once Daily at Bedtime</option>
+                                                                    <option value="7">When Required</option>
+                                                                    <option value="8">Immediately</option>
+                                                                    <option value="9">Others</option>
                                                             </select>
+                                                
                                                             <input id="1_medicineDuration_1" type="number" step="1" class="col-1 med_duration form-control rounded p-0 text-center"></input>
-                                                            <input id="1_medicineSpecial_1" type="textarea" class="col-7 form-control p-0 text-center med_special" placeholder="Special Instructions"></input>
+                                                            <input id="1_medicineSpecial_1" type="textarea" class="col-5 form-control p-0 text-center med_special" placeholder="Special Instructions"></input>
                                                             <div class="p-0 m-0 col-1 btnCell">
                                                                 <i class="fa fa-plus fa-sm faPlus" data-id="1"></i>
                                                                 <i class="fa fa-minus fa-sm faMinus"></i>
@@ -578,8 +668,9 @@
                                         <div id="oldPrescriptionDetail" class="oldPrescriptionDetail container-flex ">
                                             <div class="oldPrescriptionHeader row bg-light">
                                                 <div class="col-1">#</div>
-                                                <div class="col-6">Medicine</div>
+                                                <div class="col-5">Medicine</div>
                                                 <div class="col-1">No.</div>
+                                                <div class="col-1">Units</div>
                                                 <div class="col-1">Freq.</div>
                                                 <div class="col-1">Days</div>
                                                 <div class="col-1">Special</div>

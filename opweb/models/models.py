@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, exceptions
+from fractions import Fraction
 
 class opweb(models.Model):
     _name = 'opweb.opweb'
@@ -23,6 +24,7 @@ class opweb(models.Model):
     consultation = fields.Float('Consultation Charge')
     registration_charge = fields.Float('Registration Charge')
     opregNo = fields.Char('Opreg ID')
+    payment = fields.Float('Payment')
 
 class  serviceslines(models.Model):
     _name= 'opweb.serviceslines'
@@ -48,10 +50,17 @@ class medicinelines(models.Model):
     _rec_name='frequency'
     prescription = fields.Many2one('opweb.prescriptionlines')
     dose = fields.Float('Dosage')
-    frequency = fields.Selection([(1,'Once daily'),(2,'Twice Daily'),(3, 'Thrice Daily'),(5, 'Five Times a Day'),(6, 'Others')])
+    units = fields.Selection([(1, 'tablet'), (2, 'ml'), (3, 'drops'), (4, 'puffs'), (5, 'patch'), (6, 'ampuole'),(7, 'spoons'),(8, 'local application')], string='Units')
+    frequency = fields.Selection([(1,'once daily'),(2,'twice daily'),(3, 'thrice daily'),(4, 'four times a day'),(5, 'five times a day'),(6, 'once daily at bedtime'),(7,'when required'),(8, 'immediately'),(9, 'Others')])
     duration = fields.Integer('Number of days')
     special = fields.Char('Special Instructions')
     total = fields.Integer(compute='_tot',string='Total Number of Tablets')
+    dose_fraction = fields.Char('Dosage in fractions', compute='_dosefraction')
+
+    @api.onchange('dose')
+    def _dosefraction(self):
+        for record in self:
+            record.dose_fraction = str(Fraction(record.dose))
 
     @api.model
     def _tot(self):

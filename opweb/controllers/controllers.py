@@ -37,7 +37,8 @@ class Opweb(http.Controller):
                     'dose': det['num'],
                     'frequency': det['freq'],
                     'duration': det['duration'],
-                    'special': det['special']
+                    'special': det['special'],
+                    'units': det['units']
                 }))
 
             if line['med_id']:
@@ -45,7 +46,8 @@ class Opweb(http.Controller):
                     'medicine':line['med_id'],
                     'ordered_no': int(float(line['medTotal'])),
                     'med_name': line['name'],
-                    'medicine_lines': det_lines
+                    'medicine_lines': det_lines,
+                    'units': det['units']
                     }))
             else:
                 pres_lines.append((0,0, {
@@ -57,7 +59,7 @@ class Opweb(http.Controller):
         if request.jsonrequest:
             g = 'res.partner(%s,)' % post['partner_id']
             presDate = datetime.strptime(post['date'], DATE_FORMAT).strftime(DATE_FORMAT)
-            rec = request.env['opweb.opweb'].sudo().search([['date','=', presDate], ['partner_id.id','=', post['partner_id']]])
+            rec = request.env['opweb.opweb'].sudo().search([['date','=', presDate], ['partner_id.id','=', post['partner_id']],['doctor','=', post['doctor']]])
             if rec:
                 for line in rec.prescription_lines:
                     line.unlink()
@@ -75,6 +77,7 @@ class Opweb(http.Controller):
 
     @http.route('/opweb/patdetail', auth='public', csrf=False, type='json')
     def todaypres (self, **post):
+        _logger.info(post)
         dt = datetime.strptime(post['date'], DATE_FORMAT).strftime(DATE_FORMAT)
         posPrescriptions = request.env['pos.order'].sudo().search([['partner_id.id','=',post['partner_id']],['config_id.id', '!=', '11']])
         salePrescriptions = request.env['sale.order'].sudo().search([['partner_id.id','=',post['partner_id']]])
@@ -103,9 +106,7 @@ class Opweb(http.Controller):
                     prescriptionDetails={}
                     prescriptionDetails.update({'date': det['date'], 'medLines': det['medLines']})
                     oldPrescriptionDetails.append(prescriptionDetails)
-        for detail in oldPrescriptionDetails:
-            _logger.info(detail)
-        pat_det = request.env['opweb.opweb'].sudo().search([['date','=', dt], ['partner_id.id','=', post['partner_id']]])
+        pat_det = request.env['opweb.opweb'].sudo().search([['date','=', dt], ['partner_id.id','=', post['partner_id']],['opregNo','=', post['opregId']]])
         med_all = []
         for line in pat_det.prescription_lines:
             meds = {}
@@ -123,7 +124,7 @@ class Opweb(http.Controller):
                 med_line_all.append(det_array)
             meds.update({'medName': med_name, 'medicine': medicine, 'medicineQuantity':ordered_no, 'medLines': med_line_all})
             med_all.append(meds)
-        return {'prescription_lines': med_all, 'old_prescriptions': oldPrescriptionDetails}
+        return {'prescription_lines': med_all, 'old_prescriptions': oldPrescriptionDetails, 'payment': pat_det.payment}
     
     def oldPrescriptions(self, presEnv, dateFormat, lineFormat, qtyFormat, productIdFormat):
         totalMedOrders = []
@@ -183,7 +184,7 @@ class Opweb(http.Controller):
     @http.route('/opweb/pharmacyquery', auth='public', type='json', csrf=False)
     def pharmacyPrescriptions(self, **post):
         partner_id = request.env['res.partner'].sudo().search([['id','=',post['partner_id']]])
-        prescription = request.env['opweb.opweb'].sudo().search([['partner_id.id','=', post['partner_id']],['date','=', date.today().strftime(DATE_FORMAT)]])
+        prescription = request.env['opweb.opweb'].sudo().search([['partner_id.id','=', post['partner_id']],['date','=', date.today().strftime(DATE_FORMAT)],['opregNo', '=', post['opreg_id']]])
         if prescription:
             med_all = []
             for line in prescription.prescription_lines:
@@ -268,11 +269,12 @@ class Opweb(http.Controller):
                 number = each['num']
                 freq = each['freq']
                 duration = each['duration']
+                units = each['units']
                 if each['special']:
                     special = each['special']
                 else:
                     special = ''
-                detail.update({'dose': number, 'frequency': freq, 'duration': duration, 'special': special})
+                detail.update({'dose': number, 'frequency': freq, 'duration': duration, 'special': special, 'units': units})
                 medicine_line.append((0,0, detail))
             orderLine.update({'medicine': product_id, 'med_name': med_name,'ordered_no': product_uom_quantity, 'medicine_lines': medicine_line})
             opwebMedLine.append((0,0, orderLine))
@@ -303,6 +305,7 @@ class Opweb(http.Controller):
             opweb.roundOff = roundOff
             opweb.consultation = consultation
             opweb.registration_charge = registration_charge
+            opweb.payment = post['params']['payment']
             opweb.state = 'delivered'
         
         else:
@@ -316,14 +319,15 @@ class Opweb(http.Controller):
                 'consultation': consultation,
                 'registration_charge': registration_charge,
                 'state': 'delivered',
-                'opregNo': post['params']['opreg_id']
+                'opregNo': post['params']['opreg_id'],
+                'payment': post['params']['payment']
                 })
         
         return 'Sale Order Generated'
 
     @http.route('/opweb/pharmacyupdate', auth='public', type='json', csrf=False)
     def pharmacy_update(self, **post):
-        opweb = request.env['opweb.opweb'].sudo().search([['date','=', date.today().strftime(DATE_FORMAT)],['opregNo','=',post['params']['opreg_no']],['partner_id.id','=', post['params']['partner_id']],['state','=','ordered']])
+        opweb = request.env['opweb.opweb'].sudo().search([['date','=', date.today().strftime(DATE_FORMAT)],['opregNo','=',post['params']['opreg_no']],['partner_id.id','=', post['params']['partner_id']]])
         opwebMedLine = []
         for line in post['params']['lines']:
             orderLine = {}
@@ -334,13 +338,14 @@ class Opweb(http.Controller):
             for each in line['lines']:
                 detail = {}
                 number = each['num']
+                units = each['units']
                 freq = each['freq']
                 duration = each['duration']
                 if each['special']:
                     special = each['special']
                 else:
                     special = ''
-                detail.update({'dose': number, 'frequency': freq, 'duration': duration, 'special': special})
+                detail.update({'dose': number, 'frequency': freq, 'duration': duration, 'special': special, 'units': units})
                 medicine_line.append((0,0, detail))
             orderLine.update({'medicine': product_id, 'med_name': med_name,'ordered_no': product_uom_quantity, 'medicine_lines': medicine_line})
             opwebMedLine.append((0,0, orderLine))
@@ -371,8 +376,7 @@ class Opweb(http.Controller):
             opweb.roundOff = roundOff
             opweb.consultation = consultation
             opweb.registration_charge = registration_charge
-            opweb.state = 'delivered'
-        
+            opweb.state = 'ordered'
         else:
             request.env['opweb.opweb'].sudo().create({
                 'partner_id': post['params']['partner_id'],
@@ -383,7 +387,14 @@ class Opweb(http.Controller):
                 'roundOff': roundOff,
                 'consultation': consultation,
                 'registration_charge': registration_charge,
-                'state': 'delivered',
-                'opregNo': post['params']['opreg_id']
+                'opregNo': post['params']['opreg_no'],
+                'state': 'ordered'
                 })
         return 'Prescription Updated'
+
+    @http.route('/opweb/printquery', auth='public', type='json', csrf=False)
+    def printquery(self, **post):
+        reportid = int(post['report_id'])
+        _logger.info(reportid)
+        opwebId = request.env['opweb.opweb'].sudo().search([['opregNo','=', reportid]])
+        return opwebId.id

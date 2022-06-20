@@ -1,7 +1,7 @@
 <odoo>
     <data>
 
-        <report id="opdPrescription" string="SAN-KER OOPD Prescription" model="opweb.opweb" report_type="qweb-pdf" name="opweb.opdPrescription_template" file="opweb.opdPrescription_template" menu="True"/>
+        <report id="opdPrescription" string="SAN-KER OPD Prescription" model="opweb.opweb" report_type="qweb-pdf" name="opweb.opdPrescription_template" file="opweb.opdPrescription_template" menu="True"/>
 
         <template id ="opdPrescription_template">
             <t t-call="web.html_container">
@@ -83,7 +83,7 @@
                                         </tr>
                                     </thead>
 
-                                    <tr style="width: 100%" t-foreach='docs.prescription_lines' t-as='med'>
+                                    <tr style="width: 100%; border-bottom: 1px dotted grey" t-foreach='docs.prescription_lines' t-as='med'>
                                         <td style="width: 50%">
                                             <span t-field="med.display_name"></span>
                                         </td>
@@ -91,15 +91,10 @@
                                             <table style="width: 100%">
                                                 <tr t-foreach="med.medicine_lines" t-as="medDetail">
                                                     <td>
-                                                        <span t-field="medDetail.dose"></span>
-                                                    </td>
-                                                    <td>
+                                                        <span t-field="medDetail.dose_fraction"></span>
+                                                        <span t-field="medDetail.units"></span>
                                                         <span t-field="medDetail.frequency"></span>
-                                                    </td>
-                                                    <td>
                                                         for<![CDATA[&nbsp;]]><![CDATA[&nbsp;]]><span t-field="medDetail.duration"></span><![CDATA[&nbsp;]]><![CDATA[&nbsp;]]>days
-                                                    </td>
-                                                    <td>
                                                         <span t-field="medDetail.special"></span>
                                                     </td>
                                                 </tr>
